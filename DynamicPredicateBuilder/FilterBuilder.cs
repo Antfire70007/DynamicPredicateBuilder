@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 
 namespace DynamicPredicateBuilder;
 
-
 public static class FilterBuilder
 {
     public static Expression<Func<T, bool>> Build<T>(FilterGroup group, FilterOptions options = null)
@@ -16,6 +15,44 @@ public static class FilterBuilder
         var parameter = Expression.Parameter(typeof(T), "x");
         var body = BuildGroup(typeof(T), optimizedGroup, parameter, options);
         return Expression.Lambda<Func<T, bool>>(body, parameter);
+    }
+    public static Expression<Func<T, bool>> Build<T>(IEnumerable<FilterGroup> groups, FilterOptions options = null)
+    {
+        // 沒有任何條件 → 永遠 true
+        if (groups is null || !groups.Any())
+            return _ => true;
+
+        // 共用一個 Parameter
+        var parameter = Expression.Parameter(typeof(T), "x");
+
+        Expression? finalBody = null;
+        LogicalOperator interOp = LogicalOperator.Or; // 第一組之前沒運算子，先預設 Or
+
+        foreach (var rawGroup in groups)
+        {
+            // 先對每組做 Optimize（除重）
+            var group = OptimizeFilterGroup(rawGroup);
+
+            // 重用既有 BuildGroup 產生 Expression
+            var groupExpr = BuildGroup(typeof(T), group, parameter, options);
+
+            // 把每組 Expression 用 AND / OR 串起來
+            if (finalBody is null)
+            {
+                finalBody = groupExpr;
+            }
+            else
+            {
+                finalBody = interOp == LogicalOperator.And
+                          ? Expression.AndAlso(finalBody, groupExpr)
+                          : Expression.OrElse(finalBody, groupExpr);
+            }
+
+            // 決定下一迴圈要用的組間運算子
+            interOp = group.InterOperator;
+        }
+
+        return Expression.Lambda<Func<T, bool>>(finalBody ?? Expression.Constant(true), parameter);
     }
     // FilterGroup除重（將相同的 FilterRule 視為一樣）
     private static FilterGroup OptimizeFilterGroup(FilterGroup group)
@@ -47,35 +84,39 @@ public static class FilterBuilder
 
         return result;
     }
-    private static Expression BuildGroup(Type entityType, FilterGroup group, ParameterExpression parameter, FilterOptions options)
+    private static Expression BuildGroup(
+    Type entityType,
+    FilterGroup group,
+    ParameterExpression parameter,
+    FilterOptions options)
     {
-        Expression body = null;
+        Expression? body = null;
 
         foreach (var rule in group.Rules)
         {
-            Expression exp = null;
-
-            if (rule is FilterRule simpleRule)
+            Expression? exp = rule switch
             {
-                exp = BuildRule(entityType, simpleRule, parameter, options);
-            }
-            else if (rule is FilterGroup subGroup)
-            {
-                exp = BuildGroup(entityType, subGroup, parameter, options);
-            }
+                FilterRule simpleRule => BuildRule(entityType, simpleRule, parameter, options),
+                FilterGroup subGroup => BuildGroup(entityType, subGroup, parameter, options),
+                _ => null
+            };
 
-            if (exp == null)
-                continue;
+            if (exp == null) continue;
 
-            if (body == null)
-                body = exp;
-            else
-                body = group.LogicalOperator == LogicalOperator.And
+            body = body == null
+                ? exp
+                : group.LogicalOperator == LogicalOperator.And
                     ? Expression.AndAlso(body, exp)
                     : Expression.OrElse(body, exp);
         }
 
-        return body ?? Expression.Constant(true);
+        body ??= Expression.Constant(true);
+
+        // ★ NOT on entire group
+        if (group.IsNegated)
+            body = Expression.Not(body);
+
+        return body;
     }
 
     private static Expression BuildRule(Type entityType, FilterRule rule, ParameterExpression parameter, FilterOptions options)
@@ -147,8 +188,10 @@ public static class FilterBuilder
                 body = Expression.Call(property, typeof(string).GetMethod("EndsWith", new[] { typeof(string) }), constant);
                 break;
         }
+        body = body ?? Expression.Constant(true);
 
-        return body ?? Expression.Constant(true);
+        // ★ NOT on single rule
+        return rule.IsNegated ? Expression.Not(body) : body;
     }
 
     private static object ChangeType(object value, Type targetType)

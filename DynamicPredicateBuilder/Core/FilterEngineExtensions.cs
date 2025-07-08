@@ -3,7 +3,6 @@ using System.Text.Json;
 using DynamicPredicateBuilder.Models;
 
 namespace DynamicPredicateBuilder.Core;
-
 public static class FilterEngineExtensions
 {
     public static IQueryable<T> ApplyFilterJson<T>(this IQueryable<T> source, JsonElement filterJson, List<SortRule> sortRules = null)

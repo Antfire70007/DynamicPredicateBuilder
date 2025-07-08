@@ -7,4 +7,7 @@ public class FilterRule
 
     // 新增：欄位 vs 欄位
     public string CompareToProperty { get; set; }
+
+    /// <summary>把這條 Rule 取反 (NOT)。</summary>
+    public bool IsNegated { get; set; } = false;
 }

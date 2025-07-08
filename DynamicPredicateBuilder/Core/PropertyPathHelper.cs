@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 
 namespace DynamicPredicateBuilder.Core;
-
 public static class PropertyPathHelper
 {
     public static Expression BuildPropertyExpression(Expression parameter, string propertyPath)

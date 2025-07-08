@@ -2,10 +2,8 @@
 using DynamicPredicateBuilder.Models;
 
 namespace DynamicPredicateBuilder.Core;
-
 public static class FilterEngine
 {
-
     public static Expression<Func<T, bool>> FromJson<T>(string json)
     {
         var filterGroup = FilterGroupJsonHelper.FromJson(json);
