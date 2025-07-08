@@ -1,25 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFrameworks>net9.0;net8.0;net7.0</TargetFrameworks>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <Configurations>Debug;Release;Stage</Configurations>
-	  <Authors>Antfire</Authors>
-	  <Company>Antfire</Company>
-	  <Description>企業級查詢引擎模組，支援 FilterRule、FilterGroup、動態 Where 條件建構、Expression Tree 節點優化。</Description>
-	  <PackageTags>dynamic predicate filter builder query expression</PackageTags>
-	  <RepositoryUrl>https://github.com/DynamicPredicateBuilder</RepositoryUrl>
-	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
-	  <PackageReadmeFile>README.md</PackageReadmeFile>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-
+	<PropertyGroup>
+		<TargetFrameworks>net9.0;net8.0;net7.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Version>1.0.1</Version>
+		<Configurations>Debug;Release;Stage</Configurations>
+		<Authors>Antfire</Authors>
+		<Company>Antfire</Company>
+		<Description>企業級查詢引擎模組，支援 FilterRule、FilterGroup、動態 Where 條件建構、Expression Tree 節點優化。</Description>
+		<PackageTags>dynamic predicate filter builder query expression</PackageTags>
+		<RepositoryUrl>https://github.com/DynamicPredicateBuilder</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="" />
 	</ItemGroup>
-
 </Project>
