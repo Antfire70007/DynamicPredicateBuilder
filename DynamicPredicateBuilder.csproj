@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net9.0;net8.0;net7.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
+		<Nullable>annotations</Nullable>
 		<Version>1.0.1</Version>
 		<Configurations>Debug;Release;Stage</Configurations>
 		<Authors>Antfire</Authors>
