@@ -226,3 +226,151 @@ dotnet test
 ---
 
 持續優化中，歡迎 Issue／PR！
+
+## 6. 與 jQuery DataTables Server‑Side 搭配
+
+以下示範 **DataTables 1.13+** 於前端傳送分頁、排序、全域搜尋與欄位搜尋，後端再組成 `FilterGroup`：
+
+### 6‑1. 前端 JavaScript
+
+```html
+<table id="peopleTable" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>City</th>
+        </tr>
+        <tr><!-- 欄位篩選列 -->
+            <th><input type="text" placeholder="Name"  class="col-search" data-col="0"></th>
+            <th><input type="number" placeholder=">= Age" class="col-search" data-col="1"></th>
+            <th><input type="text" placeholder="City"  class="col-search" data-col="2"></th>
+        </tr>
+    </thead>
+</table>
+
+<script>
+$(function () {
+    const table = $('#peopleTable').DataTable({
+        serverSide: true,
+        processing: true,
+        searchDelay: 600,     // 降低後端壓力
+        ajax: {
+            url: '/api/people/datatable',
+            type: 'POST',
+            contentType: 'application/json',
+            data: function (d) {
+                // 將 DataTables 內建物件轉成您 API 需要的格式
+                return JSON.stringify({
+                    draw:        d.draw,
+                    page:        Math.floor(d.start / d.length) + 1,
+                    pageSize:    d.length,
+                    sort:        d.order.map(o => ({
+                                    property: d.columns[o.column].data,
+                                    descending: o.dir === 'desc'
+                                 })),
+                    filterGroups: buildFilterGroups(d)   // 🔑 自訂函式
+                });
+            }
+        },
+        columns: [
+            { data: 'name'    },
+            { data: 'age'     },
+            { data: 'address.city', render: data => data } // 巢狀欄位
+        ]
+    });
+
+    // 個別欄位即時搜尋
+    $('.col-search').on('keyup change', function () {
+        table.column($(this).data('col')).search(this.value).draw();
+    });
+
+    // 把 DataTables 搜尋條件轉成 FilterGroup
+    function buildFilterGroups(dt) {
+        const groups = [];
+
+        // 全域搜尋（LIKE %keyword%）
+        if (dt.search && dt.search.value) {
+            groups.push({
+                logicalOperator: 'Or',
+                rules: dt.columns
+                    .filter(c => c.searchable)
+                    .map(c => ({
+                        property:  c.data,
+                        operator:  'Like',
+                        value:     dt.search.value
+                    }))
+            });
+        }
+
+        // 欄位個別搜尋
+        dt.columns.forEach(c => {
+            if (c.search && c.search.value) {
+                groups.push({
+                    logicalOperator: 'And',
+                    rules: [{
+                        property: c.data,
+                        operator: 'Like',
+                        value:    c.search.value
+                    }]
+                });
+            }
+        });
+
+        return groups;
+    }
+});
+</script>
+```
+
+### 6‑2. 後端 Controller
+
+```csharp
+[HttpPost("datatable")]
+public IActionResult DataTableQuery([FromBody] DataTableRequest<QueryRequest> req)
+{
+    // req.Payload 即前端轉好的 QueryRequest
+    var options = new FilterOptions
+    {
+        AllowedFields = QueryableFieldHelper.GetQueryableFields<Person>()
+    };
+
+    // 多組群組 Build
+    var predicate = FilterBuilder.Build<Person>(req.Payload.FilterGroups, options);
+
+    var query = _db.People.Where(predicate);
+
+    // 排序、分頁
+    query = query.ApplySort(req.Payload.Sort);
+    var items = query
+                .Skip((req.Payload.Page - 1) * req.Payload.PageSize)
+                .Take(req.Payload.PageSize)
+                .ToList();
+
+    return Ok(new
+    {
+        draw = req.Payload.Draw,
+        recordsTotal    = _db.People.Count(),
+        recordsFiltered = query.Count(),
+        data = items
+    });
+}
+
+// 用來包 DataTables 固定參數 + 您自定義的 QueryRequest
+public class DataTableRequest<T>
+{
+    public int Draw { get; set; }
+    public T Payload { get; set; } = default!;
+}
+```
+
+### 6‑3. 小技巧
+
+1. **searchDelay**：適度延遲可減少後端 QPS。  
+2. **欄位搜尋列**：自行在 `<thead>` 多加一列 `<tr>` 搭配 `.column(index).search()`，體驗更友善。  
+3. **複合條件**：前端把條件組成 `filterGroups`，後端不需再解析 DataTables 參數，專心跑 `FilterBuilder` 即可。  
+4. **大量資料**：搭配 `IQueryable` 與 `EF Core` 的 `AsNoTracking()`，並在關鍵欄位加索引。  
+5. **權限控管**：仍建議在 `FilterOptions.AllowedFields` 留白名單以防打到敏感資料。  
+
+*如需更細的 DataTables 伺服端協定，可參考官方文件 <https://datatables.net/manual/server-side>*
+
