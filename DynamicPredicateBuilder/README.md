@@ -169,6 +169,14 @@ var predicate = FilterBuilder.Build<Person>(groups).Compile();
 
   等同於 SQL：`'VIP' = ANY(Tags)`
 
+- **`NotAny`**：用於檢查屬性值是否不存在於集合中。
+
+  ```csharp
+  new FilterRule { Property = "Tags", Operator = FilterOperator.NotAny, Value = "VIP" }
+  ```
+
+  等同於 SQL：`'VIP' NOT IN (Tags)`
+
 ---
 
 ## 3. API 使用範例
@@ -409,4 +417,92 @@ public class DataTableRequest<T>
 5. **權限控管**：仍建議在 `FilterOptions.AllowedFields` 留白名單以防打到敏感資料。  
 
 *如需更細的 DataTables 伺服端協定，可參考官方文件 <https://datatables.net/manual/server-side>*
+
+---
+
+## 7. 核心類別與功能
+
+### 7-1. FilterBuilder
+`FilterBuilder` 是專案的核心類別，負責生成查詢條件的表達式。以下是其主要方法：
+
+- **`Build<T>(FilterGroup group, FilterOptions?)`**：生成單組條件的查詢表達式。
+- **`Build<T>(IEnumerable<FilterGroup> groups, FilterOptions?)`**：生成多組條件的查詢表達式。
+
+### 7-2. QueryableFieldHelper
+`QueryableFieldHelper` 提供了欄位白名單的功能，確保查詢僅限於允許的欄位。
+
+- **`GetQueryableFields<T>()`**：解析 `[Queryable]` 標籤產生欄位白名單。
+- **`GetAllowedFields<T>()`**：取得允許查詢的欄位集合。
+
+### 7-3. PagedResult
+`PagedResult` 是用於分頁結果的類別，包含以下屬性：
+
+- **`TotalCount`**：總筆數。
+- **`Items`**：分頁後的資料項目。
+- **`Page`**：目前頁碼。
+- **`PageSize`**：每頁筆數。
+- **`TotalPages`**：總頁數。
+
+### 7-4. FilterOperator
+`FilterOperator` 定義了多種查詢運算符，例如 `Equal`、`GreaterThan`、`NotLike` 等，並可擴充自訂運算符。
+
+---
+
+## 8. 測試範圍與重點
+
+### 8-1. 測試檔案
+- **`FilterBuilderTests`**：測試 `FilterBuilder` 的功能，包括 Equal、GreaterThan、NOT、巢狀條件、多組 AND/OR。
+- **`TestData/User.cs`**：提供測試用的資料模型。
+
+### 8-2. 執行測試
+執行以下指令以執行測試並檢視覆蓋率：
+
+```bash
+dotnet test
+```
+
+---
+
+## 9. 安裝與使用
+
+### 9-1. 安裝
+使用以下指令安裝 NuGet 套件：
+
+```bash
+dotnet add package DynamicPredicateBuilder
+```
+
+### 9-2. 使用
+參考上述的使用範例，將 `DynamicPredicateBuilder` 整合到您的專案中。
+
+---
+
+## 10. 貢獻指南
+
+### 10-1. 提交 Issue
+- 描述問題的詳細資訊。
+- 提供重現問題的步驟。
+
+### 10-2. 提交 PR
+- 請遵循專案的程式碼風格。
+- 提交前請確保所有測試通過。
+- 分支命名建議使用 `feature/` 或 `bugfix/` 前綴。
+
+---
+
+## 11. 授權條款
+
+本專案採用 MIT 授權條款，詳見 [LICENSE](./LICENSE)。
+
+---
+
+## 12. 未來規劃與已知問題
+
+### 12-1. 未來規劃
+- 支援更多的查詢運算符。
+- 提供更詳細的錯誤訊息。
+
+### 12-2. 已知問題
+- 尚未支援某些複雜的巢狀條件組合。
+- 測試覆蓋率仍有提升空間。
 
