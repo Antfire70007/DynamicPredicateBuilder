@@ -17,5 +17,6 @@ public enum FilterOperator
     Like,
     NotLike,
     Between,
-    NotBetween
+    NotBetween,
+    Any
 }

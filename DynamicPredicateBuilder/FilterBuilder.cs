@@ -187,6 +187,65 @@ public static class FilterBuilder
             case FilterOperator.EndsWith:
                 body = Expression.Call(property, typeof(string).GetMethod("EndsWith", new[] { typeof(string) }), constant);
                 break;
+            case FilterOperator.Contains:
+                if (property.Type == typeof(string))
+                    body = Expression.Call(property, typeof(string).GetMethod("Contains", new[] { typeof(string) }), constant);
+                break;
+            case FilterOperator.NotContains:
+                if (property.Type == typeof(string))
+                {
+                    var containsExpr = Expression.Call(property, typeof(string).GetMethod("Contains", new[] { typeof(string) }), constant);
+                    body = Expression.Not(containsExpr);
+                }
+                break;
+            case FilterOperator.NotIn:
+                body = Expression.Not(BuildIn(property, convertedValue));
+                break;
+            case FilterOperator.NotLike:
+                body = Expression.Not(BuildLike(property, convertedValue?.ToString()));
+                break;
+            case FilterOperator.Between:
+                if (convertedValue is IEnumerable betweenList)
+                {
+                    var items = betweenList.Cast<object>().ToList();
+                    if (items.Count == 2)
+                    {
+                        var min = Expression.Constant(ChangeType(items[0], property.Type), property.Type);
+                        var max = Expression.Constant(ChangeType(items[1], property.Type), property.Type);
+                        var greaterThanOrEqual = Expression.GreaterThanOrEqual(property, min);
+                        var lessThanOrEqual = Expression.LessThanOrEqual(property, max);
+                        body = Expression.AndAlso(greaterThanOrEqual, lessThanOrEqual);
+                    }
+                }
+                break;
+            case FilterOperator.NotBetween:
+                if (convertedValue is IEnumerable notBetweenList)
+                {
+                    var items = notBetweenList.Cast<object>().ToList();
+                    if (items.Count == 2)
+                    {
+                        var min = Expression.Constant(ChangeType(items[0], property.Type), property.Type);
+                        var max = Expression.Constant(ChangeType(items[1], property.Type), property.Type);
+                        var greaterThanOrEqual = Expression.GreaterThanOrEqual(property, min);
+                        var lessThanOrEqual = Expression.LessThanOrEqual(property, max);
+                        var betweenExpr = Expression.AndAlso(greaterThanOrEqual, lessThanOrEqual);
+                        body = Expression.Not(betweenExpr);
+                    }
+                }
+                break;
+            case FilterOperator.Any:
+                if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+                {
+                    var anyMethod = typeof(Enumerable).GetMethods()
+                        .First(m => m.Name == "Any" && m.GetParameters().Length == 1)
+                        .MakeGenericMethod(property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object));
+                    body = Expression.Call(anyMethod, property);
+                }
+                else
+                {
+                    body = Expression.Constant(false);
+                }
+                break;
         }
         body = body ?? Expression.Constant(true);
 
