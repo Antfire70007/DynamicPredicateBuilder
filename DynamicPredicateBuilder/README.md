@@ -1,6 +1,6 @@
 ﻿# DynamicPredicateBuilder 使用說明
 
-> **支援環境**：.NET 9;.NET 8; .NET 7
+> **支援環境**：.NET 9;.NET 8; .NET 7  
 > **核心特色**：動態過濾、排序、分頁、欄位查詢權限、巢狀/多組條件、NOT 取反、重複條件自動去除。
 
 ---
@@ -132,6 +132,42 @@ var predicate = FilterBuilder.Build<Person>(groups).Compile();
 
 * **單條件**：`FilterRule.IsNegated = true`  
 * **整組**：`FilterGroup.IsNegated = true`
+
+### 2-4. 新增的 Operator 使用方式
+
+以下是新增的 `FilterOperator` 及其使用範例：
+
+- **`NotLike`**：用於檢查屬性值不符合指定的模式。
+
+  ```csharp
+  new FilterRule { Property = "Name", Operator = FilterOperator.NotLike, Value = "%Admin%" }
+  ```
+
+  等同於 SQL：`Name NOT LIKE '%Admin%'`
+
+- **`Between`**：用於檢查屬性值是否在指定範圍內。
+
+  ```csharp
+  new FilterRule { Property = "Age", Operator = FilterOperator.Between, Value = new[] { 20, 30 } }
+  ```
+
+  等同於 SQL：`Age BETWEEN 20 AND 30`
+
+- **`NotBetween`**：用於檢查屬性值是否不在指定範圍內。
+
+  ```csharp
+  new FilterRule { Property = "Age", Operator = FilterOperator.NotBetween, Value = new[] { 20, 30 } }
+  ```
+
+  等同於 SQL：`Age NOT BETWEEN 20 AND 30`
+
+- **`Any`**：用於檢查屬性值是否存在於集合中。
+
+  ```csharp
+  new FilterRule { Property = "Tags", Operator = FilterOperator.Any, Value = "VIP" }
+  ```
+
+  等同於 SQL：`'VIP' = ANY(Tags)`
 
 ---
 

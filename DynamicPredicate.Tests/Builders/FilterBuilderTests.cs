@@ -37,7 +37,7 @@ namespace DynamicPredicate.Tests.Builders
 
             var fn = FilterBuilder.Build<User>(groups).Compile();
 
-            fn(new User { Name = "Snake", Status = "Active" }).Should().BeFalse();  // !Snake && !Retired °˜ false
+            fn(new User { Name = "Snake", Status = "Active" }).Should().BeFalse();  // !Snake && !Retired ÔøΩÔøΩ false
             fn(new User { Name = "Boss", Status = "Active" }).Should().BeTrue();   //  true  ||  true
         }
 
@@ -67,9 +67,67 @@ namespace DynamicPredicate.Tests.Builders
 
             var predicate = FilterBuilder.Build<User>(groups).Compile();
 
-            predicate(new User { Name = "Snake", Age = 20 }).Should().BeTrue();   // Group1 ¶®•ﬂ
-            predicate(new User { Name = "Otacon", Age = 50 }).Should().BeTrue(); // Group2 ¶®•ﬂ
+            predicate(new User { Name = "Snake", Age = 20 }).Should().BeTrue();   // Group1 ÔøΩÔøΩÔøΩÔøΩ
+            predicate(new User { Name = "Otacon", Age = 50 }).Should().BeTrue(); // Group2 ÔøΩÔøΩÔøΩÔøΩ
             predicate(new User { Name = "Otacon", Age = 30 }).Should().BeFalse();
         }
+
+        [Fact]
+        public void BuildPredicate_EqualOperator_ShouldReturnTrueForEqualValue()
+        {
+            var groups = new List<FilterGroup>
+    {
+        new FilterGroup
+        {
+            LogicalOperator = LogicalOperator.And,
+            Rules =
+            [
+                new FilterRule { Property = "Name", Operator = FilterOperator.Equal, Value = "Snake" }
+            ]
+        }
+    };
+            var predicate = FilterBuilder.Build<User>(groups).Compile();
+            predicate(new User { Name = "Snake" }).Should().BeTrue();
+            predicate(new User { Name = "Boss" }).Should().BeFalse();
+        }
+        [Fact]
+        public void BuildPredicate_NotEqualOperator_ShouldReturnTrueForDifferentValue()
+        {
+            var groups = new List<FilterGroup>
+            {
+                new FilterGroup
+                {
+                    LogicalOperator = LogicalOperator.And,
+                    Rules =
+                    [
+                        new FilterRule { Property = "Name", Operator = FilterOperator.NotEqual, Value = "Snake" }
+                    ]
+                }
+            };
+            var predicate = FilterBuilder.Build<User>(groups).Compile();
+            predicate(new User { Name = "Boss" }).Should().BeTrue();
+            predicate(new User { Name = "Snake" }).Should().BeFalse();
+        }
+
+        [Fact]
+        public void BuildPredicate_GreaterThanOperator_ShouldReturnTrueForGreaterValue()
+        {
+            var groups = new List<FilterGroup>
+            {
+                new FilterGroup
+                {
+                    LogicalOperator = LogicalOperator.And,
+                    Rules =
+                    [
+                        new FilterRule { Property = "Age", Operator = FilterOperator.GreaterThan, Value = 30 }
+                    ]
+                }
+            };
+            var predicate = FilterBuilder.Build<User>(groups).Compile();
+            predicate(new User { Age = 40 }).Should().BeTrue();
+            predicate(new User { Age = 20 }).Should().BeFalse();
+        }
+
+        // ÂÖ∂È§ò Operator ‰æùÊ≠§È°ûÊé®...
     }
 }
