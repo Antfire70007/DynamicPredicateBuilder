@@ -246,6 +246,20 @@ public static class FilterBuilder
                     body = Expression.Constant(false);
                 }
                 break;
+            case FilterOperator.NotAny:
+                if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+                {
+                    var anyMethod = typeof(Enumerable).GetMethods()
+                        .First(m => m.Name == "Any" && m.GetParameters().Length == 1)
+                        .MakeGenericMethod(property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object));
+                    var anyCall = Expression.Call(anyMethod, property);
+                    body = Expression.Not(anyCall);
+                }
+                else
+                {
+                    body = Expression.Constant(true);
+                }
+                break;
         }
         body = body ?? Expression.Constant(true);
 
