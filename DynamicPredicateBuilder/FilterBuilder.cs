@@ -96,7 +96,7 @@ public static class FilterBuilder
         {
             Expression? exp = rule switch
             {
-                FilterRule simpleRule => BuildRule(entityType, simpleRule, parameter, options),
+                FilterRule simpleRule => BuildRule( simpleRule, parameter, options),
                 FilterGroup subGroup => BuildGroup(entityType, subGroup, parameter, options),
                 _ => null
             };
@@ -119,7 +119,7 @@ public static class FilterBuilder
         return body;
     }
 
-    private static Expression BuildRule(Type entityType, FilterRule rule, ParameterExpression parameter, FilterOptions options)
+    private static Expression BuildRule( FilterRule rule, ParameterExpression parameter, FilterOptions options)
     {
         // 檢查是否允許查詢
         if (options != null && options.AllowedFields != null && !options.AllowedFields.Contains(rule.Property))
@@ -261,7 +261,7 @@ public static class FilterBuilder
                 }
                 break;
         }
-        body = body ?? Expression.Constant(true);
+        body ??= Expression.Constant(true);
 
         // ★ NOT on single rule
         return rule.IsNegated ? Expression.Not(body) : body;
@@ -281,7 +281,7 @@ public static class FilterBuilder
             return Guid.Parse(value.ToString());
 
         if (underlyingType == typeof(bool))
-            return value.ToString().ToLower() == "true" || value.ToString() == "1";
+            return value.ToString().Equals("true",  StringComparison.OrdinalIgnoreCase) || value.ToString() == "1";
 
         if (underlyingType == typeof(string))
             return value?.ToString();
@@ -301,7 +301,7 @@ public static class FilterBuilder
 
     private static Expression BuildIn(Expression property, object value)
     {
-        if (!(value is IEnumerable list))
+        if (value is not IEnumerable list)
             return Expression.Constant(true);
 
         var containsMethod = typeof(Enumerable).GetMethods()

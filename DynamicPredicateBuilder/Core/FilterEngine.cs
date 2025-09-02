@@ -16,12 +16,12 @@ public static class FilterEngine
         return FilterBuilder.Build<T>(filterGroup);
     }
 
-    public static IQueryable<T> ApplyFilterJson<T>(this IQueryable<T> source, string json, List<SortRule> sortRules = null)
+    public static IQueryable<T> ApplyFilterJson<T>(this IQueryable<T> source, string json, List<SortRule>? sortRules = null)
     {
         var predicate = FromJson<T>(json);
         var query = source.Where(predicate);
 
-        if (sortRules != null && sortRules.Any())
+        if (sortRules != null && sortRules.Count>0)
         {
             query = query.ApplySort(sortRules);
         }
@@ -29,12 +29,12 @@ public static class FilterEngine
         return query;
     }
 
-    public static IQueryable<T> ApplyFilterDictionary<T>(this IQueryable<T> source, Dictionary<string, object> dict, List<SortRule> sortRules = null)
+    public static IQueryable<T> ApplyFilterDictionary<T>(this IQueryable<T> source, Dictionary<string, object> dict, List<SortRule>? sortRules = null)
     {
         var predicate = FromDictionary<T>(dict);
         var query = source.Where(predicate);
 
-        if (sortRules != null && sortRules.Any())
+        if (sortRules != null && sortRules.Count > 0)
         {
             query = query.ApplySort(sortRules);
         }
