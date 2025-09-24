@@ -42,6 +42,24 @@ public static class QueryableFieldHelper
                 ? (displayAttr?.Name ?? prop.Name)
                 : $"{parentDisplay} → {(displayAttr?.Name ?? prop.Name)}";
 
+            Type propType = prop.PropertyType;
+            if (propType != typeof(string) && typeof(System.Collections.IEnumerable).IsAssignableFrom(propType))
+            {
+                // 處理集合型別（排除 string）
+                Type? elementType = propType.IsGenericType
+                    ? propType.GetGenericArguments().FirstOrDefault()
+                    : null;
+
+                if (elementType != null && !IsSimpleType(elementType))
+                {
+                    // 導覽屬性為集合，遞迴元素型別
+                    var collectionFieldPath = $"{fieldPath}[]";
+                    var collectionDisplayName = $"{displayName}[]";
+                    result.AddRange(GetFields(elementType, collectionFieldPath, collectionDisplayName));
+                    continue;
+                }
+            }
+
             if (queryableAttr != null && !IsSimpleType(prop.PropertyType))
             {
                 // 導覽屬性 → 遞迴

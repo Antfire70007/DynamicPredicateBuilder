@@ -271,8 +271,54 @@ public static class FilterBuilder
     {
         if (value == null)
             return null;
-
         var underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
+        // 集合型別處理
+        if (typeof(IEnumerable).IsAssignableFrom(underlyingType) && underlyingType != typeof(string))
+        {
+            // 取得元素型別
+            Type elementType = underlyingType.IsArray
+                ? underlyingType.GetElementType()
+                : underlyingType.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+            // 支援字串（如 "1,2,3"）或 object[] 轉集合
+            IEnumerable<object> items;
+            if (value is string s)
+            {
+                items = s.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
+            }
+            else if (value is IEnumerable enumerable && !(value is string))
+            {
+                items = enumerable.Cast<object>();
+            }
+            else
+            {
+                items = new[] { value };
+            }
+
+            // 逐一轉型
+            var converted = items
+                .Select(x => ChangeType(x, elementType))
+                .ToArray();
+
+            // 回傳正確型別
+            if (underlyingType.IsArray)
+            {
+                var array = Array.CreateInstance(elementType, converted.Length);
+                for (int i = 0; i < converted.Length; i++)
+                    array.SetValue(converted[i], i);
+                return array;
+            }
+            else
+            {
+                var listType = typeof(List<>).MakeGenericType(elementType);
+                var list = (IList)Activator.CreateInstance(listType);
+                foreach (var item in converted)
+                    list.Add(item);
+                return list;
+            }
+        }
+
 
         if (underlyingType.IsEnum)
             return Enum.Parse(underlyingType, value.ToString());
@@ -301,15 +347,40 @@ public static class FilterBuilder
 
     private static Expression BuildIn(Expression property, object value)
     {
-        if (value is not IEnumerable list)
+        if (value is not IEnumerable valueList || value is string)
             return Expression.Constant(true);
 
-        var containsMethod = typeof(Enumerable).GetMethods()
-            .Where(m => m.Name == "Contains" && m.GetParameters().Length == 2)
-            .First()
-            .MakeGenericMethod(property.Type);
+        var propertyType = property.Type;
+        var elementType = propertyType.IsArray
+            ? propertyType.GetElementType()
+            : propertyType.GetGenericArguments().FirstOrDefault() ?? propertyType;
 
-        var valuesExpression = Expression.Constant(list);
-        return Expression.Call(containsMethod, valuesExpression, property);
+        // property 是集合
+        if (typeof(IEnumerable).IsAssignableFrom(propertyType) && propertyType != typeof(string))
+        {
+            // x => valueList.Contains(x)
+            var param = Expression.Parameter(elementType, "x");
+            var containsMethod = typeof(Enumerable).GetMethods()
+                .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
+                .MakeGenericMethod(elementType);
+            var valuesExpression = Expression.Constant(valueList);
+            var body = Expression.Call(containsMethod, valuesExpression, param);
+            var lambda = Expression.Lambda(body, param);
+
+            // property.Any(x => valueList.Contains(x))
+            var anyMethod = typeof(Enumerable).GetMethods()
+                .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                .MakeGenericMethod(elementType);
+            return Expression.Call(anyMethod, property, lambda);
+        }
+        else
+        {
+            // valueList.Contains(property)
+            var containsMethod = typeof(Enumerable).GetMethods()
+                .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
+                .MakeGenericMethod(propertyType);
+            var valuesExpression = Expression.Constant(valueList);
+            return Expression.Call(containsMethod, valuesExpression, property);
+        }
     }
 }

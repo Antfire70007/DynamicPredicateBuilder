@@ -179,6 +179,57 @@ var predicate = FilterBuilder.Build<Person>(groups).Compile();
 
 ---
 
+## 2.5 集合型別欄位查詢支援
+
+### 欄位路徑格式
+- 支援巢狀集合屬性查詢，例如：`Orders[].Items[].Name`
+- 欄位白名單自動展開所有集合層級，格式為 `集合屬性名[].屬性名`，可多層巢狀
+
+### FilterRule 實例
+```csharp
+new FilterRule
+{
+    Property = "Orders[].Items[].Name",
+    Operator = FilterOperator.In,
+    Value = new[] { "ItemA", "ItemB" }
+}
+```
+這會產生：`Orders.SelectMany(o => o.Items).Select(i => i.Name).Any(name => new[] { "ItemA", "ItemB" }.Contains(name))`
+
+### 運算子支援
+- **In**：查詢集合屬性是否包含指定值（多值）
+- **Any**：查詢集合屬性是否有任一元素符合條件
+- **Contains**：查詢集合屬性是否包含單一值
+- **Equal**：僅用於非集合屬性
+- **Like/NotLike**：可用於字串型別欄位
+
+> **注意**：查詢集合屬性時，請使用 `In`、`Any`、`Contains`，不要用 `Equal` 比較集合本身。
+
+### 範例：查詢集合屬性底下的欄位
+```csharp
+// 查詢 User 的 Orders 集合底下的 OrderId 是否包含 123
+new FilterRule
+{
+    Property = "Orders[].OrderId",
+    Operator = FilterOperator.In,
+    Value = new[] { 123 }
+}
+
+// 查詢 User 的 Orders 集合底下的 Items 集合底下的 Name 是否包含 "VIP"
+new FilterRule
+{
+    Property = "Orders[].Items[].Name",
+    Operator = FilterOperator.In,
+    Value = new[] { "VIP" }
+}
+```
+
+### 技術細節
+- 欄位路徑自動展開多層集合，並產生巢狀 `Select`/`Any`/`Contains` 的 Expression Tree
+- FilterBuilder 會根據屬性型別自動選擇正確的集合運算子，避免 EF Core 無法轉譯的錯誤
+
+---
+
 ## 3. API 使用範例
 
 ### 3-1. Request 範例（單組簡易）
