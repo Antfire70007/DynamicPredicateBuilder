@@ -96,7 +96,7 @@ public static class FilterBuilder
         {
             Expression? exp = rule switch
             {
-                FilterRule simpleRule => BuildRule( simpleRule, parameter, options),
+                FilterRule simpleRule => BuildRule(simpleRule, parameter, options),
                 FilterGroup subGroup => BuildGroup(entityType, subGroup, parameter, options),
                 _ => null
             };
@@ -119,7 +119,7 @@ public static class FilterBuilder
         return body;
     }
 
-    private static Expression BuildRule( FilterRule rule, ParameterExpression parameter, FilterOptions options)
+    private static Expression BuildRule(FilterRule rule, ParameterExpression parameter, FilterOptions options)
     {
         // 檢查是否允許查詢
         if (options != null && options.AllowedFields != null && !options.AllowedFields.Contains(rule.Property))
@@ -150,46 +150,310 @@ public static class FilterBuilder
             }
         }
 
-        var convertedValue = ChangeType(rule.Value, property.Type);
+        // 針對 Between/NotBetween 特殊處理，不轉型整個值
+        if (rule.Operator == FilterOperator.Between || rule.Operator == FilterOperator.NotBetween)
+        {
+            return BuildBetweenExpression(rule, property);
+        }
 
+        var convertedValue = ChangeType(rule.Value, property.Type);
         var constant = Expression.Constant(convertedValue, property.Type);
         Expression body = null;
 
         switch (rule.Operator)
         {
             case FilterOperator.Equal:
-                body = Expression.Equal(property, constant);
+                if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+                {
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    var param = Expression.Parameter(elementType, "x");
+
+                    if (convertedValue is IEnumerable valueList && !(convertedValue is string))
+                    {
+                        // 多值比對：Any(x => valueList.Contains(x))
+                        var containsMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
+                            .MakeGenericMethod(elementType);
+                        var valuesExpression = Expression.Constant(valueList);
+                        var bodyExpr = Expression.Call(containsMethod, valuesExpression, param);
+                        var lambda = Expression.Lambda(bodyExpr, param);
+
+                        var anyMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                            .MakeGenericMethod(elementType);
+
+                        body = Expression.Call(anyMethod, property, lambda);
+                    }
+                    else
+                    {
+                        // 單值比對：Any(x => x == value)
+                        var valueExpr = Expression.Constant(convertedValue, elementType);
+                        var eqExpr = Expression.Equal(param, valueExpr);
+                        var lambda = Expression.Lambda(eqExpr, param);
+
+                        var anyMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                            .MakeGenericMethod(elementType);
+
+                        body = Expression.Call(anyMethod, property, lambda);
+                    }
+                }
+                else
+                {
+                    body = Expression.Equal(property, constant);
+                }
                 break;
             case FilterOperator.NotEqual:
-                body = Expression.NotEqual(property, constant);
+                if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+                {
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    var param = Expression.Parameter(elementType, "x");
+
+                    if (convertedValue is IEnumerable valueList && !(convertedValue is string))
+                    {
+                        // 多值比對：!Any(x => valueList.Contains(x))
+                        var containsMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
+                            .MakeGenericMethod(elementType);
+                        var valuesExpression = Expression.Constant(valueList);
+                        var bodyExpr = Expression.Call(containsMethod, valuesExpression, param);
+                        var lambda = Expression.Lambda(bodyExpr, param);
+
+                        var anyMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                            .MakeGenericMethod(elementType);
+
+                        body = Expression.Not(Expression.Call(anyMethod, property, lambda));
+                    }
+                    else
+                    {
+                        // 單值比對：!Any(x => x == value)
+                        var valueExpr = Expression.Constant(convertedValue, elementType);
+                        var eqExpr = Expression.Equal(param, valueExpr);
+                        var lambda = Expression.Lambda(eqExpr, param);
+
+                        var anyMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                            .MakeGenericMethod(elementType);
+
+                        body = Expression.Not(Expression.Call(anyMethod, property, lambda));
+                    }
+                }
+                else
+                {
+                    body = Expression.NotEqual(property, constant);
+                }
                 break;
             case FilterOperator.GreaterThan:
-                body = Expression.GreaterThan(property, constant);
+                if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+                {
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    var param = Expression.Parameter(elementType, "x");
+                    var valueExpr = Expression.Constant(convertedValue, elementType);
+                    var gtExpr = Expression.GreaterThan(param, valueExpr);
+                    var lambda = Expression.Lambda(gtExpr, param);
+
+                    var anyMethod = typeof(Enumerable).GetMethods()
+                        .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                        .MakeGenericMethod(elementType);
+
+                    body = Expression.Call(anyMethod, property, lambda);
+                }
+                else
+                {
+                    body = Expression.GreaterThan(property, constant);
+                }
                 break;
             case FilterOperator.GreaterThanOrEqual:
-                body = Expression.GreaterThanOrEqual(property, constant);
+                if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+                {
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    var param = Expression.Parameter(elementType, "x");
+                    var valueExpr = Expression.Constant(convertedValue, elementType);
+                    var gteExpr = Expression.GreaterThanOrEqual(param, valueExpr);
+                    var lambda = Expression.Lambda(gteExpr, param);
+
+                    var anyMethod = typeof(Enumerable).GetMethods()
+                        .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                        .MakeGenericMethod(elementType);
+
+                    body = Expression.Call(anyMethod, property, lambda);
+                }
+                else
+                {
+                    body = Expression.GreaterThanOrEqual(property, constant);
+                }
                 break;
             case FilterOperator.LessThan:
-                body = Expression.LessThan(property, constant);
+                if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+                {
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    var param = Expression.Parameter(elementType, "x");
+                    var valueExpr = Expression.Constant(convertedValue, elementType);
+                    var ltExpr = Expression.LessThan(param, valueExpr);
+                    var lambda = Expression.Lambda(ltExpr, param);
+
+                    var anyMethod = typeof(Enumerable).GetMethods()
+                        .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                        .MakeGenericMethod(elementType);
+
+                    body = Expression.Call(anyMethod, property, lambda);
+                }
+                else
+                {
+                    body = Expression.LessThan(property, constant);
+                }
                 break;
             case FilterOperator.LessThanOrEqual:
-                body = Expression.LessThanOrEqual(property, constant);
+                if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+                {
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    var param = Expression.Parameter(elementType, "x");
+                    var valueExpr = Expression.Constant(convertedValue, elementType);
+                    var lteExpr = Expression.LessThanOrEqual(param, valueExpr);
+                    var lambda = Expression.Lambda(lteExpr, param);
+
+                    var anyMethod = typeof(Enumerable).GetMethods()
+                        .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                        .MakeGenericMethod(elementType);
+
+                    body = Expression.Call(anyMethod, property, lambda);
+                }
+                else
+                {
+                    body = Expression.LessThanOrEqual(property, constant);
+                }
                 break;
             case FilterOperator.Like:
-                body = BuildLike(property, convertedValue?.ToString());
+                if (property.Type == typeof(string))
+                {
+                    body = BuildLike(property, convertedValue?.ToString());
+                }
+                else if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+                {
+                    // 集合型別，元素為字串
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    if (elementType == typeof(string))
+                    {
+                        var param = Expression.Parameter(elementType, "x");
+                        // 這裡要用 term 字串，不是 List<string>
+                        var containsExpr = BuildLike(param, rule.Value?.ToString());
+                        var lambda = Expression.Lambda(containsExpr, param);
+
+                        var anyMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                            .MakeGenericMethod(elementType);
+
+                        body = Expression.Call(anyMethod, property, lambda);
+                    }
+                }
                 break;
             case FilterOperator.In:
                 body = BuildIn(property, convertedValue);
                 break;
             case FilterOperator.StartsWith:
-                body = Expression.Call(property, typeof(string).GetMethod("StartsWith", new[] { typeof(string) }), constant);
+                if (property.Type == typeof(string))
+                {
+                    body = Expression.Call(property, typeof(string).GetMethod("StartsWith", new[] { typeof(string) }), constant);
+                }
+                else if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+                {
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    if (elementType == typeof(string))
+                    {
+                        var param = Expression.Parameter(elementType, "x");
+                        var startsWithExpr = Expression.Call(param, typeof(string).GetMethod("StartsWith", new[] { typeof(string) }), Expression.Constant(rule.Value?.ToString()));
+                        var lambda = Expression.Lambda(startsWithExpr, param);
+
+                        var anyMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                            .MakeGenericMethod(elementType);
+
+                        body = Expression.Call(anyMethod, property, lambda);
+                    }
+                }
                 break;
             case FilterOperator.EndsWith:
-                body = Expression.Call(property, typeof(string).GetMethod("EndsWith", new[] { typeof(string) }), constant);
+                if (property.Type == typeof(string))
+                {
+                    body = Expression.Call(property, typeof(string).GetMethod("EndsWith", new[] { typeof(string) }), constant);
+                }
+                else if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+                {
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    if (elementType == typeof(string))
+                    {
+                        var param = Expression.Parameter(elementType, "x");
+                        var endsWithExpr = Expression.Call(param, typeof(string).GetMethod("EndsWith", new[] { typeof(string) }), Expression.Constant(rule.Value?.ToString()));
+                        var lambda = Expression.Lambda(endsWithExpr, param);
+
+                        var anyMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                            .MakeGenericMethod(elementType);
+
+                        body = Expression.Call(anyMethod, property, lambda);
+                    }
+                }
                 break;
             case FilterOperator.Contains:
                 if (property.Type == typeof(string))
+                {
                     body = Expression.Call(property, typeof(string).GetMethod("Contains", new[] { typeof(string) }), constant);
+                }
+                else if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+                {
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    var param = Expression.Parameter(elementType, "x");
+
+                    Expression containsExpr;
+                    if (elementType == typeof(string))
+                    {
+                        // 關鍵字查詢時，直接用 rule.Value?.ToString()，避免 value 被誤轉型
+                        containsExpr = Expression.Call(param, typeof(string).GetMethod("Contains", new[] { typeof(string) }), Expression.Constant(rule.Value?.ToString()));
+                    }
+                    else
+                    {
+                        // 其他型別直接用等值比對
+                        containsExpr = Expression.Equal(param, Expression.Constant(convertedValue, elementType));
+                    }
+                    var lambda = Expression.Lambda(containsExpr, param);
+
+                    var anyMethod = typeof(Enumerable).GetMethods()
+                        .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                        .MakeGenericMethod(elementType);
+
+                    body = Expression.Call(anyMethod, property, lambda);
+                }
                 break;
             case FilterOperator.NotContains:
                 if (property.Type == typeof(string))
@@ -197,39 +461,60 @@ public static class FilterBuilder
                     var containsExpr = Expression.Call(property, typeof(string).GetMethod("Contains", new[] { typeof(string) }), constant);
                     body = Expression.Not(containsExpr);
                 }
+                else if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+                {
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    var param = Expression.Parameter(elementType, "x");
+
+                    Expression containsExpr;
+                    if (elementType == typeof(string))
+                    {
+                        // 關鍵字查詢時，直接用 rule.Value?.ToString()，避免 value 被誤轉型
+                        containsExpr = Expression.Call(param, typeof(string).GetMethod("Contains", new[] { typeof(string) }), Expression.Constant(rule.Value?.ToString()));
+                    }
+                    else
+                    {
+                        // 其他型別直接用等值比對
+                        containsExpr = Expression.Equal(param, Expression.Constant(convertedValue, elementType));
+                    }
+                    var lambda = Expression.Lambda(containsExpr, param);
+
+                    var anyMethod = typeof(Enumerable).GetMethods()
+                        .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                        .MakeGenericMethod(elementType);
+
+                    body = Expression.Not(Expression.Call(anyMethod, property, lambda));
+                }
                 break;
             case FilterOperator.NotIn:
                 body = Expression.Not(BuildIn(property, convertedValue));
                 break;
             case FilterOperator.NotLike:
-                body = Expression.Not(BuildLike(property, convertedValue?.ToString()));
-                break;
-            case FilterOperator.Between:
-                if (convertedValue is IEnumerable betweenList)
+                if (property.Type == typeof(string))
                 {
-                    var items = betweenList.Cast<object>().ToList();
-                    if (items.Count == 2)
-                    {
-                        var min = Expression.Constant(ChangeType(items[0], property.Type), property.Type);
-                        var max = Expression.Constant(ChangeType(items[1], property.Type), property.Type);
-                        var greaterThanOrEqual = Expression.GreaterThanOrEqual(property, min);
-                        var lessThanOrEqual = Expression.LessThanOrEqual(property, max);
-                        body = Expression.AndAlso(greaterThanOrEqual, lessThanOrEqual);
-                    }
+                    body = Expression.Not(BuildLike(property, convertedValue?.ToString()));
                 }
-                break;
-            case FilterOperator.NotBetween:
-                if (convertedValue is IEnumerable notBetweenList)
+                else if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
                 {
-                    var items = notBetweenList.Cast<object>().ToList();
-                    if (items.Count == 2)
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    if (elementType == typeof(string))
                     {
-                        var min = Expression.Constant(ChangeType(items[0], property.Type), property.Type);
-                        var max = Expression.Constant(ChangeType(items[1], property.Type), property.Type);
-                        var greaterThanOrEqual = Expression.GreaterThanOrEqual(property, min);
-                        var lessThanOrEqual = Expression.LessThanOrEqual(property, max);
-                        var betweenExpr = Expression.AndAlso(greaterThanOrEqual, lessThanOrEqual);
-                        body = Expression.Not(betweenExpr);
+                        var param = Expression.Parameter(elementType, "x");
+                        // 關鍵字查詢時，直接用 rule.Value?.ToString()，避免 value 被誤轉型
+                        var containsExpr = BuildLike(param, rule.Value?.ToString());
+                        var lambda = Expression.Lambda(containsExpr, param);
+
+                        var anyMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                            .MakeGenericMethod(elementType);
+
+                        body = Expression.Not(Expression.Call(anyMethod, property, lambda));
                     }
                 }
                 break;
@@ -266,22 +551,22 @@ public static class FilterBuilder
         // ★ NOT on single rule
         return rule.IsNegated ? Expression.Not(body) : body;
     }
-
     private static object ChangeType(object value, Type targetType)
     {
         if (value == null)
             return null;
+
         var underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
 
         // 集合型別處理
-        if (typeof(IEnumerable).IsAssignableFrom(underlyingType) && underlyingType != typeof(string))
+        if (typeof(IEnumerable).IsAssignableFrom(targetType) && targetType != typeof(string))
         {
-            // 取得元素型別
-            Type elementType = underlyingType.IsArray
-                ? underlyingType.GetElementType()
-                : underlyingType.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+            Type elementType = targetType.IsArray
+                ? targetType.GetElementType()
+                : targetType.GetGenericArguments().FirstOrDefault() ?? typeof(object);
 
-            // 支援字串（如 "1,2,3"）或 object[] 轉集合
+            var elementUnderlyingType = Nullable.GetUnderlyingType(elementType) ?? elementType;
+
             IEnumerable<object> items;
             if (value is string s)
             {
@@ -296,12 +581,85 @@ public static class FilterBuilder
                 items = new[] { value };
             }
 
-            // 逐一轉型
+            var converted = items
+                .Select(x => x == null ? null : Convert.ChangeType(x, elementUnderlyingType))
+                .ToArray();
+
+            if (targetType.IsArray)
+            {
+                var array = Array.CreateInstance(elementType, converted.Length);
+                for (int i = 0; i < converted.Length; i++)
+                    array.SetValue(converted[i], i);
+                return array;
+            }
+            else
+            {
+                var listType = typeof(List<>).MakeGenericType(elementType);
+                var list = (IList)Activator.CreateInstance(listType);
+                foreach (var item in converted)
+                    list.Add(item);
+                return list;
+            }
+        }
+
+        // Enum
+        if (underlyingType.IsEnum)
+            return Enum.Parse(underlyingType, value.ToString());
+
+        // Guid
+        if (underlyingType == typeof(Guid))
+            return Guid.Parse(value.ToString());
+
+        // Bool
+        if (underlyingType == typeof(bool))
+            return value.ToString().Equals("true", StringComparison.OrdinalIgnoreCase) || value.ToString() == "1";
+
+        // String
+        if (underlyingType == typeof(string))
+            return value?.ToString();
+
+        // 處理單一 Nullable 型別
+        if (Nullable.GetUnderlyingType(targetType) != null)
+        {
+            if (value == null)
+                return null;
+            return Convert.ChangeType(value, underlyingType);
+        }
+
+        return Convert.ChangeType(value, underlyingType);
+    }
+    private static object _ChangeType(object value, Type targetType)
+    {
+        if (value == null)
+            return null;
+
+        var underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
+        // 集合型別處理
+        if (typeof(IEnumerable).IsAssignableFrom(underlyingType) && underlyingType != typeof(string))
+        {
+            Type elementType = underlyingType.IsArray
+                ? underlyingType.GetElementType()
+                : underlyingType.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+            IEnumerable<object> items;
+            if (value is string s)
+            {
+                items = s.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
+            }
+            else if (value is IEnumerable enumerable && !(value is string))
+            {
+                items = enumerable.Cast<object>();
+            }
+            else
+            {
+                items = new[] { value };
+            }
+
             var converted = items
                 .Select(x => ChangeType(x, elementType))
                 .ToArray();
 
-            // 回傳正確型別
             if (underlyingType.IsArray)
             {
                 var array = Array.CreateInstance(elementType, converted.Length);
@@ -319,19 +677,50 @@ public static class FilterBuilder
             }
         }
 
-
+        // Enum
         if (underlyingType.IsEnum)
             return Enum.Parse(underlyingType, value.ToString());
 
+        // Guid
         if (underlyingType == typeof(Guid))
             return Guid.Parse(value.ToString());
 
+        // Bool
         if (underlyingType == typeof(bool))
-            return value.ToString().Equals("true",  StringComparison.OrdinalIgnoreCase) || value.ToString() == "1";
+            return value.ToString().Equals("true", StringComparison.OrdinalIgnoreCase) || value.ToString() == "1";
 
+        // String
         if (underlyingType == typeof(string))
             return value?.ToString();
 
+        // 處理陣列型別（如 Between 操作）
+        if (value is Array array1 && targetType != typeof(string))
+        {
+            var elementType = targetType.IsArray ? targetType.GetElementType() : targetType;
+            var convertedArray = Array.CreateInstance(elementType, array1.Length);
+            for (int i = 0; i < array1.Length; i++)
+            {
+                convertedArray.SetValue(ChangeType(array1.GetValue(i), elementType), i);
+            }
+            return convertedArray;
+        }
+
+        // Nullable 型別處理（如 decimal?）
+        if (Nullable.GetUnderlyingType(targetType) != null)
+        {
+            // 若 value 已是 underlyingType，直接回傳
+            if (value.GetType() == underlyingType)
+                return value;
+            return Convert.ChangeType(value, underlyingType);
+        }
+
+        var result = Convert.ChangeType(value, underlyingType);
+
+        // 型別不符時強制轉型
+        if (result != null && !targetType.IsAssignableFrom(result.GetType()))
+        {
+            return Convert.ChangeType(result, targetType);
+        }
         return Convert.ChangeType(value, underlyingType);
     }
 
@@ -381,6 +770,50 @@ public static class FilterBuilder
                 .MakeGenericMethod(propertyType);
             var valuesExpression = Expression.Constant(valueList);
             return Expression.Call(containsMethod, valuesExpression, property);
+        }
+    }
+
+    private static Expression BuildBetweenExpression(FilterRule rule, Expression property)
+    {
+        if (rule.Value is not IEnumerable betweenList || rule.Value is string)
+            return Expression.Constant(true);
+
+        var items = betweenList.Cast<object>().ToList();
+        if (items.Count != 2)
+            return Expression.Constant(true);
+
+        // 針對集合型別屬性
+        if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
+        {
+            var elementType = property.Type.IsArray
+                ? property.Type.GetElementType()
+                : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+            var min = Expression.Constant(ChangeType(items[0], elementType), elementType);
+            var max = Expression.Constant(ChangeType(items[1], elementType), elementType);
+
+            var param = Expression.Parameter(elementType, "x");
+            var geExpr = Expression.GreaterThanOrEqual(param, min);
+            var leExpr = Expression.LessThanOrEqual(param, max);
+            var betweenExpr = Expression.AndAlso(geExpr, leExpr);
+            var lambda = Expression.Lambda(betweenExpr, param);
+
+            var anyMethod = typeof(Enumerable).GetMethods()
+                .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                .MakeGenericMethod(elementType);
+
+            var result = Expression.Call(anyMethod, property, lambda);
+            return rule.Operator == FilterOperator.NotBetween ? Expression.Not(result) : result;
+        }
+        else
+        {
+            // 針對單一值屬性
+            var min = Expression.Constant(ChangeType(items[0], property.Type), property.Type);
+            var max = Expression.Constant(ChangeType(items[1], property.Type), property.Type);
+            var greaterThanOrEqual = Expression.GreaterThanOrEqual(property, min);
+            var lessThanOrEqual = Expression.LessThanOrEqual(property, max);
+            var betweenExpr = Expression.AndAlso(greaterThanOrEqual, lessThanOrEqual);
+            return rule.Operator == FilterOperator.NotBetween ? Expression.Not(betweenExpr) : betweenExpr;
         }
     }
 }
