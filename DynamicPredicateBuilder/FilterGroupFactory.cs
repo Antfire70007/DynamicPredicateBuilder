@@ -93,6 +93,18 @@ public static class FilterGroupFactory
                 : LogicalOperator.And;
         }
 
+        if (dict.TryGetValue("InterOperator", out var interOp))
+        {
+            group.InterOperator = Enum.TryParse<LogicalOperator>(interOp.ToString(), out var interResult)
+                ? interResult
+                : LogicalOperator.And;
+        }
+
+        if (dict.TryGetValue("IsNegated", out var isNegated))
+        {
+            group.IsNegated = Convert.ToBoolean(isNegated);
+        }
+
         if (dict.TryGetValue("Rules", out var rulesObj))
         {
             var rules = ConvertToList(rulesObj);
@@ -154,6 +166,12 @@ public static class FilterGroupFactory
                 rule.Value = value;
             }
         }
+
+        if (dict.TryGetValue("CompareToProperty", out var compareToProperty))
+            rule.CompareToProperty = compareToProperty.ToString();
+
+        if (dict.TryGetValue("IsNegated", out var isNegated))
+            rule.IsNegated = Convert.ToBoolean(isNegated);
 
         return rule;
     }

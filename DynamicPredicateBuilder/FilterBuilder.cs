@@ -153,7 +153,18 @@ public static class FilterBuilder
         // 針對 Between/NotBetween 特殊處理，不轉型整個值
         if (rule.Operator == FilterOperator.Between || rule.Operator == FilterOperator.NotBetween)
         {
-            return BuildBetweenExpression(rule, property);
+            Expression betweenBody = BuildBetweenExpression(rule, property);
+            return rule.IsNegated ? Expression.Not(betweenBody) : betweenBody;
+        }
+
+        // 針對 In/NotIn 特殊處理，不轉型整個值
+        if (rule.Operator == FilterOperator.In || rule.Operator == FilterOperator.NotIn)
+        {
+            Expression inBody = rule.Operator == FilterOperator.In 
+                ? BuildIn(property, rule.Value)
+                : Expression.Not(BuildIn(property, rule.Value));
+            
+            return rule.IsNegated ? Expression.Not(inBody) : inBody;
         }
 
         var convertedValue = ChangeType(rule.Value, property.Type);
@@ -369,9 +380,6 @@ public static class FilterBuilder
                     }
                 }
                 break;
-            case FilterOperator.In:
-                body = BuildIn(property, convertedValue);
-                break;
             case FilterOperator.StartsWith:
                 if (property.Type == typeof(string))
                 {
@@ -488,9 +496,6 @@ public static class FilterBuilder
 
                     body = Expression.Not(Expression.Call(anyMethod, property, lambda));
                 }
-                break;
-            case FilterOperator.NotIn:
-                body = Expression.Not(BuildIn(property, convertedValue));
                 break;
             case FilterOperator.NotLike:
                 if (property.Type == typeof(string))
@@ -617,6 +622,66 @@ public static class FilterBuilder
         // String
         if (underlyingType == typeof(string))
             return value?.ToString();
+
+        // Decimal - 明確處理 decimal 類型
+        if (underlyingType == typeof(decimal))
+        {
+            if (value is decimal decimalValue)
+                return decimalValue;
+            if (decimal.TryParse(value.ToString(), out var parsedDecimal))
+                return parsedDecimal;
+            return Convert.ToDecimal(value);
+        }
+
+        // Double
+        if (underlyingType == typeof(double))
+        {
+            if (value is double doubleValue)
+                return doubleValue;
+            if (double.TryParse(value.ToString(), out var parsedDouble))
+                return parsedDouble;
+            return Convert.ToDouble(value);
+        }
+
+        // Float
+        if (underlyingType == typeof(float))
+        {
+            if (value is float floatValue)
+                return floatValue;
+            if (float.TryParse(value.ToString(), out var parsedFloat))
+                return parsedFloat;
+            return Convert.ToSingle(value);
+        }
+
+        // Int
+        if (underlyingType == typeof(int))
+        {
+            if (value is int intValue)
+                return intValue;
+            if (int.TryParse(value.ToString(), out var parsedInt))
+                return parsedInt;
+            return Convert.ToInt32(value);
+        }
+
+        // Long
+        if (underlyingType == typeof(long))
+        {
+            if (value is long longValue)
+                return longValue;
+            if (long.TryParse(value.ToString(), out var parsedLong))
+                return parsedLong;
+            return Convert.ToInt64(value);
+        }
+
+        // DateTime
+        if (underlyingType == typeof(DateTime))
+        {
+            if (value is DateTime dateTimeValue)
+                return dateTimeValue;
+            if (DateTime.TryParse(value.ToString(), out var parsedDateTime))
+                return parsedDateTime;
+            return Convert.ToDateTime(value);
+        }
 
         // 處理單一 Nullable 型別
         if (Nullable.GetUnderlyingType(targetType) != null)
@@ -747,12 +812,23 @@ public static class FilterBuilder
         // property 是集合
         if (typeof(IEnumerable).IsAssignableFrom(propertyType) && propertyType != typeof(string))
         {
+            // 轉換 valueList 中的元素為正確的類型
+            var convertedValues = valueList.Cast<object>()
+                .Select(v => v == null ? null : ChangeType(v, elementType))
+                .ToArray();
+
+            // 創建正確類型的集合
+            var listType = typeof(List<>).MakeGenericType(elementType);
+            var convertedList = (IList)Activator.CreateInstance(listType);
+            foreach (var item in convertedValues)
+                convertedList.Add(item);
+
             // x => valueList.Contains(x)
             var param = Expression.Parameter(elementType, "x");
             var containsMethod = typeof(Enumerable).GetMethods()
                 .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
                 .MakeGenericMethod(elementType);
-            var valuesExpression = Expression.Constant(valueList);
+            var valuesExpression = Expression.Constant(convertedList, typeof(IEnumerable<>).MakeGenericType(elementType));
             var body = Expression.Call(containsMethod, valuesExpression, param);
             var lambda = Expression.Lambda(body, param);
 
@@ -764,11 +840,22 @@ public static class FilterBuilder
         }
         else
         {
+            // 轉換 valueList 中的元素為屬性的類型
+            var convertedValues = valueList.Cast<object>()
+                .Select(v => v == null ? null : ChangeType(v, propertyType))
+                .ToArray();
+
+            // 創建正確類型的集合
+            var listType = typeof(List<>).MakeGenericType(propertyType);
+            var convertedList = (IList)Activator.CreateInstance(listType);
+            foreach (var item in convertedValues)
+                convertedList.Add(item);
+
             // valueList.Contains(property)
             var containsMethod = typeof(Enumerable).GetMethods()
                 .First(m => m.Name == "Contains" && m.GetParameters().Length == 2)
                 .MakeGenericMethod(propertyType);
-            var valuesExpression = Expression.Constant(valueList);
+            var valuesExpression = Expression.Constant(convertedList, typeof(IEnumerable<>).MakeGenericType(propertyType));
             return Expression.Call(containsMethod, valuesExpression, property);
         }
     }
@@ -803,7 +890,8 @@ public static class FilterBuilder
                 .MakeGenericMethod(elementType);
 
             var result = Expression.Call(anyMethod, property, lambda);
-            return rule.Operator == FilterOperator.NotBetween ? Expression.Not(result) : result;
+            // 只有 NotBetween 且沒有 IsNegated 時才否定，避免雙重否定
+            return rule.Operator == FilterOperator.NotBetween && !rule.IsNegated ? Expression.Not(result) : result;
         }
         else
         {
@@ -813,7 +901,8 @@ public static class FilterBuilder
             var greaterThanOrEqual = Expression.GreaterThanOrEqual(property, min);
             var lessThanOrEqual = Expression.LessThanOrEqual(property, max);
             var betweenExpr = Expression.AndAlso(greaterThanOrEqual, lessThanOrEqual);
-            return rule.Operator == FilterOperator.NotBetween ? Expression.Not(betweenExpr) : betweenExpr;
+            // 只有 NotBetween 且沒有 IsNegated 時才否定，避免雙重否定
+            return rule.Operator == FilterOperator.NotBetween && !rule.IsNegated ? Expression.Not(betweenExpr) : betweenExpr;
         }
     }
 }

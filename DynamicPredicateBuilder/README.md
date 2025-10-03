@@ -11,13 +11,14 @@
 2. [欄位查詢權限設定](#2-欄位查詢權限設定)
 3. [進階條件組合功能](#3-進階條件組合功能)
 4. [支援的運算子](#4-支援的運算子)
-5. [集合型別欄位查詢支援](#5-集合型別欄位查詢支援)
-6. [API 使用範例](#6-api-使用範例)
-7. [核心類別與 API 參考](#7-核心類別與-api-參考)
-8. [與 jQuery DataTables Server-Side 搭配](#8-與-jquery-datatables-server-side-搭配)
-9. [常用 Extension](#9-常用-extension)
-10. [單元測試](#10-單元測試)
-11. [安裝與使用](#11-安裝與使用)
+5. [支援的資料類型](#5-支援的資料類型)
+6. [集合型別欄位查詢支援](#6-集合型別欄位查詢支援)
+7. [API 使用範例](#7-api-使用範例)
+8. [核心類別與 API 參考](#8-核心類別與-api-參考)
+9. [與 jQuery DataTables Server-Side 搭配](#9-與-jquery-datatables-server-side-搭配)
+10. [常用 Extension](#10-常用-extension)
+11. [單元測試](#11-單元測試)
+12. [安裝與使用](#12-安裝與使用)
 
 ---
 
@@ -264,13 +265,99 @@ new FilterRule { Property = "Tags", Operator = FilterOperator.NotAny, Value = "V
 
 ---
 
-## 5. 集合型別欄位查詢支援
+## 5. 支援的資料類型
 
-### 5-1. 欄位路徑格式
+### 5-1. 基本數值類型
+
+| 類型 | 描述 | 範例 |
+|------|------|------|
+| `int`, `int?` | 32位整數 | `Age = 25` |
+| `long`, `long?` | 64位整數 | `Id = 1234567890L` |
+| `decimal`, `decimal?` | 高精度十進位 | `Salary = 50000.50m` |
+| `double`, `double?` | 雙精度浮點數 | `Score = 95.5` |
+| `float`, `float?` | 單精度浮點數 | `Rate = 3.14f` |
+
+### 5-2. 日期時間類型
+
+| 類型 | 描述 | 範例 |
+|------|------|------|
+| `DateTime`, `DateTime?` | 日期時間 | `CreatedDate = DateTime.Now` |
+| `DateOnly`, `DateOnly?` | 僅日期 (.NET 6+) | `BirthDate = DateOnly.FromDateTime(DateTime.Now)` |
+| `TimeOnly`, `TimeOnly?` | 僅時間 (.NET 6+) | `WorkTime = TimeOnly.FromDateTime(DateTime.Now)` |
+
+### 5-3. 字串與字元類型
+
+| 類型 | 描述 | 範例 |
+|------|------|------|
+| `string` | 字串（可為 null） | `Name = "John"` |
+| `char`, `char?` | 單一字元 | `Gender = 'M'` |
+
+### 5-4. 布林類型
+
+| 類型 | 描述 | 範例 |
+|------|------|------|
+| `bool`, `bool?` | 布林值 | `IsActive = true` |
+
+### 5-5. 其他特殊類型
+
+| 類型 | 描述 | 範例 |
+|------|------|------|
+| `Guid`, `Guid?` | 全域唯一識別碼 | `UserId = Guid.NewGuid()` |
+| `Enum` | 列舉類型 | `Status = UserStatus.Active` |
+
+### 5-6. Nullable 類型特殊處理
+
+DynamicPredicateBuilder 對所有 nullable 類型提供完整支援：
+
+```csharp
+// Nullable decimal 查詢範例
+public class Product
+{
+    public string Name { get; set; }
+    public decimal? Price { get; set; }  // 可為 null 的價格
+    public decimal? Discount { get; set; } // 可為 null 的折扣
+}
+
+// 查詢有價格的商品
+new FilterRule { Property = "Price", Operator = FilterOperator.GreaterThan, Value = 0 }
+
+// 查詢沒有設定價格的商品
+new FilterRule { Property = "Price", Operator = FilterOperator.Equal, Value = null }
+
+// 查詢價格在範圍內的商品
+new FilterRule { Property = "Price", Operator = FilterOperator.Between, Value = new[] { 100m, 1000m } }
+
+// 查詢價格在指定清單中的商品
+new FilterRule { Property = "Price", Operator = FilterOperator.In, Value = new[] { 99.9m, 199.9m, 299.9m } }
+```
+
+### 5-7. 類型轉換與安全性
+
+FilterBuilder 內建智慧型類型轉換機制：
+
+- **安全轉換**：使用 `TryParse` 方法避免轉換例外
+- **Nullable 支援**：正確處理 null 值比較
+- **精度保持**：decimal 類型保持完整精度
+- **自動推導**：根據屬性類型自動選擇最佳轉換策略
+
+```csharp
+// 即使前端傳送字串，也會自動轉換為正確的數值類型
+new FilterRule { Property = "Salary", Operator = FilterOperator.GreaterThan, Value = "50000" }
+// 內部會自動轉換為 decimal 50000
+
+// 支援科學記號
+new FilterRule { Property = "BigNumber", Operator = FilterOperator.Equal, Value = "1.5E+10" }
+```
+
+---
+
+## 6. 集合型別欄位查詢支援
+
+### 6-1. 欄位路徑格式
 - 支援巢狀集合屬性查詢，例如：`Orders[].Items[].Name`
 - 欄位白名單自動展開所有集合層級，格式為 `集合屬性名[].屬性名`，可多層巢狀
 
-### 5-2. FilterRule 實例
+### 6-2. FilterRule 實例
 ```csharp
 new FilterRule
 {
@@ -281,7 +368,7 @@ new FilterRule
 ```
 這會產生：`Orders.SelectMany(o => o.Items).Select(i => i.Name).Any(name => new[] { "ItemA", "ItemB" }.Contains(name))`
 
-### 5-3. 運算子支援
+### 6-3. 運算子支援
 - **In**：查詢集合屬性是否包含指定值（多值）
 - **Any**：查詢集合屬性是否有任一元素符合條件
 - **Contains**：查詢集合屬性是否包含單一值
@@ -290,7 +377,7 @@ new FilterRule
 
 > **注意**：查詢集合屬性時，請使用 `In`、`Any`、`Contains`，不要用 `Equal` 比較集合本身。
 
-### 5-4. 範例：查詢集合屬性底下的欄位
+### 6-4. 範例：查詢集合屬性底下的欄位
 ```csharp
 // 查詢 User 的 Orders 集合底下的 OrderId 是否包含 123
 new FilterRule
@@ -311,9 +398,9 @@ new FilterRule
 
 ---
 
-## 6. API 使用範例
+## 7. API 使用範例
 
-### 6-1. Request 範例（單組簡易）
+### 7-1. Request 範例（單組簡易）
 
 ```jsonc
 {
@@ -333,7 +420,7 @@ new FilterRule
 }
 ```
 
-### 6-2. Request 範例（多組 + NOT + 巢狀）
+### 7-2. Request 範例（多組 + NOT + 巢狀）
 
 ```jsonc
 {
@@ -362,22 +449,44 @@ new FilterRule
 
 > Controller 收到 `FilterGroups` 時，呼叫 `FilterBuilder.Build<Person>(request.FilterGroups, options)`。
 
-### 6-3. Response 範例
+### 7-3. Request 範例（Nullable Decimal 查詢）
+
+```jsonc
+{
+  "Filter": {
+    "LogicalOperator": "And",
+    "Rules": [
+      { "Property": "Salary", "Operator": "GreaterThan", "Value": 50000.00 },
+      { "Property": "Bonus",  "Operator": "Between",     "Value": [1000, 5000] },
+      { "Property": "Commission", "Operator": "Equal",   "Value": null }
+    ]
+  }
+}
+```
+
+### 7-4. Response 範例
 
 ```jsonc
 {
   "totalCount": 45,
   "items": [
-    { "name": "Alice", "age": 30, "address": { "city": "Taipei" } }
+    { 
+      "name": "Alice", 
+      "age": 30, 
+      "salary": 75000.50,
+      "bonus": 3000.00,
+      "commission": null,
+      "address": { "city": "Taipei" } 
+    }
   ]
 }
 ```
 
 ---
 
-## 7. 核心類別與 API 參考
+## 8. 核心類別與 API 參考
 
-### 7-1. FilterBuilder
+### 8-1. FilterBuilder
 `FilterBuilder` 是專案的核心類別，負責生成查詢條件的表達式。
 
 #### 主要方法
@@ -392,7 +501,7 @@ var predicate = FilterBuilder.Build<Person>(filterGroup);
 var predicate = FilterBuilder.Build<Person>(filterGroups, options);
 ```
 
-### 7-2. FilterEngine
+### 8-2. FilterEngine
 `FilterEngine` 提供便利的靜態方法用於快速建立查詢條件。
 
 #### 主要方法
@@ -407,7 +516,7 @@ var predicate = FilterEngine.FromJson<Person>(jsonString);
 var predicate = FilterEngine.FromDictionary<Person>(dictionary);
 ```
 
-### 7-3. FilterEngineExtensions
+### 8-3. FilterEngineExtensions
 提供 IQueryable 的擴展方法。
 
 #### 主要方法
@@ -423,7 +532,7 @@ var result = _db.People.ApplyQuery(queryRequest);
 var query = _db.People.ApplyFilterJson(filterJson, sortRules);
 ```
 
-### 7-4. QueryableFieldHelper
+### 8-4. QueryableFieldHelper
 提供欄位白名單的功能，確保查詢僅限於允許的欄位。
 
 #### 主要方法
@@ -435,7 +544,7 @@ var allowedFields = QueryableFieldHelper.GetQueryableFields<Person>();
 var options = new FilterOptions { AllowedFields = allowedFields };
 ```
 
-### 7-5. FilterGroupFactory
+### 8-5. FilterGroupFactory
 用於從不同來源建立 FilterGroup 物件。
 
 #### 主要方法
@@ -447,7 +556,7 @@ var filterGroup = FilterGroupFactory.FromDictionary(dictionary);
 var filterGroup = FilterGroupFactory.FromJsonElement(jsonElement);
 ```
 
-### 7-6. 核心資料模型
+### 8-6. 核心資料模型
 
 #### QueryRequest
 ```csharp
@@ -493,11 +602,11 @@ public class FilterRule
 
 ---
 
-## 8. 與 jQuery DataTables Server-Side 搭配
+## 9. 與 jQuery DataTables Server-Side 搭配
 
 以下示範 **DataTables 1.13+** 於前端傳送分頁、排序、全域搜尋與欄位搜尋，後端再組成 `FilterGroup`：
 
-### 8-1. 前端 JavaScript
+### 9-1. 前端 JavaScript
 
 ```html
 <table id="peopleTable" class="display" style="width:100%">
@@ -589,7 +698,7 @@ $(function () {
 </script>
 ```
 
-### 8-2. 後端 Controller
+### 9-2. 後端 Controller
 
 ```csharp
 [HttpPost("datatable")]
@@ -632,7 +741,7 @@ public class DataTableRequest<T>
 
 ---
 
-## 9. 常用 Extension
+## 10. 常用 Extension
 
 | 方法 | 說明 |
 |---|---|
@@ -645,11 +754,12 @@ public class DataTableRequest<T>
 
 ---
 
-## 10. 單元測試
+## 11. 單元測試
 
 `DynamicPredicate.Tests` 專案示範：
 
 * **FilterBuilderTests**：Equal、GreaterThan、NOT、巢狀、多組 AND/OR 等核心功能測試
+* **Nullable Decimal Tests**：完整的 decimal? 類型測試案例
 * **測試資料模型**：`User.cs` 提供測試用的資料結構
 
 ### 執行測試
@@ -691,24 +801,48 @@ public void BuildPredicate_WithMultipleGroups_ShouldCombineCorrectly()
     predicate(new User { Name = "Otacon", Age = 50 }).Should().BeTrue(); // Group2 滿足
     predicate(new User { Name = "Otacon", Age = 30 }).Should().BeFalse();
 }
+
+[Fact]
+public void BuildPredicate_NullableDecimal_BetweenOperator_ShouldWork()
+{
+    var groups = new List<FilterGroup>
+    {
+        new FilterGroup
+        {
+            LogicalOperator = LogicalOperator.And,
+            Rules =
+            [
+                new FilterRule { Property = "Salary", Operator = FilterOperator.Between, Value = new[] { 40000m, 60000m } }
+            ]
+        }
+    };
+    var predicate = FilterBuilder.Build<User>(groups).Compile();
+    
+    predicate(new User { Salary = 50000.00m }).Should().BeTrue();
+    predicate(new User { Salary = 40000.00m }).Should().BeTrue(); // 邊界值包含
+    predicate(new User { Salary = 60000.00m }).Should().BeTrue(); // 邊界值包含
+    predicate(new User { Salary = 30000.00m }).Should().BeFalse();
+    predicate(new User { Salary = 70000.00m }).Should().BeFalse();
+    predicate(new User { Salary = null }).Should().BeFalse();
+}
 ```
 
 ---
 
-## 11. 安裝與使用
+## 12. 安裝與使用
 
-### 11-1. 系統需求
+### 12-1. 系統需求
 - .NET 7.0 或更高版本
 - .NET 8.0 或更高版本  
 - .NET 9.0 或更高版本
 
-### 11-2. NuGet 安裝
+### 12-2. NuGet 安裝
 
 ```bash
 dotnet add package DynamicPredicateBuilder
 ```
 
-### 11-3. 基本設定
+### 12-3. 基本設定
 
 ```csharp
 using DynamicPredicateBuilder;
@@ -719,7 +853,7 @@ using DynamicPredicateBuilder.Core;
 services.AddScoped<FilterOptions>();
 ```
 
-### 11-4. 在控制器中使用
+### 12-4. 在控制器中使用
 
 ```csharp
 [ApiController]
@@ -744,9 +878,9 @@ public class PeopleController : ControllerBase
 
 ---
 
-## 12. 進階功能與最佳實務
+## 13. 進階功能與最佳實務
 
-### 12-1. 效能最佳化
+### 13-1. 效能最佳化
 - 使用 `AsNoTracking()` 提升查詢效能
 - 在經常查詢的欄位加上索引
 - 適當使用 `IQueryable` 延遲執行特性
@@ -757,12 +891,12 @@ var result = _context.People
     .ApplyQuery(request);
 ```
 
-### 12-2. 安全性考量
+### 13-2. 安全性考量
 - 始終使用 `FilterOptions.AllowedFields` 限制可查詢欄位
 - 驗證輸入資料的型別和範圍
 - 避免暴露敏感資料欄位
 
-### 12-3. 錯誤處理
+### 13-3. 錯誤處理
 ```csharp
 try
 {
@@ -783,20 +917,20 @@ catch (Exception ex)
 
 ---
 
-## 13. 貢獻指南
+## 14. 貢獻指南
 
-### 13-1. 開發環境設定
+### 14-1. 開發環境設定
 1. 安裝 .NET 7.0 或更高版本 SDK
 2. Clone 專案：`git clone https://github.com/Antfire70007/DynamicPredicateBuilder.git`
 3. 建置專案：`dotnet build`
 4. 執行測試：`dotnet test`
 
-### 13-2. 提交 Issue
+### 14-2. 提交 Issue
 - 描述問題的詳細資訊
 - 提供重現問題的步驟
 - 包含相關的程式碼範例
 
-### 13-3. 提交 PR
+### 14-3. 提交 PR
 - 請遵循專案的程式碼風格
 - 提交前請確保所有測試通過
 - 分支命名建議使用 `feature/` 或 `bugfix/` 前綴
@@ -804,13 +938,21 @@ catch (Exception ex)
 
 ---
 
-## 14. 授權條款
+## 15. 授權條款
 
 本專案採用 MIT 授權條款，詳見 [LICENSE](./LICENSE)。
 
 ---
 
-## 15. 版本歷史與更新日誌
+## 16. 版本歷史與更新日誌
+
+### v1.0.82 (Latest)
+- **新增 Nullable 數值型別完整支援**：`int?`, `long?`, `decimal?`, `double?`, `float?`, `DateTime?`
+- **強化類型轉換機制**：使用 TryParse 方法確保安全轉換，避免轉換例外
+- **修復 In/NotIn 操作符**：正確處理陣列參數的類型轉換
+- **修復 Between/NotBetween 否定邏輯**：解決雙重否定問題
+- **新增 decimal? 完整測試案例**：涵蓋所有運算子和邊界情況
+- **優化效能**：改善大數值和高精度 decimal 的處理效率
 
 ### v1.0.7
 - 支援 .NET 9.0
@@ -826,7 +968,7 @@ catch (Exception ex)
 
 ---
 
-## 16. 常見問題 (FAQ)
+## 17. 常見問題 (FAQ)
 
 ### Q: 如何處理日期時間查詢？
 A: 使用標準的 DateTime 比較運算子：
@@ -844,6 +986,31 @@ new FilterRule { Property = "Name", Operator = FilterOperator.Like, Value = "%Jo
 A: 直接使用 `Equal` 或 `NotEqual` 搭配 null 值：
 ```csharp
 new FilterRule { Property = "MiddleName", Operator = FilterOperator.Equal, Value = null }
+```
+
+### Q: Nullable decimal 查詢有什麼需要注意的？
+A: DynamicPredicateBuilder 完全支援 nullable decimal，包括：
+- null 值比較（`== null`, `!= null`）
+- 數值範圍查詢（`Between`, `GreaterThan` 等）
+- 集合查詢（`In`, `NotIn`）
+- null 值在數值比較中視為不符合條件
+
+```csharp
+// 查詢薪資為 null 的員工
+new FilterRule { Property = "Salary", Operator = FilterOperator.Equal, Value = null }
+
+// 查詢薪資大於 50000 的員工（自動排除 null 值）
+new FilterRule { Property = "Salary", Operator = FilterOperator.GreaterThan, Value = 50000 }
+
+// 查詢薪資在範圍內的員工
+new FilterRule { Property = "Salary", Operator = FilterOperator.Between, Value = new[] { 30000m, 80000m } }
+```
+
+### Q: 如何處理高精度的 decimal 計算？
+A: DynamicPredicateBuilder 保持 decimal 的完整精度，支援任意精度的 decimal 值：
+```csharp
+// 支援高精度計算
+new FilterRule { Property = "PreciseValue", Operator = FilterOperator.Equal, Value = 123.456789012345m }
 ```
 
 ---

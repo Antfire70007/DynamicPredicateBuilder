@@ -3,12 +3,12 @@
 		<TargetFrameworks>net9.0;net8.0;net7.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>annotations</Nullable>
-		<Version>1.0.6</Version>
+		<Version>1.1.0</Version>
 		<Configurations>Debug;Release;Stage</Configurations>
 		<Authors>Antfire</Authors>
 		<Company>Antfire</Company>
-		<Description>企業級查詢引擎模組，支援 FilterRule、FilterGroup、動態 Where 條件建構、Expression Tree 節點優化。</Description>
-		<PackageTags>dynamic predicate filter builder query expression</PackageTags>
+		<Description>企業級查詢引擎模組，支援 FilterRule、FilterGroup、動態 Where 條件建構、Expression Tree 節點優化。完整支援 nullable decimal 及所有數值類型。</Description>
+		<PackageTags>dynamic predicate filter builder query expression decimal nullable</PackageTags>
 		<RepositoryUrl>https://github.com/Antfire70007/DynamicPredicateBuilder</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
