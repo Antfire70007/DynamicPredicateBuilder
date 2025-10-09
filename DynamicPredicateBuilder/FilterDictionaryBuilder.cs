@@ -202,6 +202,9 @@ namespace DynamicPredicateBuilder
         /// <returns>Builder 實例</returns>
         public FilterDictionaryBuilder<T> Compare(LogicalOperator logicalOperator, Action<FilterDictionaryBuilder<T>> builderAction, bool isNegated = false)
         {
+            if (builderAction == null)
+                throw new ArgumentNullException(nameof(builderAction));
+
             var subBuilder = new FilterDictionaryBuilder<T>().WithLogicalOperator(logicalOperator);
             builderAction(subBuilder);
 
@@ -490,6 +493,571 @@ namespace DynamicPredicateBuilder
         public FilterDictionaryBuilder<T> EndsWith<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.EndsWith, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 NotEqual 條件的快捷方法
+        /// </summary>
+        /// <param name="property">屬性名稱</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> NotEqual(string property, object value, bool isNegated = false)
+        {
+            return Add(property, FilterOperator.NotEqual, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 NotEqual 條件的快捷方法 (Expression 版本)
+        /// </summary>
+        /// <typeparam name="TProperty">屬性類型</typeparam>
+        /// <param name="propertyExpression">屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> NotEqual<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
+        {
+            return Add(propertyExpression, FilterOperator.NotEqual, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 NotContains 條件的快捷方法
+        /// </summary>
+        /// <param name="property">屬性名稱</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> NotContains(string property, object value, bool isNegated = false)
+        {
+            return Add(property, FilterOperator.NotContains, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 NotContains 條件的快捷方法 (Expression 版本)
+        /// </summary>
+        /// <typeparam name="TProperty">屬性類型</typeparam>
+        /// <param name="propertyExpression">屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> NotContains<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
+        {
+            return Add(propertyExpression, FilterOperator.NotContains, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 NotIn 條件的快捷方法
+        /// </summary>
+        /// <param name="property">屬性名稱</param>
+        /// <param name="values">值集合</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> NotIn(string property, IEnumerable<object> values, bool isNegated = false)
+        {
+            return Add(property, FilterOperator.NotIn, values, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 NotIn 條件的快捷方法 (Expression 版本)
+        /// </summary>
+        /// <typeparam name="TProperty">屬性類型</typeparam>
+        /// <param name="propertyExpression">屬性表達式</param>
+        /// <param name="values">值集合</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> NotIn<TProperty>(Expression<Func<T, TProperty>> propertyExpression, IEnumerable<object> values, bool isNegated = false)
+        {
+            return Add(propertyExpression, FilterOperator.NotIn, values, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 NotLike 條件的快捷方法
+        /// </summary>
+        /// <param name="property">屬性名稱</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> NotLike(string property, object value, bool isNegated = false)
+        {
+            return Add(property, FilterOperator.NotLike, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 NotLike 條件的快捷方法 (Expression 版本)
+        /// </summary>
+        /// <typeparam name="TProperty">屬性類型</typeparam>
+        /// <param name="propertyExpression">屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> NotLike<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
+        {
+            return Add(propertyExpression, FilterOperator.NotLike, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 NotBetween 條件的快捷方法
+        /// </summary>
+        /// <param name="property">屬性名稱</param>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> NotBetween(string property, object min, object max, bool isNegated = false)
+        {
+            return Add(property, FilterOperator.NotBetween, new[] { min, max }, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 NotBetween 條件的快捷方法 (Expression 版本)
+        /// </summary>
+        /// <typeparam name="TProperty">屬性類型</typeparam>
+        /// <param name="propertyExpression">屬性表達式</param>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> NotBetween<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object min, object max, bool isNegated = false)
+        {
+            return Add(propertyExpression, FilterOperator.NotBetween, new[] { min, max }, isNegated);
+        }
+
+        /// <summary>
+        /// 添加陣列導覽屬性的查詢條件 (Expression 版本)
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="operator">過濾運算子</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> AddCustomArrayNavigation<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            FilterOperator @operator,
+            object value,
+            bool isNegated = false)
+        {
+            // 提取集合屬性名稱
+            var collectionName = GetPropertyName(collectionExpression);
+            
+            // 提取目標屬性名稱
+            string targetPropertyName;
+            if (propertyExpression.Body is MemberExpression memberExpr)
+            {
+                targetPropertyName = GetMemberPath(memberExpr);
+            }
+            else if (propertyExpression.Body is UnaryExpression unaryExpr && 
+                     unaryExpr.Operand is MemberExpression memberOperand)
+            {
+                targetPropertyName = GetMemberPath(memberOperand);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid property expression", nameof(propertyExpression));
+            }
+            
+            // 構造陣列導覽語法
+            var navigationProperty = $"{collectionName}[].{targetPropertyName}";
+            
+            return Add(navigationProperty, @operator, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 Equal 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayEqual<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object value,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.Equal, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 In 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="values">值集合</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayIn<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            IEnumerable<object> values,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.In, values, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 GreaterThan 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayGreaterThan<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object value,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.GreaterThan, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 Between 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayBetween<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object min,
+            object max,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.Between, new[] { min, max }, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 Like 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayLike<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object value,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.Like, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 NotLike 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayNotLike<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object value,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.NotLike, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 Contains 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayContains<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object value,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.Contains, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 NotContains 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayNotContains<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object value,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.NotContains, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 StartsWith 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayStartsWith<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object value,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.StartsWith, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 EndsWith 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayEndsWith<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object value,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.EndsWith, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 NotEqual 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayNotEqual<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object value,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.NotEqual, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 NotIn 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="values">值集合</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayNotIn<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            IEnumerable<object> values,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.NotIn, values, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 GreaterThanOrEqual 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayGreaterThanOrEqual<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object value,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.GreaterThanOrEqual, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 LessThan 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayLessThan<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object value,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.LessThan, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 LessThanOrEqual 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayLessThanOrEqual<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object value,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.LessThanOrEqual, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 NotBetween 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayNotBetween<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object min,
+            object max,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.NotBetween, new[] { min, max }, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 Any 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值（可為 null，表示檢查集合是否有任何元素）</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayAny<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object? value = null,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.Any, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立陣列導覽 NotAny 條件的快捷方法
+        /// </summary>
+        /// <typeparam name="TCollection">集合類型</typeparam>
+        /// <typeparam name="TProperty">目標屬性類型</typeparam>
+        /// <param name="collectionExpression">集合屬性表達式</param>
+        /// <param name="propertyExpression">目標屬性表達式</param>
+        /// <param name="value">比較值（可為 null，表示檢查集合是否沒有任何元素）</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> ArrayNotAny<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            object? value = null,
+            bool isNegated = false)
+        {
+            return AddCustomArrayNavigation(collectionExpression, propertyExpression, FilterOperator.NotAny, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 Any 條件的快捷方法</summary>
+        /// <param name="property">屬性名稱</param>
+        /// <param name="value">比較值（可為 null，表示檢查集合是否有任何元素）</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> Any(string property, object? value = null, bool isNegated = false)
+        {
+            return Add(property, FilterOperator.Any, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 Any 條件的快捷方法 (Expression 版本)
+        /// </summary>
+        /// <typeparam name="TProperty">屬性類型</typeparam>
+        /// <param name="propertyExpression">屬性表達式</param>
+        /// <param name="value">比較值（可為 null，表示檢查集合是否有任何元素）</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> Any<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object? value = null, bool isNegated = false)
+        {
+            return Add(propertyExpression, FilterOperator.Any, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 NotAny 條件的快捷方法
+        /// </summary>
+        /// <param name="property">屬性名稱</param>
+        /// <param name="value">比較值（可為 null，表示檢查集合是否沒有任何元素）</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> NotAny(string property, object? value = null, bool isNegated = false)
+        {
+            return Add(property, FilterOperator.NotAny, value, isNegated);
+        }
+
+        /// <summary>
+        /// 建立 NotAny 條件的快捷方法 (Expression 版本)
+        /// </summary>
+        /// <typeparam name="TProperty">屬性類型</typeparam>
+        /// <param name="propertyExpression">屬性表達式</param>
+        /// <param name="value">比較值（可為 null，表示檢查集合是否沒有任何元素）</param>
+        /// <param name="isNegated">是否否定</param>
+        /// <returns>Builder 實例</returns>
+        public FilterDictionaryBuilder<T> NotAny<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object? value = null, bool isNegated = false)
+        {
+            return Add(propertyExpression, FilterOperator.NotAny, value, isNegated);
         }
 
         /// <summary>

@@ -9,5 +9,6 @@ namespace DynamicPredicate.Tests
         public string Status { get; set; } = string.Empty;
         public decimal? Salary { get; set; }
         public List<string> Tags { get; set; } = new();
+        public List<int> Numbers { get; set; } = new();
     }
 }

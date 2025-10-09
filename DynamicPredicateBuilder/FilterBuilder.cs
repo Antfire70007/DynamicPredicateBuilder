@@ -168,7 +168,18 @@ public static class FilterBuilder
         }
 
         var convertedValue = ChangeType(rule.Value, property.Type);
-        var constant = Expression.Constant(convertedValue, property.Type);
+        Expression constant;
+        
+        // 特殊處理 null 值
+        if (convertedValue == null)
+        {
+            constant = Expression.Constant(null, property.Type);
+        }
+        else
+        {
+            constant = Expression.Constant(convertedValue, property.Type);
+        }
+        
         Expression body = null;
 
         switch (rule.Operator)
@@ -201,7 +212,17 @@ public static class FilterBuilder
                     else
                     {
                         // 單值比對：Any(x => x == value)
-                        var valueExpr = Expression.Constant(convertedValue, elementType);
+                        Expression valueExpr;
+                        if (convertedValue == null)
+                        {
+                            valueExpr = Expression.Constant(null, elementType);
+                        }
+                        else
+                        {
+                            // 使用 rule.Value 而不是 convertedValue
+                            var convertedElementValue = ChangeType(rule.Value, elementType);
+                            valueExpr = Expression.Constant(convertedElementValue, elementType);
+                        }
                         var eqExpr = Expression.Equal(param, valueExpr);
                         var lambda = Expression.Lambda(eqExpr, param);
 
@@ -245,7 +266,17 @@ public static class FilterBuilder
                     else
                     {
                         // 單值比對：!Any(x => x == value)
-                        var valueExpr = Expression.Constant(convertedValue, elementType);
+                        Expression valueExpr;
+                        if (convertedValue == null)
+                        {
+                            valueExpr = Expression.Constant(null, elementType);
+                        }
+                        else
+                        {
+                            // 使用 rule.Value 而不是 convertedValue
+                            var convertedElementValue = ChangeType(rule.Value, elementType);
+                            valueExpr = Expression.Constant(convertedElementValue, elementType);
+                        }
                         var eqExpr = Expression.Equal(param, valueExpr);
                         var lambda = Expression.Lambda(eqExpr, param);
 
@@ -269,7 +300,9 @@ public static class FilterBuilder
                         : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
 
                     var param = Expression.Parameter(elementType, "x");
-                    var valueExpr = Expression.Constant(convertedValue, elementType);
+                    // 直接使用 rule.Value 而不是 convertedValue
+                    var convertedElementValue = ChangeType(rule.Value, elementType);
+                    var valueExpr = Expression.Constant(convertedElementValue, elementType);
                     var gtExpr = Expression.GreaterThan(param, valueExpr);
                     var lambda = Expression.Lambda(gtExpr, param);
 
@@ -292,7 +325,9 @@ public static class FilterBuilder
                         : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
 
                     var param = Expression.Parameter(elementType, "x");
-                    var valueExpr = Expression.Constant(convertedValue, elementType);
+                    // 直接使用 rule.Value 而不是 convertedValue
+                    var convertedElementValue = ChangeType(rule.Value, elementType);
+                    var valueExpr = Expression.Constant(convertedElementValue, elementType);
                     var gteExpr = Expression.GreaterThanOrEqual(param, valueExpr);
                     var lambda = Expression.Lambda(gteExpr, param);
 
@@ -315,7 +350,9 @@ public static class FilterBuilder
                         : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
 
                     var param = Expression.Parameter(elementType, "x");
-                    var valueExpr = Expression.Constant(convertedValue, elementType);
+                    // 直接使用 rule.Value 而不是 convertedValue
+                    var convertedElementValue = ChangeType(rule.Value, elementType);
+                    var valueExpr = Expression.Constant(convertedElementValue, elementType);
                     var ltExpr = Expression.LessThan(param, valueExpr);
                     var lambda = Expression.Lambda(ltExpr, param);
 
@@ -338,7 +375,9 @@ public static class FilterBuilder
                         : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
 
                     var param = Expression.Parameter(elementType, "x");
-                    var valueExpr = Expression.Constant(convertedValue, elementType);
+                    // 直接使用 rule.Value 而不是 convertedValue
+                    var convertedElementValue = ChangeType(rule.Value, elementType);
+                    var valueExpr = Expression.Constant(convertedElementValue, elementType);
                     var lteExpr = Expression.LessThanOrEqual(param, valueExpr);
                     var lambda = Expression.Lambda(lteExpr, param);
 
@@ -451,8 +490,9 @@ public static class FilterBuilder
                     }
                     else
                     {
-                        // 其他型別直接用等值比對
-                        containsExpr = Expression.Equal(param, Expression.Constant(convertedValue, elementType));
+                        // 其他型別直接用等值比對，先轉換值類型
+                        var convertedElementValue = ChangeType(rule.Value, elementType);
+                        containsExpr = Expression.Equal(param, Expression.Constant(convertedElementValue, elementType));
                     }
                     var lambda = Expression.Lambda(containsExpr, param);
 
@@ -485,8 +525,9 @@ public static class FilterBuilder
                     }
                     else
                     {
-                        // 其他型別直接用等值比對
-                        containsExpr = Expression.Equal(param, Expression.Constant(convertedValue, elementType));
+                        // 其他型別直接用等值比對，先轉換值類型
+                        var convertedElementValue = ChangeType(rule.Value, elementType);
+                        containsExpr = Expression.Equal(param, Expression.Constant(convertedElementValue, elementType));
                     }
                     var lambda = Expression.Lambda(containsExpr, param);
 
@@ -526,10 +567,39 @@ public static class FilterBuilder
             case FilterOperator.Any:
                 if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
                 {
-                    var anyMethod = typeof(Enumerable).GetMethods()
-                        .First(m => m.Name == "Any" && m.GetParameters().Length == 1)
-                        .MakeGenericMethod(property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object));
-                    body = Expression.Call(anyMethod, property);
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    // 如果沒有提供 value 或 value 為 null，則檢查集合是否有任何元素
+                    if (rule.Value == null)
+                    {
+                        var anyMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Any" && m.GetParameters().Length == 1)
+                            .MakeGenericMethod(elementType);
+                        
+                        // 需要先檢查集合是否為 null
+                        var nullCheck = Expression.NotEqual(property, Expression.Constant(null, property.Type));
+                        var anyCall = Expression.Call(anyMethod, property);
+                        body = Expression.AndAlso(nullCheck, anyCall);
+                    }
+                    else
+                    {
+                        // 如果提供了 value，則檢查集合中是否有任何元素等於該值
+                        var param = Expression.Parameter(elementType, "x");
+                        var valueExpr = Expression.Constant(ChangeType(rule.Value, elementType), elementType);
+                        var equalExpr = Expression.Equal(param, valueExpr);
+                        var lambda = Expression.Lambda(equalExpr, param);
+
+                        var anyWithPredicateMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                            .MakeGenericMethod(elementType);
+                        
+                        // 需要先檢查集合是否為 null
+                        var nullCheck = Expression.NotEqual(property, Expression.Constant(null, property.Type));
+                        var anyCall = Expression.Call(anyWithPredicateMethod, property, lambda);
+                        body = Expression.AndAlso(nullCheck, anyCall);
+                    }
                 }
                 else
                 {
@@ -539,11 +609,41 @@ public static class FilterBuilder
             case FilterOperator.NotAny:
                 if (typeof(IEnumerable).IsAssignableFrom(property.Type) && property.Type != typeof(string))
                 {
-                    var anyMethod = typeof(Enumerable).GetMethods()
-                        .First(m => m.Name == "Any" && m.GetParameters().Length == 1)
-                        .MakeGenericMethod(property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object));
-                    var anyCall = Expression.Call(anyMethod, property);
-                    body = Expression.Not(anyCall);
+                    var elementType = property.Type.IsArray
+                        ? property.Type.GetElementType()
+                        : property.Type.GetGenericArguments().FirstOrDefault() ?? typeof(object);
+
+                    // 如果沒有提供 value 或 value 為 null，則檢查集合是否沒有任何元素
+                    if (rule.Value == null)
+                    {
+                        var anyMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Any" && m.GetParameters().Length == 1)
+                            .MakeGenericMethod(elementType);
+                        
+                        // 檢查集合是否為 null 或空
+                        var nullCheck = Expression.Equal(property, Expression.Constant(null, property.Type));
+                        var anyCall = Expression.Call(anyMethod, property);
+                        var notAnyCall = Expression.Not(anyCall);
+                        body = Expression.OrElse(nullCheck, notAnyCall);
+                    }
+                    else
+                    {
+                        // 如果提供了 value ，則檢查集合中是否沒有任何元素等於該值
+                        var param = Expression.Parameter(elementType, "x");
+                        var valueExpr = Expression.Constant(ChangeType(rule.Value, elementType), elementType);
+                        var equalExpr = Expression.Equal(param, valueExpr);
+                        var lambda = Expression.Lambda(equalExpr, param);
+
+                        var anyWithPredicateMethod = typeof(Enumerable).GetMethods()
+                            .First(m => m.Name == "Any" && m.GetParameters().Length == 2)
+                            .MakeGenericMethod(elementType);
+                        
+                        // 檢查集合是否為 null 或不包含該值
+                        var nullCheck = Expression.Equal(property, Expression.Constant(null, property.Type));
+                        var anyCall = Expression.Call(anyWithPredicateMethod, property, lambda);
+                        var notAnyCall = Expression.Not(anyCall);
+                        body = Expression.OrElse(nullCheck, notAnyCall);
+                    }
                 }
                 else
                 {
@@ -551,6 +651,7 @@ public static class FilterBuilder
                 }
                 break;
         }
+        
         body ??= Expression.Constant(true);
 
         // ★ NOT on single rule

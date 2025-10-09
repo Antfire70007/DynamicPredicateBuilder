@@ -17,8 +17,17 @@
 8. [核心類別與 API 參考](#8-核心類別與-api-參考)
 9. [與 jQuery DataTables Server-Side 搭配](#9-與-jquery-datatables-server-side-搭配)
 10. [常用 Extension](#10-常用-extension)
-11. [單元測試](#11-單元測試)
-12. [安裝與使用](#12-安裝與使用)
+11. [FilterDictionaryBuilder - Fluent API 建構器](#11-filterdictionarybuilder---fluent-api-建構器)
+12. [SortRuleBuilder - 排序建構器](#12-sortrulebuilder---排序建構器)
+13. [單元測試](#13-單元測試)
+14. [安裝與使用](#14-安裝與使用)
+15. [進階功能與最佳實務](#15-進階功能與-best-practices)
+16. [貢獻指南](#16-貢獻指南)
+17. [授權條款](#17-授權條款)
+18. [版本歷史與更新日誌](#18-版本歷史與更新日誌)
+19. [常見問題 (FAQ)](#19-常見問題-faq)
+20. [導覽屬性查詢支援](#20-導覽屬性查詢支援)
+21. [陣列導覽屬性查詢](#21-陣列導覽屬性查詢支援)
 
 ---
 
@@ -72,6 +81,56 @@ public IActionResult QueryPeopleSimple([FromBody] QueryRequest request)
 {
     var result = _db.People.ApplyQuery(request);
     return Ok(result);
+}
+```
+
+### 1-4. 使用 FilterDictionaryBuilder 程式化建構
+
+```csharp
+[HttpPost("people/fluent")]
+public IActionResult QueryPeopleWithBuilder()
+{
+    // 使用 Fluent API 建構過濾條件
+    var filterGroup = FilterDictionaryBuilder.QueryBuilder<Person>()
+        .WithLogicalOperator(LogicalOperator.And)
+        .GreaterThan(x => x.Age, 25)
+        .Like(x => x.Name, "John")
+        .Compare(LogicalOperator.Or, subRules => subRules
+            .Equal(x => x.Address.City, "Taipei")
+            .Equal(x => x.Address.City, "Kaohsiung")
+        )
+        .ToFilterGroup();
+    
+    var predicate = FilterBuilder.Build<Person>(filterGroup);
+    var result = _db.People.Where(predicate).ToList();
+    return Ok(result);
+}
+```
+
+### 1-5. 導覽屬性查詢範例
+
+```csharp
+[HttpPost("employees/search")]
+public IActionResult SearchEmployees()
+{
+    // 查詢導覽屬性：員工部門和技能
+    var filterGroup = FilterDictionaryBuilder.QueryBuilder<Employee>()
+        .WithLogicalOperator(LogicalOperator.And)
+        .Equal(x => x.Department.Name, "Engineering")      // 部門名稱
+        .Contains(x => x.Profile.Skills, "C#")             // 員工技能
+        .GreaterThan(x => x.Salary, 50000)                 // 薪資條件
+        .ToFilterGroup();
+    
+    var predicate = FilterBuilder.Build<Employee>(filterGroup);
+    
+    // 重要：必須 Include 導覽屬性
+    var employees = _db.Employees
+        .Include(e => e.Department)
+        .Include(e => e.Profile)
+        .Where(predicate)
+        .ToList();
+    
+    return Ok(employees);
 }
 ```
 
@@ -140,7 +199,7 @@ public IActionResult QueryPeople([FromBody] QueryRequest request)
 
 ### 3-1. 多組條件 (List<FilterGroup>)
 
-`FilterBuilder.Build<T>(IEnumerable<FilterGroup> groups, FilterOptions?)` 允許在「群組與群組」之間再指定 AND / OR（`InterOperator`），例如：
+`FilterBuilder.Build<T>(IEnumerable<FilterGroup> groups, FilterOptions?)` 允許在「群組與群組」之間再指定 AND / OR （`InterOperator`），例如：
 
 ```csharp
 var groups = new List<FilterGroup>
@@ -234,8 +293,8 @@ var predicate = FilterBuilder.Build<Person>(groups).Compile();
 |-------|------|------|
 | `In` | 值在集合中 | `Status IN ('Active', 'Pending')` |
 | `NotIn` | 值不在集合中 | `Status NOT IN ('Disabled', 'Banned')` |
-| `Any` | 集合中任一元素符合條件 | `Tags.Any(t => t == "VIP")` |
-| `NotAny` | 集合中沒有元素符合條件 | `!Tags.Any(t => t == "VIP")` |
+| `Any` | 集合中任一元素符合條件或集合非空 | `Tags.Any()` 或 `Tags.Any(t => t == "VIP")` |
+| `NotAny` | 集合中沒有元素符合條件或集合為空 | `!Tags.Any()` 或 `!Tags.Any(t => t == "VIP")` |
 
 ### 4-4. 範圍運算子
 
@@ -256,11 +315,49 @@ new FilterRule { Property = "Age", Operator = FilterOperator.Between, Value = ne
 // NotBetween：檢查屬性值是否不在指定範圍內
 new FilterRule { Property = "Age", Operator = FilterOperator.NotBetween, Value = new[] { 20, 30 } }
 
-// Any：檢查屬性值是否存在於集合中
+// Any：檢查集合屬性是否有任何元素（不提供值時）
+new FilterRule { Property = "Tags", Operator = FilterOperator.Any, Value = null }
+
+// Any：檢查集合屬性是否包含指定值（提供值時）
 new FilterRule { Property = "Tags", Operator = FilterOperator.Any, Value = "VIP" }
 
-// NotAny：檢查屬性值是否不存在於集合中
-new FilterRule { Property = "Tags", Operator = FilterOperator.NotAny, Value = "VIP" }
+// NotAny：檢查集合屬性是否沒有任何元素（不提供值時）
+new FilterRule { Property = "Tags", Operator = FilterOperator.NotAny, Value = null }
+
+// NotAny：檢查集合屬性是否不包含指定值（提供值時）
+new FilterRule { Property = "Tags", Operator = FilterOperator.NotAny, Value = "Banned" }
+```
+
+### 4-6. Any 和 NotAny 操作符詳細說明
+
+`Any` 和 `NotAny` 操作符針對集合屬性提供了靈活的查詢功能：
+
+**Any 操作符：**
+- 當 `Value` 為 `null` 時：檢查集合是否有任何元素（相當於 `collection.Any()`）
+- 當 `Value` 有值時：檢查集合是否包含該值（相當於 `collection.Any(x => x == value)`）
+
+**NotAny 操作符：**
+- 當 `Value` 為 `null` 時：檢查集合是否沒有任何元素（相當於 `!collection.Any()`）
+- 當 `Value` 有值時：檢查集合是否不包含該值（相當於 `!collection.Any(x => x == value)`）
+
+**使用範例：**
+```csharp
+// 使用 FilterDictionaryBuilder
+var filterGroup = FilterDictionaryBuilder.QueryBuilder<User>()
+    .Any(x => x.Tags)                    // 檢查用戶是否有任何標籤
+    .Any(x => x.Categories, "Premium")   // 檢查用戶是否有 "Premium" 分類
+    .NotAny(x => x.Flags)                // 檢查用戶是否沒有任何旗標
+    .NotAny(x => x.Labels, "Banned")     // 檢查用戶是否沒有 "Banned" 標籤
+    .ToFilterGroup();
+
+// 直接使用 FilterRule
+var rules = new []
+{
+    new FilterRule { Property = "Tags", Operator = FilterOperator.Any, Value = null },      // 有任何標籤
+    new FilterRule { Property = "Categories", Operator = FilterOperator.Any, Value = "VIP" }, // 包含 VIP 分類
+    new FilterRule { Property = "Blacklist", Operator = FilterOperator.NotAny, Value = null }, // 黑名單為空
+    new FilterRule { Property = "Restrictions", Operator = FilterOperator.NotAny, Value = "Active" } // 不包含活躍限制
+};
 ```
 
 ---
@@ -754,11 +851,243 @@ public class DataTableRequest<T>
 
 ---
 
-## 11. 單元測試
+## 11. FilterDictionaryBuilder - Fluent API 建構器
+
+`FilterDictionaryBuilder` 提供 Fluent API 方式來程式化建構過濾條件，支援 Expression 語法和類型安全的屬性參考。
+
+### 11-1. 基本使用
+
+```csharp
+// 基本條件組合
+var filterGroup = FilterDictionaryBuilder.QueryBuilder<Person>()
+    .WithLogicalOperator(LogicalOperator.And)
+    .Equal(x => x.Name, "John")
+    .GreaterThan(x => x.Age, 25)
+    .ToFilterGroup();
+```
+
+### 11-2. 支援的快捷方法
+
+#### 所有 FilterOperator 的快捷方法
+
+```csharp
+var builder = FilterDictionaryBuilder.QueryBuilder<Person>()
+    // 基本比較
+    .Equal(x => x.Name, "John")
+    .NotEqual(x => x.Status, "Disabled")
+    .GreaterThan(x => x.Age, 18)
+    .GreaterThanOrEqual(x => x.Salary, 30000)
+    .LessThan(x => x.Age, 65)
+    .LessThanOrEqual(x => x.Experience, 10)
+    
+    // 字串操作
+    .Contains(x => x.Description, "keyword")
+    .NotContains(x => x.Description, "spam")
+    .StartsWith(x => x.Phone, "02")
+    .EndsWith(x => x.Email, "@company.com")
+    .Like(x => x.Name, "%John%")
+    .NotLike(x => x.Name, "%Admin%")
+    
+    // 集合操作
+    .In(x => x.Department, new[] { "IT", "HR", "Finance" })
+    .NotIn(x => x.Status, new[] { "Disabled", "Suspended" })
+    .Any(x => x.Tags, "VIP")
+    .NotAny(x => x.Tags, "Blacklisted")
+    
+    // 範圍操作
+    .Between(x => x.Salary, 30000, 80000)
+    .NotBetween(x => x.Age, 16, 18);
+```
+
+### 11-3. 巢狀條件群組
+
+```csharp
+var filterGroup = FilterDictionaryBuilder.QueryBuilder<Person>()
+    .WithLogicalOperator(LogicalOperator.And)
+    .GreaterThan(x => x.Age, 25)
+    
+    // 巢狀 OR 群組
+    .Compare(LogicalOperator.Or, subRules => subRules
+        .Equal(x => x.Department, "IT")
+        .Equal(x => x.Department, "Engineering")
+        .Equal(x => x.Department, "Research")
+    )
+    
+    // 巢狀 AND 群組（可加否定）
+    .Compare(LogicalOperator.And, statusRules => statusRules
+        .NotEqual(x => x.Status, "Retired")
+        .NotEqual(x => x.Status, "Terminated"),
+        isNegated: false)
+    
+    .ToFilterGroup();
+```
+
+### 11-4. 屬性對屬性比較
+
+```csharp
+var filterGroup = FilterDictionaryBuilder.QueryBuilder<Employee>()
+    // 比較兩個屬性：開始日期 < 結束日期
+    .AddPropertyComparison(x => x.StartDate, FilterOperator.LessThan, x => x.EndDate)
+    
+    // 薪資大於獎金
+    .AddPropertyComparison(x => x.Salary, FilterOperator.GreaterThan, x => x.Bonus)
+    
+    .ToFilterGroup();
+```
+
+### 11-5. 混合 Expression 和字串語法
+
+```csharp
+var filterGroup = FilterDictionaryBuilder.QueryBuilder<Person>()
+    // Expression 語法 - 類型安全
+    .Equal(x => x.Name, "John")
+    .GreaterThan(x => x.Age, 25)
+    
+    // 字串語法 - 適用於動態屬性
+    .Equal("DynamicProperty", "value")
+    .Contains(nameof(Person.Description), "keyword")
+    
+    .ToFilterGroup();
+```
+
+### 11-6. 多種建立方式
+
+```csharp
+// 方式 1: 靜態工廠方法
+var builder1 = FilterDictionaryBuilder.QueryBuilder<Person>();
+
+// 方式 2: 泛型靜態方法
+var builder2 = FilterDictionaryBuilder.Create<Person>();
+
+// 方式 3: 直接實例化
+var builder3 = FilterDictionaryBuilder<Person>.Create();
+```
+
+### 11-7. 輸出格式
+
+```csharp
+var builder = FilterDictionaryBuilder.QueryBuilder<Person>()
+    .Equal(x => x.Name, "John")
+    .GreaterThan(x => x.Age, 25);
+
+// 輸出為字典
+Dictionary<string, object> dict = builder.Build();
+
+// 輸出為 FilterGroup
+FilterGroup group = builder.ToFilterGroup();
+
+// 隱式轉換
+Dictionary<string, object> dictImplicit = builder;
+FilterGroup groupImplicit = builder;
+```
+
+---
+
+## 12. SortRuleBuilder - 排序建構器
+
+`SortRuleBuilder` 提供 Fluent API 方式來建構排序規則，支援多層排序和 Expression 語法。
+
+### 12-1. 基本排序
+
+```csharp
+// 簡單排序
+var sortRules = SortRuleBuilder.SortBuilder<Person>()
+    .Ascending(x => x.Name)
+    .Descending(x => x.CreatedDate)
+    .Build();
+```
+
+### 12-2. 多層排序
+
+```csharp
+// 主要排序和次要排序
+var sortRules = SortRuleBuilder.SortBuilder<Employee>()
+    .Ascending(x => x.Department)      // 先按部門升序
+    .ThenBy(x => x.Position)           // 同部門按職位升序
+    .ThenByDescending(x => x.Salary)   // 同職位按薪資降序
+    .ThenBy(x => x.Name)               // 最後按姓名升序
+    .Build();
+```
+
+### 12-3. 支援的排序方法
+
+```csharp
+var builder = SortRuleBuilder.SortBuilder<Person>()
+    // 基本排序方法
+    .Add(x => x.Property, descending: false)     // 通用方法
+    .Ascending(x => x.Name)                      // 升序
+    .Descending(x => x.Age)                      // 降序
+    
+    // 次要排序方法
+    .ThenBy(x => x.Email)                        // 次要升序
+    .ThenByDescending(x => x.CreatedDate);       // 次要降序
+```
+
+### 12-4. 字串語法支援
+
+```csharp
+var sortRules = SortRuleBuilder.SortBuilder<Person>()
+    // Expression 語法
+    .Ascending(x => x.Name)
+    
+    // 字串語法
+    .Descending(nameof(Person.CreatedDate))
+    .Add("DynamicProperty", descending: true)
+    
+    .Build();
+```
+
+### 12-5. 與查詢系統整合
+
+```csharp
+// 建構過濾和排序條件
+var filterGroup = FilterDictionaryBuilder.QueryBuilder<Employee>()
+    .GreaterThan(x => x.Salary, 50000)
+    .Equal(x => x.Department, "IT")
+    .ToFilterGroup();
+
+var sortRules = SortRuleBuilder.SortBuilder<Employee>()
+    .Descending(x => x.Salary)
+    .ThenBy(x => x.Name)
+    .Build();
+
+// 建立完整查詢請求
+var request = new QueryRequest
+{
+    Filter = JsonSerializer.SerializeToElement(filterGroup),
+    Sort = sortRules,
+    Page = 1,
+    PageSize = 20
+};
+
+// 執行查詢
+var result = _context.Employees.ApplyQuery(request);
+```
+
+### 12-6. 輸出格式
+
+```csharp
+var builder = SortRuleBuilder.SortBuilder<Person>()
+    .Ascending(x => x.Name)
+    .Descending(x => x.Age);
+
+// 輸出為列表
+List<SortRule> rules = builder.Build();
+
+// 隱式轉換
+List<SortRule> rulesList = builder;
+SortRule[] rulesArray = builder;
+```
+
+---
+
+## 13. 單元測試
 
 `DynamicPredicate.Tests` 專案示範：
 
 * **FilterBuilderTests**：Equal、GreaterThan、NOT、巢狀、多組 AND/OR 等核心功能測試
+* **FilterDictionaryBuilderTests**：Fluent API 建構器測試
+* **SortRuleBuilderTests**：排序建構器測試
 * **Nullable Decimal Tests**：完整的 decimal? 類型測試案例
 * **測試資料模型**：`User.cs` 提供測試用的資料結構
 
@@ -776,21 +1105,26 @@ public void BuildPredicate_WithMultipleGroups_ShouldCombineCorrectly()
 {
     var groups = new List<FilterGroup>
     {
-        new FilterGroup
+        // Group 1： !(Name == "Boss") AND Age > 40
+        new()
         {
             LogicalOperator = LogicalOperator.And,
             InterOperator = LogicalOperator.Or,
             Rules =
             [
-                new FilterRule { Property = "Name", Operator = FilterOperator.Equal, Value = "Snake" }
+                new FilterRule { Property = "Name", Operator = FilterOperator.Equal, Value = "Boss", IsNegated = true },
+                new FilterRule { Property = "Age", Operator = FilterOperator.GreaterThan, Value = 40 }
             ]
         },
-        new FilterGroup
+
+        // Group 2：NOT (Status == "Retired")
+        new()
         {
+            IsNegated = true,
             LogicalOperator = LogicalOperator.And,
             Rules =
             [
-                new FilterRule { Property = "Age", Operator = FilterOperator.GreaterThan, Value = 40 }
+                new FilterRule { Property = "Status", Operator = FilterOperator.Equal, Value = "Retired" }
             ]
         }
     };
@@ -803,46 +1137,43 @@ public void BuildPredicate_WithMultipleGroups_ShouldCombineCorrectly()
 }
 
 [Fact]
-public void BuildPredicate_NullableDecimal_BetweenOperator_ShouldWork()
+public void FilterDictionaryBuilder_WithExpressionSyntax_ShouldWork()
 {
-    var groups = new List<FilterGroup>
-    {
-        new FilterGroup
-        {
-            LogicalOperator = LogicalOperator.And,
-            Rules =
-            [
-                new FilterRule { Property = "Salary", Operator = FilterOperator.Between, Value = new[] { 40000m, 60000m } }
-            ]
-        }
-    };
-    var predicate = FilterBuilder.Build<User>(groups).Compile();
+    var filterGroup = FilterDictionaryBuilder.QueryBuilder<User>()
+        .WithLogicalOperator(LogicalOperator.And)
+        .Equal(x => x.Name, "John")
+        .GreaterThan(x => x.Age, 25)
+        .Compare(LogicalOperator.Or, subRules => subRules
+            .Equal(x => x.Department, "IT")
+            .Equal(x => x.Department, "HR")
+            .Equal(x => x.Department, "Research")
+        )
+        .ToFilterGroup();
+
+    var predicate = FilterBuilder.Build<User>(filterGroup).Compile();
     
-    predicate(new User { Salary = 50000.00m }).Should().BeTrue();
-    predicate(new User { Salary = 40000.00m }).Should().BeTrue(); // 邊界值包含
-    predicate(new User { Salary = 60000.00m }).Should().BeTrue(); // 邊界值包含
-    predicate(new User { Salary = 30000.00m }).Should().BeFalse();
-    predicate(new User { Salary = 70000.00m }).Should().BeFalse();
-    predicate(new User { Salary = null }).Should().BeFalse();
+    // 測試條件
+    predicate(new User { Name = "John", Age = 30, Department = "IT" }).Should().BeTrue();
+    predicate(new User { Name = "John", Age = 30, Department = "Finance" }).Should().BeFalse();
 }
 ```
 
 ---
 
-## 12. 安裝與使用
+## 14. 安裝與使用
 
-### 12-1. 系統需求
+### 14-1. 系統需求
 - .NET 7.0 或更高版本
 - .NET 8.0 或更高版本  
 - .NET 9.0 或更高版本
 
-### 12-2. NuGet 安裝
+### 14-2. NuGet 安裝
 
 ```bash
 dotnet add package DynamicPredicateBuilder
 ```
 
-### 12-3. 基本設定
+### 14-3. 基本設定
 
 ```csharp
 using DynamicPredicateBuilder;
@@ -853,7 +1184,7 @@ using DynamicPredicateBuilder.Core;
 services.AddScoped<FilterOptions>();
 ```
 
-### 12-4. 在控制器中使用
+### 14-4. 在控制器中使用
 
 ```csharp
 [ApiController]
@@ -873,14 +1204,39 @@ public class PeopleController : ControllerBase
         var result = _context.People.ApplyQuery(request);
         return Ok(result);
     }
+
+    [HttpPost("query-builder")]
+    public IActionResult QueryWithBuilder()
+    {
+        // 使用 FilterDictionaryBuilder
+        var filterGroup = FilterDictionaryBuilder.QueryBuilder<Person>()
+            .WithLogicalOperator(LogicalOperator.And)
+            .GreaterThan(x => x.Age, 18)
+            .Like(x => x.Name, "John")
+            .ToFilterGroup();
+
+        // 使用 SortRuleBuilder
+        var sortRules = SortRuleBuilder.SortBuilder<Person>()
+            .Descending(x => x.CreatedDate)
+            .ThenBy(x => x.Name)
+            .Build();
+
+        var predicate = FilterBuilder.Build<Person>(filterGroup);
+        var result = _context.People
+            .Where(predicate)
+            .ApplySort(sortRules)
+            .ToList();
+
+        return Ok(result);
+    }
 }
 ```
 
 ---
 
-## 13. 進階功能與最佳實務
+## 15. 進階功能與最佳實務
 
-### 13-1. 效能最佳化
+### 15-1. 效能最佳化
 - 使用 `AsNoTracking()` 提升查詢效能
 - 在經常查詢的欄位加上索引
 - 適當使用 `IQueryable` 延遲執行特性
@@ -891,12 +1247,12 @@ var result = _context.People
     .ApplyQuery(request);
 ```
 
-### 13-2. 安全性考量
+### 15-2. 安全性考量
 - 始終使用 `FilterOptions.AllowedFields` 限制可查詢欄位
 - 驗證輸入資料的型別和範圍
 - 避免暴露敏感資料欄位
 
-### 13-3. 錯誤處理
+### 15-3. 錯誤處理
 ```csharp
 try
 {
@@ -915,105 +1271,608 @@ catch (Exception ex)
 }
 ```
 
----
-
-## 14. 貢獻指南
-
-### 14-1. 開發環境設定
-1. 安裝 .NET 7.0 或更高版本 SDK
-2. Clone 專案：`git clone https://github.com/Antfire70007/DynamicPredicateBuilder.git`
-3. 建置專案：`dotnet build`
-4. 執行測試：`dotnet test`
-
-### 14-2. 提交 Issue
-- 描述問題的詳細資訊
-- 提供重現問題的步驟
-- 包含相關的程式碼範例
-
-### 14-3. 提交 PR
-- 請遵循專案的程式碼風格
-- 提交前請確保所有測試通過
-- 分支命名建議使用 `feature/` 或 `bugfix/` 前綴
-- 加入對應的單元測試
-
----
-
-## 15. 授權條款
-
-本專案採用 MIT 授權條款，詳見 [LICENSE](./LICENSE)。
-
----
-
-## 16. 版本歷史與更新日誌
-
-### v1.0.82 (Latest)
-- **新增 Nullable 數值型別完整支援**：`int?`, `long?`, `decimal?`, `double?`, `float?`, `DateTime?`
-- **強化類型轉換機制**：使用 TryParse 方法確保安全轉換，避免轉換例外
-- **修復 In/NotIn 操作符**：正確處理陣列參數的類型轉換
-- **修復 Between/NotBetween 否定邏輯**：解決雙重否定問題
-- **新增 decimal? 完整測試案例**：涵蓋所有運算子和邊界情況
-- **優化效能**：改善大數值和高精度 decimal 的處理效率
-
-### v1.0.7
-- 支援 .NET 9.0
-- 新增更多查詢運算子
-- 改善集合查詢效能
-- 強化錯誤處理機制
-
-### 未來規劃
-- 支援更複雜的空間查詢
-- 加入快取機制
-- 提供 GraphQL 整合
-- 支援非同步查詢
-
----
-
-## 17. 常見問題 (FAQ)
-
-### Q: 如何處理日期時間查詢？
-A: 使用標準的 DateTime 比較運算子：
+### 15-4. 陣列導覽屬性效能最佳化
 ```csharp
-new FilterRule { Property = "CreatedDate", Operator = FilterOperator.GreaterThan, Value = DateTime.Today }
+// 避免在迴圈中執行陣列導覽查詢
+// ❌ 錯誤做法
+foreach (var contractId in contractIds)
+{
+    var contract = _context.Contracts
+        .Include(c => c.BuildContracts)
+        .ThenInclude(bc => bc.Build)
+        .FirstOrDefault(c => c.Id == contractId);
+}
+
+// ✅ 正確做法：批次查詢
+var contracts = _context.Contracts
+    .Include(c => c.BuildContracts)
+    .ThenInclude(bc => bc.Build)
+    .Where(c => contractIds.Contains(c.Id))
+    .ToList();
 ```
 
-### Q: 支援模糊搜尋嗎？
-A: 支援，使用 `Like` 或 `Contains` 運算子：
+### 15-5. 記憶體使用優化
 ```csharp
-new FilterRule { Property = "Name", Operator = FilterOperator.Like, Value = "%John%" }
+// 大量資料處理時使用串流處理
+await foreach (var contract in _context.Contracts
+    .Where(predicate)
+    .AsAsyncEnumerable())
+{
+    // 逐筆處理，減少記憶體使用
+    await ProcessContractAsync(contract);
+}
 ```
 
-### Q: 如何處理 Null 值查詢？
-A: 直接使用 `Equal` 或 `NotEqual` 搭配 null 值：
+### 15-6. 查詢快取策略
 ```csharp
-new FilterRule { Property = "MiddleName", Operator = FilterOperator.Equal, Value = null }
+// 使用 IMemoryCache 快取經常查詢的結果
+public async Task<List<Contract>> GetCachedContractsAsync(FilterGroup filterGroup)
+{
+    var cacheKey = $"contracts_{JsonConvert.SerializeObject(filterGroup)}";
+    
+    if (!_cache.TryGetValue(cacheKey, out List<Contract> contracts))
+    {
+        var predicate = FilterBuilder.Build<Contract>(filterGroup);
+        contracts = await _context.Contracts
+            .Include(c => c.BuildContracts)
+            .ThenInclude(bc => bc.Build)
+            .Where(predicate)
+            .ToListAsync();
+            
+        _cache.Set(cacheKey, contracts, TimeSpan.FromMinutes(10));
+    }
+    
+    return contracts;
+}
+
+
+
 ```
 
-### Q: Nullable decimal 查詢有什麼需要注意的？
-A: DynamicPredicateBuilder 完全支援 nullable decimal，包括：
-- null 值比較（`== null`, `!= null`）
-- 數值範圍查詢（`Between`, `GreaterThan` 等）
-- 集合查詢（`In`, `NotIn`）
-- null 值在數值比較中視為不符合條件
-
+### 15-7. 陣列導覽屬性安全性
 ```csharp
-// 查詢薪資為 null 的員工
-new FilterRule { Property = "Salary", Operator = FilterOperator.Equal, Value = null }
+// 限制陣列導覽屬性的查詢權限
+var options = new FilterOptions
+{
+    AllowedFields = new HashSet<string> 
+    { 
+        "Name", 
+        "CreatedDate",
+        "BuildContracts[].Amount",          // 允許查詢合約金額
+        "BuildContracts[].Build.Name",      // 允許查詢建案名稱
+        "BuildContracts[].Build.Location"   // 允許查詢建案位置
+        // "BuildContracts[].Build.SecretInfo" // 敏感資訊不允許查詢
+    }
+};
 
-// 查詢薪資大於 50000 的員工（自動排除 null 值）
-new FilterRule { Property = "Salary", Operator = FilterOperator.GreaterThan, Value = 50000 }
-
-// 查詢薪資在範圍內的員工
-new FilterRule { Property = "Salary", Operator = FilterOperator.Between, Value = new[] { 30000m, 80000m } }
+// 驗證查詢深度，防止過深的陣列導覽
+public static bool ValidateNavigationDepth(string property, int maxDepth = 3)
+{
+    var depth = property.Count(c => c == '[');
+    return depth <= maxDepth;
+}
 ```
 
-### Q: 如何處理高精度的 decimal 計算？
-A: DynamicPredicateBuilder 保持 decimal 的完整精度，支援任意精度的 decimal 值：
+### 15-8. 輸入驗證與清理
 ```csharp
-// 支援高精度計算
-new FilterRule { Property = "PreciseValue", Operator = FilterOperator.Equal, Value = 123.456789012345m }
+// 驗證和清理陣列導覽屬性輸入
+public static string SanitizeNavigationProperty(string property)
+{
+    // 移除不安全的字元
+    var sanitized = Regex.Replace(property, @"[^\w\[\]\.]", "");
+    
+    // 驗證格式
+    var pattern = @"^[a-zA-Z_][a-zA-Z0-9_]*(\[[]\])?(\.[a-zA-Z_][a-zA-Z0-9_]*(\[[]\])?)*$";
+    if (!Regex.IsMatch(sanitized, pattern))
+        throw new ArgumentException("Invalid navigation property format");
+        
+    return sanitized;
+}
+
 ```
 
 ---
 
-持續優化中，歡迎 Issue／PR！
+## 16. 貢獻指南
+
+我們歡迎所有的貢獻！請依照以下步驟進行貢獻：
+
+1. Fork 此專案
+2. 提交您的改動
+3. 發送 Pull Request
+
+我們會儘快檢視您的變更！
+
+---
+
+## 17. 授權條款
+
+本專案採用 MIT 授權條款。詳情請參閱 [LICENSE](LICENSE) 檔案。
+
+---
+
+## 18. 版本歷史與更新日誌
+
+### v1.0.0 - 2023-10-10
+- 初始版本發佈
+
+---
+
+## 19. 常見問題 (FAQ)
+
+**Q1：如何處理日期時間的時區問題？**  
+A1：建議在應用程式層級統一處理時區，例如將所有時間轉為 UTC 儲存，再於取出時轉回當地時間。
+
+**Q2：支援的資料庫有哪些？**  
+A2：目前測試環境包含 Microsoft SQL Server、SQLite，其他 EF Core 支援的資料庫應亦可正常運作。
+
+**Q3：能否處理複雜物件的查詢？**  
+A3：設計上是支援的，但建議查詢條件儘量簡化，以維持查詢效能。
+
+更多問題，歡迎提出 Issue 或 PR！
+
+---
+
+## 20. 導覽屬性查詢支援
+
+DynamicPredicateBuilder 完全支援導覽屬性查詢，讓您能輕鬆查詢關聯資料。以下說明如何使用導覽屬性進行查詢。
+
+### 20-1. 基本用法
+
+當查詢資料表的同時，想要過濾或搜尋其關聯資料表的欄位時，可使用導覽屬性查詢。
+
+#### 範例：查詢員工的部門名稱
+
+假設 `Employee` 有一個導覽屬性 `Department`，我們可以這樣查詢：
+
+```csharp
+var filterGroup = FilterDictionaryBuilder.QueryBuilder<Employee>()
+    .WithLogicalOperator(LogicalOperator.And)
+    .Equal(x => x.Department.Name, "Sales")     // 直接查詢部門名稱
+    .ToFilterGroup();
+
+var predicate = FilterBuilder.Build<Employee>(filterGroup);
+var result = _db.Employees.Include(e => e.Department).Where(predicate).ToList();
+```
+
+### 20-2. 多層導覽屬性
+
+支援多層級的導覽屬性查詢，例如：`Employee.Profile.Skills`。但要注意效能與可能的 `null` 參考問題。
+
+#### 範例：查詢員工擁有 C# 技能
+
+假設 `Employee` 有一個導覽屬性 `Profile`，而 `Profile` 又有一個集合型別的導覽屬性 `Skills`：
+
+```csharp
+var filterGroup = FilterDictionaryBuilder.QueryBuilder<Employee>()
+    .WithLogicalOperator(LogicalOperator.And)
+    .Contains(x => x.Profile.Skills, "C#")       // 查詢技能集合中是否包含 "C#"
+    .ToFilterGroup();
+
+var predicate = FilterBuilder.Build<Employee>(filterGroup);
+var result = _db.Employees.Include(e => e.Profile).ThenInclude(p => p.Skills).Where(predicate).ToList();
+```
+
+### 20-3. 注意事項
+
+- 使用導覽屬性查詢時，必須搭配 `Include` 方法，將關聯的資料表一併載入。
+- 導覽屬性的查詢條件會轉換為 JOIN 條件，因此可能影響效能。
+- 建議對常用的導覽屬性建立索引，以提升查詢效能。
+
+---
+
+## 21. 陣列導覽屬性查詢支援
+
+### 21-1. 概述
+DynamicPredicateBuilder 提供完整的陣列導覽屬性查詢功能，支援對集合中的子屬性進行各種查詢操作。透過 `FilterDictionaryBuilder` 的陣列導覽方法，您可以輕鬆查詢巢狀集合中的資料。
+
+### 21-2. 陣列導覽語法
+所有陣列導覽方法都會自動生成正確的語法格式：```
+{集合屬性}[].{目標屬性}
+```
+
+範例：
+- `BuildContracts[].Build.AptId`
+- `BuildContracts[].Build.Name` 
+- `BuildContracts[].Build.Location`
+- `Orders[].Items[].ProductName`
+
+### 21-3. 完整的陣列導覽方法
+
+#### 基本比較方法
+```csharp
+var builder = FilterDictionaryBuilder.QueryBuilder<Contract>()
+    // 基本等值比較
+    .ArrayEqual(c => c.BuildContracts, bc => bc.Build.AptId, 1001L)
+    .ArrayNotEqual(c => c.BuildContracts, bc => bc.ContractType, "自住")
+    
+    // 數值比較
+    .ArrayGreaterThan(c => c.BuildContracts, bc => bc.Amount, 50000m)
+    .ArrayGreaterThanOrEqual(c => c.BuildContracts, bc => bc.Amount, 30000m)
+    .ArrayLessThan(c => c.BuildContracts, bc => bc.Build.AptId, 2000L)
+    .ArrayLessThanOrEqual(c => c.BuildContracts, bc => bc.Amount, 100000m);
+```
+
+#### 字串操作方法
+```csharp
+var builder = FilterDictionaryBuilder.QueryBuilder<Contract>()
+    // 字串匹配操作
+    .ArrayLike(c => c.BuildContracts, bc => bc.Build.Name, "豪宅")        // ✨ 新增 Like 匹配
+    .ArrayNotLike(c => c.BuildContracts, bc => bc.Build.Name, "舊屋")     // Not Like 匹配
+    .ArrayContains(c => c.BuildContracts, bc => bc.Build.Location, "台北") // 包含字串
+    .ArrayNotContains(c => c.BuildContracts, bc => bc.Build.Name, "違建") // 不包含字串
+    .ArrayStartsWith(c => c.BuildContracts, bc => bc.Build.Location, "台北市") // 開頭匹配
+    .ArrayEndsWith(c => c.BuildContracts, bc => bc.Build.Name, "大樓");    // 結尾匹配
+```
+
+#### 集合與範圍方法
+```csharp
+var builder = FilterDictionaryBuilder.QueryBuilder<Contract>()
+    // 集合成員查詢
+    .ArrayIn(c => c.BuildContracts, bc => bc.Build.AptId, new object[] { 1001L, 1002L, 1003L })
+    .ArrayNotIn(c => c.BuildContracts, bc => bc.ContractType, new object[] { "已取消", "已終止" })
+    
+    // 範圍查詢
+    .ArrayBetween(c => c.BuildContracts, bc => bc.Amount, 50000m, 200000m)
+    .ArrayNotBetween(c => c.BuildContracts, bc => bc.Build.AptId, 1000L, 1500L)
+    
+    // 存在性查詢
+    .ArrayAny(c => c.BuildContracts, bc => bc.Build.AptId)      // 集合中有任何元素
+    .ArrayNotAny(c => c.BuildContracts, bc => bc.IsDeleted);    // 集合中沒有元素符合條件
+```
+
+### 21-4. 實際使用範例
+
+#### 範例 1：基本陣列導覽查詢
+```csharp
+[HttpPost("contracts/search")]
+public IActionResult SearchContracts()
+{
+    // 查找建案名稱包含 "豪宅" 的合約
+    var filterGroup = FilterDictionaryBuilder.QueryBuilder<Contract>()
+        .WithLogicalOperator(LogicalOperator.And)
+        .ArrayLike(c => c.BuildContracts, bc => bc.Build.Name, "豪宅")
+        .ToFilterGroup();
+
+    var predicate = FilterBuilder.Build<Contract>(filterGroup);
+    var results = _context.Contracts
+        .Include(c => c.BuildContracts)
+        .ThenInclude(bc => bc.Build)
+        .Where(predicate)
+        .ToList();
+
+    return Ok(results);
+}
+```
+
+#### 範例 2：複雜組合查詢
+```csharp
+[HttpPost("contracts/advanced-search")]
+public IActionResult AdvancedSearchContracts()
+{
+    // 複雜查詢：結合多種陣列導覽方法
+    var filterGroup = FilterDictionaryBuilder.QueryBuilder<Contract>()
+        .WithLogicalOperator(LogicalOperator.And)
+        .ArrayGreaterThan(c => c.BuildContracts, bc => bc.Build.AptId, 1000L)    // AptId > 1000
+        .ArrayLike(c => c.BuildContracts, bc => bc.Build.Location, "台北市")      // 位置包含台北市
+        .ArrayNotEqual(c => c.BuildContracts, bc => bc.ContractType, "自住")     // 非自住合約
+        .ArrayBetween(c => c.BuildContracts, bc => bc.Amount, 30000m, 100000m)   // 金額範圍
+        .Contains(c => c.Name, "購買")                                           // 合約名稱包含購買
+        .ToFilterGroup();
+
+    var predicate = FilterBuilder.Build<Contract>(filterGroup);
+    var results = _context.Contracts
+        .Include(c => c.BuildContracts)
+        .ThenInclude(bc => bc.Build)
+        .Where(predicate)
+        .ToList();
+
+    return Ok(new { count = results.Count, contracts = results });
+}
+```
+
+#### 範例 3：電商訂單查詢
+```csharp
+[HttpPost("orders/search")]
+public IActionResult SearchOrders()
+{
+    // 查找包含特定商品的訂單
+    var filterGroup = FilterDictionaryBuilder.QueryBuilder<Order>()
+        .WithLogicalOperator(LogicalOperator.And)
+        .ArrayIn(c => c.OrderItems, oi => oi.Product.Category, new object[] { "3C", "家電" })
+        .ArrayGreaterThan(c => c.OrderItems, oi => oi.Quantity, 1)
+        .ArrayBetween(c => c.OrderItems, oi => oi.UnitPrice, 1000m, 50000m)
+        .GreaterThan(c => c.TotalAmount, 5000m)
+        .ToFilterGroup();
+
+    var predicate = FilterBuilder.Build<Order>(filterGroup);
+    var results = _db.Orders
+        .Include(o => o.OrderItems)
+        .ThenInclude(oi => oi.Product)
+        .Where(predicate)
+        .ToList();
+
+    return Ok(results);
+}
+```
+
+### 21-5. JSON 格式範例
+
+#### 基本陣列導覽查詢 JSON
+```jsonc
+{
+  "Filter": {
+    "LogicalOperator": "And",
+    "Rules": [
+      {
+        "Property": "BuildContracts[].Build.AptId",
+        "Operator": "Equal",
+        "Value": 1001
+      },
+      {
+        "Property": "BuildContracts[].Build.Name",
+        "Operator": "Like",
+        "Value": "豪宅"
+      }
+    ]
+  }
+}
+```
+
+#### 複雜陣列導覽查詢 JSON
+```jsonc
+{
+  "Filter": {
+    "LogicalOperator": "And",
+    "Rules": [
+      {
+        "Property": "BuildContracts[].Build.Location",
+        "Operator": "StartsWith",
+        "Value": "台北市"
+      },
+      {
+        "Property": "BuildContracts[].Amount",
+        "Operator": "Between",
+        "Value": [30000, 100000]
+      },
+      {
+        "Property": "BuildContracts[].ContractType",
+        "Operator": "In",
+        "Value": ["購買", "投資"]
+      }
+    ]
+  }
+}
+```
+
+### 21-6. 支援的資料類型
+
+| 資料類型 | 支援的操作 | 說明 |
+|---------|-----------|------|
+| **字串類型** | `Like`, `NotLike`, `Contains`, `NotContains`, `StartsWith`, `EndsWith`, `Equal`, `NotEqual` | 完整支援所有字串操作 |
+| **數值類型** | `Equal`, `NotEqual`, `GreaterThan`, `LessThan`, `Between`, `NotBetween`, `In`, `NotIn` | 支援所有比較和範圍操作 |
+| **可空類型** | 所有對應類型的操作 | 正確處理 `null` 值比較 |
+| **集合類型** | `In`, `NotIn`, `Any`, `NotAny` | 支援集合成員和存在性查詢 |
+| **日期時間** | `Equal`, `GreaterThan`, `LessThan`, `Between` 等 | 完整支援日期時間比較 |
+
+### 21-7. 陣列導覽方法完整列表
+
+| 方法名稱 | 對應運算子 | 說明 | 使用範例 |
+|---------|-----------|------|---------|
+| `ArrayEqual` | `Equal` | 陣列元素等於指定值 | `ArrayEqual(c => c.Items, i => i.Id, 123)` |
+| `ArrayNotEqual` | `NotEqual` | 陣列元素不等於指定值 | `ArrayNotEqual(c => c.Items, i => i.Status, "Deleted")` |
+| `ArrayLike` | `Like` | 陣列元素符合 Like 條件 | `ArrayLike(c => c.Items, i => i.Name, "產品")` |
+| `ArrayNotLike` | `NotLike` | 陣列元素不符合 Like 條件 | `ArrayNotLike(c => c.Items, i => i.Name, "測試")` |
+| `ArrayContains` | `Contains` | 陣列元素包含指定字串 | `ArrayContains(c => c.Items, i => i.Description, "特價")` |
+| `ArrayNotContains` | `NotContains` | 陣列元素不包含指定字串 | `ArrayNotContains(c => c.Items, i => i.Name, "停產")` |
+| `ArrayStartsWith` | `StartsWith` | 陣列元素以指定字串開頭 | `ArrayStartsWith(c => c.Items, i => i.Code, "PRD")` |
+| `ArrayEndsWith` | `EndsWith` | 陣列元素以指定字串結尾 | `ArrayEndsWith(c => c.Items, i => i.Code, "001")` |
+| `ArrayGreaterThan` | `GreaterThan` | 陣列元素大於指定值 | `ArrayGreaterThan(c => c.Items, i => i.Price, 1000m)` |
+| `ArrayGreaterThanOrEqual` | `GreaterThanOrEqual` | 陣列元素大於等於指定值 | `ArrayGreaterThanOrEqual(c => c.Items, i => i.Stock, 10)` |
+| `ArrayLessThan` | `LessThan` | 陣列元素小於指定值 | `ArrayLessThan(c => c.Items, i => i.Weight, 5.0)` |
+| `ArrayLessThanOrEqual` | `LessThanOrEqual` | 陣列元素小於等於指定值 | `ArrayLessThanOrEqual(c => c.Items, i => i.Discount, 0.3)` |
+| `ArrayIn` | `In` | 陣列元素在指定集合中 | `ArrayIn(c => c.Items, i => i.Category, new[] {"A", "B"})` |
+| `ArrayNotIn` | `NotIn` | 陣列元素不在指定集合中 | `ArrayNotIn(c => c.Items, i => i.Status, new[] {"Banned"})` |
+| `ArrayBetween` | `Between` | 陣列元素在指定範圍內 | `ArrayBetween(c => c.Items, i => i.Price, 100m, 1000m)` |
+| `ArrayNotBetween` | `NotBetween` | 陣列元素不在指定範圍內 | `ArrayNotBetween(c => c.Items, i => i.Score, 60, 80)` |
+| `ArrayAny` | `Any` | 陣列中有任何元素符合條件 | `ArrayAny(c => c.Items, i => i.IsActive)` |
+| `ArrayNotAny` | `NotAny` | 陣列中沒有元素符合條件 | `ArrayNotAny(c => c.Items, i => i.IsDeleted)` |
+
+### 21-8. 性能最佳化建議
+
+#### Include 策略
+```csharp
+// ✅ 正確：預先載入所需的導覽屬性
+var results = _context.Contracts
+    .Include(c => c.BuildContracts)
+    .ThenInclude(bc => bc.Build)
+    .Where(predicate)
+    .ToList();
+
+// ❌ 錯誤：未載入導覽屬性會導致 N+1 查詢問題
+var results = _context.Contracts
+    .Where(predicate)  // 這會觸發多次額外查詢
+    .ToList();
+```
+
+#### 查詢最佳化
+```csharp
+// 使用 AsNoTracking() 提升只讀查詢效能
+var results = _context.Contracts
+    .AsNoTracking()
+    .Include(c => c.BuildContracts)
+    .ThenInclude(bc => bc.Build)
+    .Where(predicate)
+    .ToList();
+
+// 使用投影減少資料傳輸
+var results = _context.Contracts
+    .Include(c => c.BuildContracts)
+    .ThenInclude(bc => bc.Build)
+    .Where(predicate)
+    .Select(c => new ContractDto
+    {
+        Id = c.Id,
+        Name = c.Name,
+        BuildNames = c.BuildContracts.Select(bc => bc.Build.Name).ToList()
+    })
+    .ToList();
+```
+
+#### 避免深層巢狀
+```csharp
+// ❌ 避免過深的陣列導覽
+.ArrayEqual(c => c.Level1, l1 => l1.Level2, l2 => l2.Level3, l3 => l3.Level4.Value, "value")
+
+// ✅ 建議：限制在 2-3 層以內
+.ArrayEqual(c => c.BuildContracts, bc => bc.Build.AptId, 1001L)
+```
+
+### 21-9. 錯誤處理與驗證
+
+#### 屬性路徑驗證
+```csharp
+public static bool ValidateNavigationPath(string propertyPath)
+{
+    // 驗證陣列導覽語法格式
+    var pattern = @"^[a-zA-Z_][a-zA-Z0-9_]*(\[\](\.[a-zA-Z_][a-zA-Z0-9_]*)+)*$";
+    return Regex.IsMatch(propertyPath, pattern);
+}
+
+// 使用範例
+if (!ValidateNavigationPath("BuildContracts[].Build.AptId"))
+{
+    throw new ArgumentException("Invalid navigation property path");
+}
+```
+
+#### 安全性控制
+```csharp
+// 限制可查詢的陣列導覽屬性
+var options = new FilterOptions
+{
+    AllowedFields = new HashSet<string>
+    {
+        "BuildContracts[].Amount",
+        "BuildContracts[].Build.Name",
+        "BuildContracts[].Build.Location",
+        // 不包含敏感資訊如 "BuildContracts[].Build.SecretInfo"
+    }
+};
+
+var predicate = FilterBuilder.Build<Contract>(filterGroup, options);
+```
+
+### 21-10. 實務應用場景
+
+#### 電商平台
+```csharp
+// 查找包含特定品牌商品的訂單
+.ArrayEqual(c => c.OrderItems, oi => oi.Product.Brand, "Apple")
+.ArrayGreaterThan(c => c.OrderItems, oi => oi.Quantity, 1)
+```
+
+#### 專案管理
+```csharp
+// 查找有高優先級任務的專案
+.ArrayEqual(c => c.Tasks, t => t.Priority, "High")
+.ArrayLessThanOrEqual(c => c.Tasks, t => t.CompletionRate, 0.8)
+```
+
+#### 客戶關係管理
+```csharp
+// 查找有活躍聯絡人的客戶
+.ArrayEqual(c => c.Contacts, ct => ct.Status, "Active")
+.ArrayContains(c => c.Contacts, ct => ct.Email, "@company.com")
+```
+
+#### 學校管理系統
+```csharp
+// 查找有特定課程的學生
+.ArrayIn(c => c.Enrollments, e => e.Course.Code, new[] {"CS101", "MATH201"})
+.ArrayGreaterThan(c => c.Enrollments, e => e.Grade, 80)
+```
+
+### 21-11. 除錯與監控
+
+#### SQL 查詢監控
+```csharp
+// 啟用 SQL 日誌以監控生成的查詢
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddDbContext<ApplicationDbContext>(options =>
+    {
+        options.UseSqlServer(connectionString)
+               .EnableSensitiveDataLogging()
+               .LogTo(Console.WriteLine, LogLevel.Information);
+    });
+}
+```
+
+#### 查詢效能分析
+```csharp
+// 使用 Stopwatch 測量查詢時間
+var stopwatch = Stopwatch.StartNew();
+var results = _context.Contracts
+    .Include(c => c.BuildContracts)
+    .ThenInclude(bc => bc.Build)
+    .Where(predicate)
+    .ToList();
+stopwatch.Stop();
+
+_logger.LogInformation($"Array navigation query took {stopwatch.ElapsedMilliseconds}ms");
+```
+
+### 21-12. 單元測試範例
+
+```csharp
+[Fact]
+public void ArrayLike_Should_FindMatchingContracts()
+{
+    // Arrange
+    using var context = CreateTestContext();
+    
+    var filterGroup = FilterDictionaryBuilder.QueryBuilder<Contract>()
+        .ArrayLike(c => c.BuildContracts, bc => bc.Build.Name, "豪宅")
+        .ToFilterGroup();
+
+    // Act
+    var predicate = FilterBuilder.Build<Contract>(filterGroup);
+    var results = context.Contracts
+        .Include(c => c.BuildContracts)
+        .ThenInclude(bc => bc.Build)
+        .Where(predicate)
+        .ToList();
+
+    // Assert
+    results.Should().HaveCount(1);
+    results.Should().Contain(c => c.Name == "豪宅購買合約");
+}
+
+[Fact]
+public void ArrayBetween_Should_FilterByRange()
+{
+    // Arrange
+    using var context = CreateTestContext();
+    
+    var filterGroup = FilterDictionaryBuilder.QueryBuilder<Contract>()
+        .ArrayBetween(c => c.BuildContracts, bc => bc.Amount, 30000m, 60000m)
+        .ToFilterGroup();
+
+    // Act
+    var predicate = FilterBuilder.Build<Contract>(filterGroup);
+    var results = context.Contracts
+        .Include(c => c.BuildContracts)
+        .Where(predicate)
+        .ToList();
+
+    // Assert
+    results.Should().NotBeEmpty();
+    results.SelectMany(c => c.BuildContracts)
+           .Should().OnlyContain(bc => bc.Amount >= 30000m && bc.Amount <= 60000m);
+}
+```
+
+---
+
 
