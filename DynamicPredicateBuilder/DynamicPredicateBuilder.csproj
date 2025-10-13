@@ -3,7 +3,7 @@
 		<TargetFrameworks>net9.0;net8.0;net7.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>annotations</Nullable>
-		<Version>1.1.7-prev</Version>
+		<Version>1.1.8</Version>
 		<Configurations>Debug;Release;Stage</Configurations>
 		<Authors>Antfire</Authors>
 		<Company>Antfire</Company>
