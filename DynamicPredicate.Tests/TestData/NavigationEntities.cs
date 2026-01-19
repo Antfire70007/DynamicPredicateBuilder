@@ -1,11 +1,11 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DynamicPredicate.Tests.TestData
 {
     /// <summary>
-    /// ¤½¥q¹êÅé
+    /// å…¬å¸å¯¦é«”
     /// </summary>
     public class Company
     {
@@ -17,7 +17,7 @@ namespace DynamicPredicate.Tests.TestData
     }
 
     /// <summary>
-    /// ³¡ªù¹êÅé
+    /// éƒ¨é–€å¯¦é«”
     /// </summary>
     public class Department
     {
@@ -30,7 +30,7 @@ namespace DynamicPredicate.Tests.TestData
     }
 
     /// <summary>
-    /// ­û¤u¹êÅé
+    /// å“¡å·¥å¯¦é«”
     /// </summary>
     public class Employee
     {
@@ -46,7 +46,7 @@ namespace DynamicPredicate.Tests.TestData
     }
 
     /// <summary>
-    /// ºŞ²zªÌ¹êÅé
+    /// ç®¡ç†è€…å¯¦é«”
     /// </summary>
     public class Manager
     {
@@ -59,7 +59,7 @@ namespace DynamicPredicate.Tests.TestData
     }
 
     /// <summary>
-    /// ±M®×¹êÅé
+    /// å°ˆæ¡ˆå¯¦é«”
     /// </summary>
     public class Project
     {
@@ -76,7 +76,7 @@ namespace DynamicPredicate.Tests.TestData
     }
 
     /// <summary>
-    /// ±M®×¤À°t¹êÅé
+    /// å°ˆæ¡ˆåˆ†é…å¯¦é«”
     /// </summary>
     public class ProjectAssignment
     {
@@ -91,7 +91,7 @@ namespace DynamicPredicate.Tests.TestData
     }
 
     /// <summary>
-    /// ­û¤uÀÉ®×¹êÅé
+    /// å“¡å·¥æª”æ¡ˆå¯¦é«”
     /// </summary>
     public class EmployeeProfile
     {
@@ -104,7 +104,7 @@ namespace DynamicPredicate.Tests.TestData
     }
 
     /// <summary>
-    /// ±M®×¸Ô²Ó¸ê®Æ¹êÅé
+    /// å°ˆæ¡ˆè©³ç´°è³‡æ–™å¯¦é«”
     /// </summary>
     public class ProjectDetail
     {

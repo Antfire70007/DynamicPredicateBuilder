@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using FluentAssertions;
@@ -95,27 +95,27 @@ namespace DynamicPredicate.Tests.Builders
 
         private void SeedComplexTestData(ExtendedTestDbContext context)
         {
-            // ³Ğ«Ø¤½¥q
-            var company1 = new Company { Id = 1, Name = "TechCorp", Address = "¥x¥_¥««H¸q°Ï" };
-            var company2 = new Company { Id = 2, Name = "SoftwareInc", Address = "¥x¤¤¥«¦è¤Ù°Ï" };
+            // å‰µå»ºå…¬å¸
+            var company1 = new Company { Id = 1, Name = "TechCorp", Address = "å°åŒ—å¸‚ä¿¡ç¾©å€" };
+            var company2 = new Company { Id = 2, Name = "SoftwareInc", Address = "å°ä¸­å¸‚è¥¿å±¯å€" };
             
             context.Companies.AddRange(company1, company2);
             
-            // ³Ğ«Ø³¡ªù
+            // å‰µå»ºéƒ¨é–€
             var dept1 = new Department { Id = 1, Name = "Engineering", CompanyId = 1 };
             var dept2 = new Department { Id = 2, Name = "Marketing", CompanyId = 1 };
             var dept3 = new Department { Id = 3, Name = "Development", CompanyId = 2 };
             
             context.Departments.AddRange(dept1, dept2, dept3);
             
-            // ³Ğ«ØºŞ²zªÌ
+            // å‰µå»ºç®¡ç†è€…
             var manager1 = new Manager { Id = 1, Name = "Alice Manager", Title = "CTO", Bonus = 100000m, DepartmentId = 1 };
             var manager2 = new Manager { Id = 2, Name = "Bob Manager", Title = "CMO", Bonus = 80000m, DepartmentId = 2 };
             var manager3 = new Manager { Id = 3, Name = "Carol Manager", Title = "Lead", Bonus = 90000m, DepartmentId = 3 };
             
             context.Managers.AddRange(manager1, manager2, manager3);
             
-            // ³Ğ«Ø­û¤u
+            // å‰µå»ºå“¡å·¥
             var emp1 = new Employee { Id = 1, Name = "John Dev", Email = "john@techcorp.com", Salary = 80000m, HireDate = DateTime.Now.AddYears(-2), DepartmentId = 1 };
             var emp2 = new Employee { Id = 2, Name = "Jane Dev", Email = "jane@techcorp.com", Salary = 85000m, HireDate = DateTime.Now.AddYears(-1), DepartmentId = 1 };
             var emp3 = new Employee { Id = 3, Name = "Mike Marketing", Email = "mike@techcorp.com", Salary = 70000m, HireDate = DateTime.Now.AddMonths(-6), DepartmentId = 2 };
@@ -123,7 +123,7 @@ namespace DynamicPredicate.Tests.Builders
             
             context.Employees.AddRange(emp1, emp2, emp3, emp4);
             
-            // ³Ğ«Ø­û¤uÀÉ®×
+            // å‰µå»ºå“¡å·¥æª”æ¡ˆ
             var profile1 = new EmployeeProfile { Id = 1, EmployeeId = 1, Skills = "C#,JavaScript", YearsOfExperience = 5, Education = "Bachelor CS" };
             var profile2 = new EmployeeProfile { Id = 2, EmployeeId = 2, Skills = "Python,React", YearsOfExperience = 3, Education = "Master CS" };
             var profile3 = new EmployeeProfile { Id = 3, EmployeeId = 3, Skills = "Marketing,Analytics", YearsOfExperience = 4, Education = "MBA" };
@@ -131,21 +131,21 @@ namespace DynamicPredicate.Tests.Builders
             
             context.EmployeeProfiles.AddRange(profile1, profile2, profile3, profile4);
             
-            // ³Ğ«Ø±M®×
+            // å‰µå»ºå°ˆæ¡ˆ
             var project1 = new Project { Id = 1, Name = "WebApp", Description = "E-commerce platform", StartDate = DateTime.Now.AddMonths(-6), Budget = 500000m, CompanyId = 1 };
             var project2 = new Project { Id = 2, Name = "MobileApp", Description = "Mobile companion", StartDate = DateTime.Now.AddMonths(-3), Budget = 300000m, CompanyId = 1 };
             var project3 = new Project { Id = 3, Name = "DataPlatform", Description = "Big data solution", StartDate = DateTime.Now.AddMonths(-12), Budget = 800000m, CompanyId = 2 };
             
             context.Projects.AddRange(project1, project2, project3);
             
-            // ³Ğ«Ø±M®×¸Ô²Ó¸ê®Æ
+            // å‰µå»ºå°ˆæ¡ˆè©³ç´°è³‡æ–™
             var detail1 = new ProjectDetail { Id = 1, ProjectId = 1, TechnicalStack = "ASP.NET Core,React", EstimatedHours = 2000, Priority = "High" };
             var detail2 = new ProjectDetail { Id = 2, ProjectId = 2, TechnicalStack = "React Native", EstimatedHours = 1200, Priority = "Medium" };
             var detail3 = new ProjectDetail { Id = 3, ProjectId = 3, TechnicalStack = "Apache Spark,Kafka", EstimatedHours = 3000, Priority = "High" };
             
             context.ProjectDetails.AddRange(detail1, detail2, detail3);
             
-            // ³Ğ«Ø±M®×¤À°t
+            // å‰µå»ºå°ˆæ¡ˆåˆ†é…
             var assignment1 = new ProjectAssignment { Id = 1, EmployeeId = 1, ProjectId = 1, Role = "Backend Developer", HoursPerWeek = 40, AssignedDate = DateTime.Now.AddMonths(-6) };
             var assignment2 = new ProjectAssignment { Id = 2, EmployeeId = 2, ProjectId = 1, Role = "Frontend Developer", HoursPerWeek = 35, AssignedDate = DateTime.Now.AddMonths(-5) };
             var assignment3 = new ProjectAssignment { Id = 3, EmployeeId = 2, ProjectId = 2, Role = "Lead Developer", HoursPerWeek = 30, AssignedDate = DateTime.Now.AddMonths(-3) };
@@ -156,7 +156,7 @@ namespace DynamicPredicate.Tests.Builders
             context.SaveChanges();
         }
 
-        // ¦X¬ù´ú¸Õ¸ê®ÆºØ¤l¤èªk
+        // åˆç´„æ¸¬è©¦è³‡æ–™ç¨®å­æ–¹æ³•
         private ExtendedTestDbContext CreateContractTestContext()
         {
             var options = new DbContextOptionsBuilder<ExtendedTestDbContext>()
@@ -167,7 +167,7 @@ namespace DynamicPredicate.Tests.Builders
 
             var context = new ExtendedTestDbContext(options);
             
-            // Seed ¦X¬ù´ú¸Õ¸ê®Æ
+            // Seed åˆç´„æ¸¬è©¦è³‡æ–™
             SeedContractTestData(context);
             
             return context;
@@ -175,50 +175,50 @@ namespace DynamicPredicate.Tests.Builders
 
         private void SeedContractTestData(ExtendedTestDbContext context)
         {
-            // ³Ğ«Ø«Ø®×
-            var build1 = new Build { Id = 1, Name = "«H¸q»¨¦v", AptId = 1001L, Location = "¥x¥_¥««H¸q°Ï", Price = 50000000m };
-            var build2 = new Build { Id = 2, Name = "¤j¦w¦Wªó", AptId = 1002L, Location = "¥x¥_¥«¤j¦w°Ï", Price = 45000000m };
-            var build3 = new Build { Id = 3, Name = "«n´ä·s«°", AptId = null, Location = "¥x¥_¥««n´ä°Ï", Price = null }; // null AptId
-            var build4 = new Build { Id = 4, Name = "¤º´òªá¶é", AptId = 1004L, Location = "¥x¥_¥«¤º´ò°Ï", Price = 38000000m };
+            // å‰µå»ºå»ºæ¡ˆ
+            var build1 = new Build { Id = 1, Name = "ä¿¡ç¾©è±ªå®…", AptId = 1001L, Location = "å°åŒ—å¸‚ä¿¡ç¾©å€", Price = 50000000m };
+            var build2 = new Build { Id = 2, Name = "å¤§å®‰åé‚¸", AptId = 1002L, Location = "å°åŒ—å¸‚å¤§å®‰å€", Price = 45000000m };
+            var build3 = new Build { Id = 3, Name = "å—æ¸¯æ–°åŸ", AptId = null, Location = "å°åŒ—å¸‚å—æ¸¯å€", Price = null }; // null AptId
+            var build4 = new Build { Id = 4, Name = "å…§æ¹–èŠ±åœ’", AptId = 1004L, Location = "å°åŒ—å¸‚å…§æ¹–å€", Price = 38000000m };
 
             context.Builds.AddRange(build1, build2, build3, build4);
 
-            // ³Ğ«Ø¦X¬ù
-            var contract1 = new Contract { Id = 1, Name = "»¨¦vÁÊ¶R¦X¬ù", CreatedDate = DateTime.Now.AddMonths(-6) };
-            var contract2 = new Contract { Id = 2, Name = "§ë¸êÁÊ¶R¦X¬ù", CreatedDate = DateTime.Now.AddMonths(-3) };
-            var contract3 = new Contract { Id = 3, Name = "¦Û¦íÁÊ¶R¦X¬ù", CreatedDate = DateTime.Now.AddMonths(-1) };
+            // å‰µå»ºåˆç´„
+            var contract1 = new Contract { Id = 1, Name = "è±ªå®…è³¼è²·åˆç´„", CreatedDate = DateTime.Now.AddMonths(-6) };
+            var contract2 = new Contract { Id = 2, Name = "æŠ•è³‡è³¼è²·åˆç´„", CreatedDate = DateTime.Now.AddMonths(-3) };
+            var contract3 = new Contract { Id = 3, Name = "è‡ªä½è³¼è²·åˆç´„", CreatedDate = DateTime.Now.AddMonths(-1) };
 
             context.Contracts.AddRange(contract1, contract2, contract3);
 
-            // ³Ğ«Ø«Ø®×¦X¬ùÃöÁp
+            // å‰µå»ºå»ºæ¡ˆåˆç´„é—œè¯
             var buildContract1 = new BuildContract 
             { 
                 Id = 1, ContractId = 1, BuildId = 1, 
-                ContractType = "ÁÊ¶R", Amount = 50000000m, 
+                ContractType = "è³¼è²·", Amount = 50000000m, 
                 SignedDate = DateTime.Now.AddMonths(-6) 
             };
             var buildContract2 = new BuildContract 
             { 
                 Id = 2, ContractId = 1, BuildId = 2, 
-                ContractType = "ÁÊ¶R", Amount = 45000000m, 
+                ContractType = "è³¼è²·", Amount = 45000000m, 
                 SignedDate = DateTime.Now.AddMonths(-5) 
             };
             var buildContract3 = new BuildContract 
             { 
                 Id = 3, ContractId = 2, BuildId = 2, 
-                ContractType = "§ë¸ê", Amount = 45000000m, 
+                ContractType = "æŠ•è³‡", Amount = 45000000m, 
                 SignedDate = DateTime.Now.AddMonths(-3) 
             };
             var buildContract4 = new BuildContract 
             { 
                 Id = 4, ContractId = 2, BuildId = 4, 
-                ContractType = "§ë¸ê", Amount = 38000000m, 
+                ContractType = "æŠ•è³‡", Amount = 38000000m, 
                 SignedDate = DateTime.Now.AddMonths(-2) 
             };
             var buildContract5 = new BuildContract 
             { 
                 Id = 5, ContractId = 3, BuildId = 3, 
-                ContractType = "¦Û¦í", Amount = 35000000m, 
+                ContractType = "è‡ªä½", Amount = 35000000m, 
                 SignedDate = DateTime.Now.AddMonths(-1) 
             };
 
@@ -258,7 +258,7 @@ namespace DynamicPredicate.Tests.Builders
             results.Should().NotContain(u => u.Name == "Otacon"); // null salary
         }
 
-        #region Contract.BuildContracts[].Build.AptId ´ú¸Õ®×¨Ò
+        #region Contract.BuildContracts[].Build.AptId æ¸¬è©¦æ¡ˆä¾‹
 
         [Fact]
         public void FilterBuilder_ArrayNavigation_ContractBuildContractsAptId_Equal_ShouldWork()
@@ -284,9 +284,9 @@ namespace DynamicPredicate.Tests.Builders
                 .Where(predicate);
             var results = query.ToList();
 
-            // À³¸Ó§ä¨ì¥]§t AptId = 1001 ªº¦X¬ù (»¨¦vÁÊ¶R¦X¬ù)
+            // æ‡‰è©²æ‰¾åˆ°åŒ…å« AptId = 1001 çš„åˆç´„ (è±ªå®…è³¼è²·åˆç´„)
             results.Should().HaveCount(1);
-            results.Should().Contain(c => c.Name == "»¨¦vÁÊ¶R¦X¬ù");
+            results.Should().Contain(c => c.Name == "è±ªå®…è³¼è²·åˆç´„");
         }
 
         [Fact]
@@ -294,11 +294,11 @@ namespace DynamicPredicate.Tests.Builders
         {
             using var context = CreateContractTestContext();
 
-            // ¤è®× 1: ²V¦X¨Ï¥Î¦r¦ê©M Expression »yªk¡]±ÀÂË¡^
+            // æ–¹æ¡ˆ 1: æ··åˆä½¿ç”¨å­—ä¸²å’Œ Expression èªæ³•ï¼ˆæ¨è–¦ï¼‰
             var filterGroup = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
-                .Equal("BuildContracts[].Build.AptId", 1001L) // °}¦C¾ÉÄı¥Î¦r¦ê»yªk
-                .Contains(c => c.Name, "»¨¦v") // ¤@¯ëÄİ©Ê¥Î Expression »yªk
+                .Equal("BuildContracts[].Build.AptId", 1001L) // é™£åˆ—å°è¦½ç”¨å­—ä¸²èªæ³•
+                .Contains(c => c.Name, "è±ªå®…") // ä¸€èˆ¬å±¬æ€§ç”¨ Expression èªæ³•
                 .ToFilterGroup();
 
             var predicate = FilterBuilder.Build<Contract>(filterGroup);
@@ -308,9 +308,9 @@ namespace DynamicPredicate.Tests.Builders
                 .Where(predicate);
             var results = query.ToList();
 
-            // À³¸Ó§ä¨ì²Å¦X±ø¥óªº¦X¬ù
+            // æ‡‰è©²æ‰¾åˆ°ç¬¦åˆæ¢ä»¶çš„åˆç´„
             results.Should().HaveCount(1);
-            results.Should().Contain(c => c.Name == "»¨¦vÁÊ¶R¦X¬ù");
+            results.Should().Contain(c => c.Name == "è±ªå®…è³¼è²·åˆç´„");
         }
 
         [Fact]
@@ -318,11 +318,11 @@ namespace DynamicPredicate.Tests.Builders
         {
             using var context = CreateContractTestContext();
 
-            // ¤è®× 2: ¨Ï¥Î·sªº°}¦C¾ÉÄı Expression ¤èªk
+            // æ–¹æ¡ˆ 2: ä½¿ç”¨æ–°çš„é™£åˆ—å°è¦½ Expression æ–¹æ³•
             var filterGroup = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
                 .ArrayEqual(c => c.BuildContracts, bc => bc.Build.AptId, 1001L)
-                .Contains(c => c.Name, "»¨¦v")
+                .Contains(c => c.Name, "è±ªå®…")
                 .ToFilterGroup();
 
             var predicate = FilterBuilder.Build<Contract>(filterGroup);
@@ -332,9 +332,9 @@ namespace DynamicPredicate.Tests.Builders
                 .Where(predicate);
             var results = query.ToList();
 
-            // À³¸Ó§ä¨ì²Å¦X±ø¥óªº¦X¬ù
+            // æ‡‰è©²æ‰¾åˆ°ç¬¦åˆæ¢ä»¶çš„åˆç´„
             results.Should().HaveCount(1);
-            results.Should().Contain(c => c.Name == "»¨¦vÁÊ¶R¦X¬ù");
+            results.Should().Contain(c => c.Name == "è±ªå®…è³¼è²·åˆç´„");
         }
 
         [Fact]
@@ -342,7 +342,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             using var context = CreateContractTestContext();
 
-            // ´ú¸Õ©Ò¦³°}¦C¾ÉÄı¤èªk
+            // æ¸¬è©¦æ‰€æœ‰é™£åˆ—å°è¦½æ–¹æ³•
             var filterGroup1 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
                 .ArrayIn(c => c.BuildContracts, bc => bc.Build.AptId, new object[] { 1001L, 1002L })
@@ -356,10 +356,10 @@ namespace DynamicPredicate.Tests.Builders
                 .ToList();
 
             results1.Should().HaveCount(2);
-            results1.Should().Contain(c => c.Name == "»¨¦vÁÊ¶R¦X¬ù");
-            results1.Should().Contain(c => c.Name == "§ë¸êÁÊ¶R¦X¬ù");
+            results1.Should().Contain(c => c.Name == "è±ªå®…è³¼è²·åˆç´„");
+            results1.Should().Contain(c => c.Name == "æŠ•è³‡è³¼è²·åˆç´„");
 
-            // ´ú¸Õ GreaterThan
+            // æ¸¬è©¦ GreaterThan
             var filterGroup2 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
                 .ArrayGreaterThan(c => c.BuildContracts, bc => bc.Build.AptId, 1002L)
@@ -373,9 +373,9 @@ namespace DynamicPredicate.Tests.Builders
                 .ToList();
 
             results2.Should().HaveCount(1);
-            results2.Should().Contain(c => c.Name == "§ë¸êÁÊ¶R¦X¬ù");
+            results2.Should().Contain(c => c.Name == "æŠ•è³‡è³¼è²·åˆç´„");
 
-            // ´ú¸Õ Between
+            // æ¸¬è©¦ Between
             var filterGroup3 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
                 .ArrayBetween(c => c.BuildContracts, bc => bc.Build.AptId, 1001L, 1003L)
@@ -389,8 +389,8 @@ namespace DynamicPredicate.Tests.Builders
                 .ToList();
 
             results3.Should().HaveCount(2);
-            results3.Should().Contain(c => c.Name == "»¨¦vÁÊ¶R¦X¬ù");
-            results3.Should().Contain(c => c.Name == "§ë¸êÁÊ¶R¦X¬ù");
+            results3.Should().Contain(c => c.Name == "è±ªå®…è³¼è²·åˆç´„");
+            results3.Should().Contain(c => c.Name == "æŠ•è³‡è³¼è²·åˆç´„");
         }
 
         [Fact]
@@ -398,10 +398,10 @@ namespace DynamicPredicate.Tests.Builders
         {
             using var context = CreateContractTestContext();
 
-            // ´ú¸Õ ArrayLike ¥\¯à - ¨Ï¥ÎÂ²³æªº¦r¦ê¤Ç°t
+            // æ¸¬è©¦ ArrayLike åŠŸèƒ½ - ä½¿ç”¨ç°¡å–®çš„å­—ä¸²åŒ¹é…
             var filterGroup = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
-                .ArrayLike(c => c.BuildContracts, bc => bc.Build.Name, "»¨¦v")
+                .ArrayLike(c => c.BuildContracts, bc => bc.Build.Name, "è±ªå®…")
                 .ToFilterGroup();
 
             var predicate = FilterBuilder.Build<Contract>(filterGroup);
@@ -411,9 +411,9 @@ namespace DynamicPredicate.Tests.Builders
                 .Where(predicate);
             var results = query.ToList();
 
-            // À³¸Ó§ä¨ì¥]§t«Ø®×¦WºÙ²Å¦X Like ±ø¥óªº¦X¬ù
+            // æ‡‰è©²æ‰¾åˆ°åŒ…å«å»ºæ¡ˆåç¨±ç¬¦åˆ Like æ¢ä»¶çš„åˆç´„
             results.Should().HaveCount(1);
-            results.Should().Contain(c => c.Name == "»¨¦vÁÊ¶R¦X¬ù");
+            results.Should().Contain(c => c.Name == "è±ªå®…è³¼è²·åˆç´„");
         }
 
         [Fact]
@@ -421,10 +421,10 @@ namespace DynamicPredicate.Tests.Builders
         {
             using var context = CreateContractTestContext();
 
-            // ´ú¸Õ ArrayContains
+            // æ¸¬è©¦ ArrayContains
             var filterGroup1 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
-                .ArrayContains(c => c.BuildContracts, bc => bc.Build.Name, "»¨¦v")
+                .ArrayContains(c => c.BuildContracts, bc => bc.Build.Name, "è±ªå®…")
                 .ToFilterGroup();
 
             var predicate1 = FilterBuilder.Build<Contract>(filterGroup1);
@@ -435,12 +435,12 @@ namespace DynamicPredicate.Tests.Builders
                 .ToList();
 
             results1.Should().HaveCount(1);
-            results1.Should().Contain(c => c.Name == "»¨¦vÁÊ¶R¦X¬ù");
+            results1.Should().Contain(c => c.Name == "è±ªå®…è³¼è²·åˆç´„");
 
-            // ´ú¸Õ ArrayStartsWith
+            // æ¸¬è©¦ ArrayStartsWith
             var filterGroup2 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
-                .ArrayStartsWith(c => c.BuildContracts, bc => bc.Build.Location, "¥x¥_¥«")
+                .ArrayStartsWith(c => c.BuildContracts, bc => bc.Build.Location, "å°åŒ—å¸‚")
                 .ToFilterGroup();
 
             var predicate2 = FilterBuilder.Build<Contract>(filterGroup2);
@@ -450,13 +450,13 @@ namespace DynamicPredicate.Tests.Builders
                 .Where(predicate2)
                 .ToList();
 
-            // À³¸Ó§ä¨ì©Ò¦³¥x¥_¥«ªº«Ø®×¦X¬ù
-            results2.Should().HaveCount(3); // ©Ò¦³«Ø®×³£¦b¥x¥_¥«
+            // æ‡‰è©²æ‰¾åˆ°æ‰€æœ‰å°åŒ—å¸‚çš„å»ºæ¡ˆåˆç´„
+            results2.Should().HaveCount(3); // æ‰€æœ‰å»ºæ¡ˆéƒ½åœ¨å°åŒ—å¸‚
             
-            // ´ú¸Õ ArrayNotContains
+            // æ¸¬è©¦ ArrayNotContains
             var filterGroup3 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
-                .ArrayNotContains(c => c.BuildContracts, bc => bc.Build.Name, "¤£¦s¦bªº")
+                .ArrayNotContains(c => c.BuildContracts, bc => bc.Build.Name, "ä¸å­˜åœ¨çš„")
                 .ToFilterGroup();
 
             var predicate3 = FilterBuilder.Build<Contract>(filterGroup3);
@@ -466,7 +466,7 @@ namespace DynamicPredicate.Tests.Builders
                 .Where(predicate3)
                 .ToList();
 
-            results3.Should().HaveCount(3); // ©Ò¦³¦X¬ù³£¤£¥]§t"¤£¦s¦bªº"
+            results3.Should().HaveCount(3); // æ‰€æœ‰åˆç´„éƒ½ä¸åŒ…å«"ä¸å­˜åœ¨çš„"
         }
 
         [Fact]
@@ -474,7 +474,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             using var context = CreateContractTestContext();
 
-            // ´ú¸Õ ArrayNotEqual
+            // æ¸¬è©¦ ArrayNotEqual
             var filterGroup1 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
                 .ArrayNotEqual(c => c.BuildContracts, bc => bc.Build.AptId, 1001L)
@@ -488,10 +488,10 @@ namespace DynamicPredicate.Tests.Builders
                 .ToList();
 
             results1.Should().HaveCount(2);
-            results1.Should().Contain(c => c.Name == "§ë¸êÁÊ¶R¦X¬ù");
-            results1.Should().Contain(c => c.Name == "¦Û¦íÁÊ¶R¦X¬ù");
+            results1.Should().Contain(c => c.Name == "æŠ•è³‡è³¼è²·åˆç´„");
+            results1.Should().Contain(c => c.Name == "è‡ªä½è³¼è²·åˆç´„");
 
-            // ´ú¸Õ ArrayLessThan
+            // æ¸¬è©¦ ArrayLessThan
             var filterGroup2 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
                 .ArrayLessThan(c => c.BuildContracts, bc => bc.Build.AptId, 1003L)
@@ -505,10 +505,10 @@ namespace DynamicPredicate.Tests.Builders
                 .ToList();
 
             results2.Should().HaveCount(2);
-            results2.Should().Contain(c => c.Name == "»¨¦vÁÊ¶R¦X¬ù");
-            results2.Should().Contain(c => c.Name == "§ë¸êÁÊ¶R¦X¬ù");
+            results2.Should().Contain(c => c.Name == "è±ªå®…è³¼è²·åˆç´„");
+            results2.Should().Contain(c => c.Name == "æŠ•è³‡è³¼è²·åˆç´„");
 
-            // ´ú¸Õ ArrayGreaterThanOrEqual
+            // æ¸¬è©¦ ArrayGreaterThanOrEqual
             var filterGroup3 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
                 .ArrayGreaterThanOrEqual(c => c.BuildContracts, bc => bc.Build.AptId, 1002L)
@@ -521,10 +521,10 @@ namespace DynamicPredicate.Tests.Builders
                 .Where(predicate3)
                 .ToList();
 
-            // À³¸Ó§ä¨ì»¨¦vÁÊ¶R¦X¬ù©M§ë¸êÁÊ¶R¦X¬ù
+            // æ‡‰è©²æ‰¾åˆ°è±ªå®…è³¼è²·åˆç´„å’ŒæŠ•è³‡è³¼è²·åˆç´„
             queryResults3.Should().HaveCount(2);
-            queryResults3.Should().Contain(c => c.Name == "»¨¦vÁÊ¶R¦X¬ù");
-            queryResults3.Should().Contain(c => c.Name == "§ë¸êÁÊ¶R¦X¬ù");
+            queryResults3.Should().Contain(c => c.Name == "è±ªå®…è³¼è²·åˆç´„");
+            queryResults3.Should().Contain(c => c.Name == "æŠ•è³‡è³¼è²·åˆç´„");
         }
 
         [Fact]
@@ -532,7 +532,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             using var context = CreateContractTestContext();
 
-            // ´ú¸Õ ArrayNotIn - ´M§ä¤£¥]§t¯S©w AptId ªº¦X¬ù
+            // æ¸¬è©¦ ArrayNotIn - å°‹æ‰¾ä¸åŒ…å«ç‰¹å®š AptId çš„åˆç´„
             var filterGroup1 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
                 .ArrayNotIn(c => c.BuildContracts, bc => bc.Build.AptId, new object[] { 1001L, 1004L })
@@ -545,11 +545,11 @@ namespace DynamicPredicate.Tests.Builders
                 .Where(predicate1)
                 .ToList();
 
-            // ½Õ¾ã¹w´Áµ²ªG¡G¥u¦³ "¦Û¦íÁÊ¶R¦X¬ù" ªº AptId ¬° null¡]¤£¦b [1001L, 1004L] ¤¤¡^
+            // èª¿æ•´é æœŸçµæœï¼šåªæœ‰ "è‡ªä½è³¼è²·åˆç´„" çš„ AptId ç‚º nullï¼ˆä¸åœ¨ [1001L, 1004L] ä¸­ï¼‰
             results1.Should().HaveCount(1);
-            results1.Should().Contain(c => c.Name == "¦Û¦íÁÊ¶R¦X¬ù"); // ¥]§t null
+            results1.Should().Contain(c => c.Name == "è‡ªä½è³¼è²·åˆç´„"); // åŒ…å« null
 
-            // ´ú¸Õ ArrayNotBetween - ´M§ä¤£¦b 1001L-1002L ½d³ò¤ºªº¦X¬ù
+            // æ¸¬è©¦ ArrayNotBetween - å°‹æ‰¾ä¸åœ¨ 1001L-1002L ç¯„åœå…§çš„åˆç´„
             var filterGroup2 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
                 .ArrayNotBetween(c => c.BuildContracts, bc => bc.Build.AptId, 1001L, 1002L)
@@ -562,15 +562,15 @@ namespace DynamicPredicate.Tests.Builders
                 .Where(predicate2)
                 .ToList();
 
-            // ½Õ¾ã¹w´Áµ²ªG¡G¥u¦³ "¦Û¦íÁÊ¶R¦X¬ù"¡]AptId ¬° null¡A¤£¦b½d³ò¤º¡^
-            // "§ë¸êÁÊ¶R¦X¬ù" ¥]§t 1002L¡]¦b½d³ò¤º¡^©M 1004L¡]¤£¦b½d³ò¤º¡^¡A¥i¯à³Q±Æ°£
+            // èª¿æ•´é æœŸçµæœï¼šåªæœ‰ "è‡ªä½è³¼è²·åˆç´„"ï¼ˆAptId ç‚º nullï¼Œä¸åœ¨ç¯„åœå…§ï¼‰
+            // "æŠ•è³‡è³¼è²·åˆç´„" åŒ…å« 1002Lï¼ˆåœ¨ç¯„åœå…§ï¼‰å’Œ 1004Lï¼ˆä¸åœ¨ç¯„åœå…§ï¼‰ï¼Œå¯èƒ½è¢«æ’é™¤
             results2.Should().HaveCount(1);
-            results2.Should().Contain(c => c.Name == "¦Û¦íÁÊ¶R¦X¬ù"); // ¥]§t null
+            results2.Should().Contain(c => c.Name == "è‡ªä½è³¼è²·åˆç´„"); // åŒ…å« null
 
-            // ´ú¸Õ ArrayNotLike - ¨Ï¥ÎÂ²³æ¦r¦ê
+            // æ¸¬è©¦ ArrayNotLike - ä½¿ç”¨ç°¡å–®å­—ä¸²
             var filterGroup3 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
-                .ArrayNotLike(c => c.BuildContracts, bc => bc.Build.Name, "»¨¦v")
+                .ArrayNotLike(c => c.BuildContracts, bc => bc.Build.Name, "è±ªå®…")
                 .ToFilterGroup();
 
             var predicate3 = FilterBuilder.Build<Contract>(filterGroup3);
@@ -581,8 +581,8 @@ namespace DynamicPredicate.Tests.Builders
                 .ToList();
 
             results3.Should().HaveCount(2);
-            results3.Should().Contain(c => c.Name == "§ë¸êÁÊ¶R¦X¬ù");
-            results3.Should().Contain(c => c.Name == "¦Û¦íÁÊ¶R¦X¬ù");
+            results3.Should().Contain(c => c.Name == "æŠ•è³‡è³¼è²·åˆç´„");
+            results3.Should().Contain(c => c.Name == "è‡ªä½è³¼è²·åˆç´„");
         }
 
         [Fact]
@@ -590,13 +590,13 @@ namespace DynamicPredicate.Tests.Builders
         {
             using var context = CreateContractTestContext();
 
-            // ½ÆÂø¬d¸ß¡Gµ²¦X¦hºØ°}¦C¾ÉÄı¤èªk
+            // è¤‡é›œæŸ¥è©¢ï¼šçµåˆå¤šç¨®é™£åˆ—å°è¦½æ–¹æ³•
             var filterGroup = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
                 .ArrayGreaterThan(c => c.BuildContracts, bc => bc.Build.AptId, 1000L)
-                .ArrayLike(c => c.BuildContracts, bc => bc.Build.Location, "¥x¥_¥«")
-                .ArrayNotEqual(c => c.BuildContracts, bc => bc.ContractType, "¦Û¦í")
-                .Contains(c => c.Name, "ÁÊ¶R")
+                .ArrayLike(c => c.BuildContracts, bc => bc.Build.Location, "å°åŒ—å¸‚")
+                .ArrayNotEqual(c => c.BuildContracts, bc => bc.ContractType, "è‡ªä½")
+                .Contains(c => c.Name, "è³¼è²·")
                 .ToFilterGroup();
 
             var predicate = FilterBuilder.Build<Contract>(filterGroup);
@@ -606,10 +606,10 @@ namespace DynamicPredicate.Tests.Builders
                 .Where(predicate);
             var results = query.ToList();
 
-            // À³¸Ó§ä¨ì²Å¦X©Ò¦³±ø¥óªº¦X¬ù
+            // æ‡‰è©²æ‰¾åˆ°ç¬¦åˆæ‰€æœ‰æ¢ä»¶çš„åˆç´„
             results.Should().HaveCount(2);
-            results.Should().Contain(c => c.Name == "»¨¦vÁÊ¶R¦X¬ù");
-            results.Should().Contain(c => c.Name == "§ë¸êÁÊ¶R¦X¬ù");
+            results.Should().Contain(c => c.Name == "è±ªå®…è³¼è²·åˆç´„");
+            results.Should().Contain(c => c.Name == "æŠ•è³‡è³¼è²·åˆç´„");
         }
 
         #endregion

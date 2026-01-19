@@ -1,10 +1,10 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 
 namespace DynamicPredicate.Tests.TestData
 {
     /// <summary>
-    /// ¦X¬ù¹êÅé
+    /// åˆç´„å¯¦é«”
     /// </summary>
     public class Contract
     {
@@ -15,7 +15,7 @@ namespace DynamicPredicate.Tests.TestData
     }
 
     /// <summary>
-    /// «Ø®×¦X¬ù¹êÅé
+    /// å»ºæ¡ˆåˆç´„å¯¦é«”
     /// </summary>
     public class BuildContract
     {
@@ -30,13 +30,13 @@ namespace DynamicPredicate.Tests.TestData
     }
 
     /// <summary>
-    /// «Ø®×¹êÅé
+    /// å»ºæ¡ˆå¯¦é«”
     /// </summary>
     public class Build
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public long? AptId { get; set; }  // nullable long Ãş«¬ªº AptId
+        public long? AptId { get; set; }  // nullable long é¡å‹çš„ AptId
         public string Location { get; set; } = string.Empty;
         public decimal? Price { get; set; }
         public List<BuildContract> BuildContracts { get; set; } = new();

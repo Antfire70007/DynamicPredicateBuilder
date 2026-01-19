@@ -1,41 +1,41 @@
-# DynamicPredicateBuilder v1.0.83 §ó·s»¡©ú
+ï»¿# DynamicPredicateBuilder v1.0.83 æ›´æ–°èªªæ˜
 
-## ?? ¥D­n¥\¯à§ó·s
+## ?? ä¸»è¦åŠŸèƒ½æ›´æ–°
 
-### ? §¹¾ã¤ä´© Nullable Decimal Ãş«¬
+### ? å®Œæ•´æ”¯æ´ Nullable Decimal é¡å‹
 
-·sª©¥»¹ï `decimal?` Ãş«¬´£¨Ñ§¹¾ã¤ä´©¡A¥]¬A¡G
+æ–°ç‰ˆæœ¬å° `decimal?` é¡å‹æä¾›å®Œæ•´æ”¯æ´ï¼ŒåŒ…æ‹¬ï¼š
 
-- ? **µ¥­È¤ñ¸û**¡G`Equal`, `NotEqual` with null values
-- ? **¼Æ­È¤ñ¸û**¡G`GreaterThan`, `LessThan`, `GreaterThanOrEqual`, `LessThanOrEqual`
-- ? **½d³ò¬d¸ß**¡G`Between`, `NotBetween`
-- ? **¶°¦X¬d¸ß**¡G`In`, `NotIn` (¤ä´© null ­È)
-- ? **½ÆÂøÅŞ¿è**¡G¦h­«§_©w¡B±_ª¬±ø¥ó
+- ? **ç­‰å€¼æ¯”è¼ƒ**ï¼š`Equal`, `NotEqual` with null values
+- ? **æ•¸å€¼æ¯”è¼ƒ**ï¼š`GreaterThan`, `LessThan`, `GreaterThanOrEqual`, `LessThanOrEqual`
+- ? **ç¯„åœæŸ¥è©¢**ï¼š`Between`, `NotBetween`
+- ? **é›†åˆæŸ¥è©¢**ï¼š`In`, `NotIn` (æ”¯æ´ null å€¼)
+- ? **è¤‡é›œé‚è¼¯**ï¼šå¤šé‡å¦å®šã€å·¢ç‹€æ¢ä»¶
 
-### ?? ±j¤ÆªºÃş«¬Âà´«¾÷¨î
+### ?? å¼·åŒ–çš„é¡å‹è½‰æ›æ©Ÿåˆ¶
 
-­«ºc¤F `ChangeType` ¤èªk¡A·s¼W¡G
+é‡æ§‹äº† `ChangeType` æ–¹æ³•ï¼Œæ–°å¢ï¼š
 
-- **¦w¥şÂà´«**¡G©Ò¦³¼Æ­ÈÃş«¬¨Ï¥Î `TryParse` ¤èªk
-- **©ú½T³B²z**¡G`decimal`, `double`, `float`, `int`, `long`, `DateTime`
-- **ºë«×«O«ù**¡G`decimal` Ãş«¬«O«ù§¹¾ãºë«×
-- **¿ù»~¹w¨¾**¡GÁ×§K `InvalidCastException`
+- **å®‰å…¨è½‰æ›**ï¼šæ‰€æœ‰æ•¸å€¼é¡å‹ä½¿ç”¨ `TryParse` æ–¹æ³•
+- **æ˜ç¢ºè™•ç†**ï¼š`decimal`, `double`, `float`, `int`, `long`, `DateTime`
+- **ç²¾åº¦ä¿æŒ**ï¼š`decimal` é¡å‹ä¿æŒå®Œæ•´ç²¾åº¦
+- **éŒ¯èª¤é é˜²**ï¼šé¿å… `InvalidCastException`
 
-### ?? ­«­n¿ù»~­×´_
+### ?? é‡è¦éŒ¯èª¤ä¿®å¾©
 
-#### 1. In/NotIn ¾Ş§@²Å­×´_
-- **°İÃD**¡G°}¦C°Ñ¼ÆµLªk¥¿½TÂà´«Ãş«¬
-- **¸Ñ¨M**¡G¦b `BuildIn` ¤èªk¤¤³v¤@Âà´«¤¸¯ÀÃş«¬
-- **¼vÅT**¡G©Ò¦³¶°¦X¬d¸ß²{¦b³£¯à¥¿±`¤u§@
+#### 1. In/NotIn æ“ä½œç¬¦ä¿®å¾©
+- **å•é¡Œ**ï¼šé™£åˆ—åƒæ•¸ç„¡æ³•æ­£ç¢ºè½‰æ›é¡å‹
+- **è§£æ±º**ï¼šåœ¨ `BuildIn` æ–¹æ³•ä¸­é€ä¸€è½‰æ›å…ƒç´ é¡å‹
+- **å½±éŸ¿**ï¼šæ‰€æœ‰é›†åˆæŸ¥è©¢ç¾åœ¨éƒ½èƒ½æ­£å¸¸å·¥ä½œ
 
-#### 2. Between/NotBetween §_©wÅŞ¿è­×´_
-- **°İÃD**¡G`IsNegated=true` »P `NotBetween` ¦P®É¨Ï¥Î®É¥X²{Âù­«§_©w
-- **¸Ñ¨M**¡G²Î¤@§_©wÅŞ¿è³B²z
-- **¼vÅT**¡G½ÆÂø§_©w±ø¥ó²{¦b¦æ¬°¥¿½T
+#### 2. Between/NotBetween å¦å®šé‚è¼¯ä¿®å¾©
+- **å•é¡Œ**ï¼š`IsNegated=true` èˆ‡ `NotBetween` åŒæ™‚ä½¿ç”¨æ™‚å‡ºç¾é›™é‡å¦å®š
+- **è§£æ±º**ï¼šçµ±ä¸€å¦å®šé‚è¼¯è™•ç†
+- **å½±éŸ¿**ï¼šè¤‡é›œå¦å®šæ¢ä»¶ç¾åœ¨è¡Œç‚ºæ­£ç¢º
 
-## ?? ´ú¸ÕÂĞ»\²v´£¤É
+## ?? æ¸¬è©¦è¦†è“‹ç‡æå‡
 
-·s¼W **14 ­Ó±Mªùªº Nullable Decimal ´ú¸Õ®×¨Ò**¡G
+æ–°å¢ **14 å€‹å°ˆé–€çš„ Nullable Decimal æ¸¬è©¦æ¡ˆä¾‹**ï¼š
 
 ```csharp
 ? BuildPredicate_NullableDecimal_EqualOperator_WithValue_ShouldWork
@@ -54,27 +54,27 @@
 ? BuildPredicate_NullableDecimal_MultipleGroups_ShouldWork
 ```
 
-**Á`´ú¸Õ®×¨Ò**¡G±q 26 ­Ó¼W¥[¨ì **40 ­Ó**¡A²[»\©Ò¦³¥D­n¨Ï¥Î³õ´º¡C
+**ç¸½æ¸¬è©¦æ¡ˆä¾‹**ï¼šå¾ 26 å€‹å¢åŠ åˆ° **40 å€‹**ï¼Œæ¶µè“‹æ‰€æœ‰ä¸»è¦ä½¿ç”¨å ´æ™¯ã€‚
 
-## ?? ¨Ï¥Î½d¨Ò
+## ?? ä½¿ç”¨ç¯„ä¾‹
 
-### °ò¥» Nullable Decimal ¬d¸ß
+### åŸºæœ¬ Nullable Decimal æŸ¥è©¢
 
 ```csharp
-// ¬d¸ß¦³Á~¸êªº­û¤u
+// æŸ¥è©¢æœ‰è–ªè³‡çš„å“¡å·¥
 new FilterRule { Property = "Salary", Operator = FilterOperator.GreaterThan, Value = 0 }
 
-// ¬d¸ß¨S¦³Á~¸ê¸ê®Æªº­û¤u  
+// æŸ¥è©¢æ²’æœ‰è–ªè³‡è³‡æ–™çš„å“¡å·¥  
 new FilterRule { Property = "Salary", Operator = FilterOperator.Equal, Value = null }
 
-// ¬d¸ßÁ~¸ê¦b½d³ò¤ºªº­û¤u
+// æŸ¥è©¢è–ªè³‡åœ¨ç¯„åœå…§çš„å“¡å·¥
 new FilterRule { Property = "Salary", Operator = FilterOperator.Between, Value = new[] { 30000m, 80000m } }
 ```
 
-### ½ÆÂø¬d¸ß½d¨Ò
+### è¤‡é›œæŸ¥è©¢ç¯„ä¾‹
 
 ```csharp
-// ¬d¸ß°ªÁ~©ÎµLÁ~¸ê°O¿ıªº­û¤u
+// æŸ¥è©¢é«˜è–ªæˆ–ç„¡è–ªè³‡è¨˜éŒ„çš„å“¡å·¥
 var filterGroup = new FilterGroup
 {
     LogicalOperator = LogicalOperator.Or,
@@ -86,10 +86,10 @@ var filterGroup = new FilterGroup
 };
 ```
 
-### FilterDictionaryBuilder ½d¨Ò
+### FilterDictionaryBuilder ç¯„ä¾‹
 
 ```csharp
-// ¨Ï¥Î Expression »yªk
+// ä½¿ç”¨ Expression èªæ³•
 var query = FilterDictionaryBuilder.QueryBuilder<Employee>()
     .WithLogicalOperator(LogicalOperator.And)
     .GreaterThan(x => x.Salary, 50000m)
@@ -98,88 +98,88 @@ var query = FilterDictionaryBuilder.QueryBuilder<Employee>()
     .Build();
 ```
 
-## ?? ®Ä¯à§ïµ½
+## ?? æ•ˆèƒ½æ”¹å–„
 
-- **°O¾ĞÅé¨Ï¥Î**¡GÀu¤ÆÃş«¬Âà´«¹Lµ{¡A´î¤Ö¤£¥²­nªºª«¥ó«Ø¥ß
-- **°õ¦æ³t«×**¡G¨Ï¥Î `TryParse` Á×§K¨Ò¥~³B²zªº®Ä¯à·l¯Ó
-- **½sÄ¶®É¶¡**¡GExpression Tree «Øºc§ó¥[°ª®Ä
+- **è¨˜æ†¶é«”ä½¿ç”¨**ï¼šå„ªåŒ–é¡å‹è½‰æ›éç¨‹ï¼Œæ¸›å°‘ä¸å¿…è¦çš„ç‰©ä»¶å»ºç«‹
+- **åŸ·è¡Œé€Ÿåº¦**ï¼šä½¿ç”¨ `TryParse` é¿å…ä¾‹å¤–è™•ç†çš„æ•ˆèƒ½æè€—
+- **ç·¨è­¯æ™‚é–“**ï¼šExpression Tree å»ºæ§‹æ›´åŠ é«˜æ•ˆ
 
-## ?? ¤åÀÉ§ó·s
+## ?? æ–‡æª”æ›´æ–°
 
-### ·s¼W¤åÀÉ
-- **`NUMERIC_TYPES.md`**¡G¸Ô²Óªº¼Æ­ÈÃş«¬¤ä´©«ü«n
-- **README.md ²Ä 5 ¸`**¡G¤ä´©ªº¸ê®ÆÃş«¬»¡©ú
-- **´ú¸Õ½d¨Ò**¡G§¹¾ãªº nullable decimal ¨Ï¥Î®×¨Ò
+### æ–°å¢æ–‡æª”
+- **`NUMERIC_TYPES.md`**ï¼šè©³ç´°çš„æ•¸å€¼é¡å‹æ”¯æ´æŒ‡å—
+- **README.md ç¬¬ 5 ç¯€**ï¼šæ”¯æ´çš„è³‡æ–™é¡å‹èªªæ˜
+- **æ¸¬è©¦ç¯„ä¾‹**ï¼šå®Œæ•´çš„ nullable decimal ä½¿ç”¨æ¡ˆä¾‹
 
-### §ó·s¤º®e
-- ¹Bºâ¤l¤ä´©¯x°}
-- Nullable Ãş«¬¯S®í¦æ¬°»¡©ú
-- ³Ì¨Î¹ê°È«ü«n
-- ±`¨£°İÃD¸Ñµª
+### æ›´æ–°å…§å®¹
+- é‹ç®—å­æ”¯æ´çŸ©é™£
+- Nullable é¡å‹ç‰¹æ®Šè¡Œç‚ºèªªæ˜
+- æœ€ä½³å¯¦å‹™æŒ‡å—
+- å¸¸è¦‹å•é¡Œè§£ç­”
 
-## ?? ¾E²¾«ü«n
+## ?? é·ç§»æŒ‡å—
 
-### ±q v1.0.82 ¤É¯Å
+### å¾ v1.0.82 å‡ç´š
 
-**? µL¯}Ãa©ÊÅÜ§ó**¡G²{¦³µ{¦¡½XµL»İ­×§ï
+**? ç„¡ç ´å£æ€§è®Šæ›´**ï¼šç¾æœ‰ç¨‹å¼ç¢¼ç„¡éœ€ä¿®æ”¹
 
-**?? «ØÄ³§ó·s**¡G
+**?? å»ºè­°æ›´æ–°**ï¼š
 
-1. **²¾°£¤â°ÊÃş«¬ÀË¬d**¡G
+1. **ç§»é™¤æ‰‹å‹•é¡å‹æª¢æŸ¥**ï¼š
 ```csharp
-// ? ÂÂª©¥»»İ­nªºÃB¥~ÀË¬d
+// ? èˆŠç‰ˆæœ¬éœ€è¦çš„é¡å¤–æª¢æŸ¥
 if (value is decimal decimalValue) 
 {
-    // ¤â°Ê³B²z...
+    // æ‰‹å‹•è™•ç†...
 }
 
-// ? ·sª©¥»¦Û°Ê³B²z
+// ? æ–°ç‰ˆæœ¬è‡ªå‹•è™•ç†
 new FilterRule { Property = "Salary", Operator = FilterOperator.Equal, Value = "50000" }
 ```
 
-2. **¨Ï¥Î·sªº Nullable ¥\¯à**¡G
+2. **ä½¿ç”¨æ–°çš„ Nullable åŠŸèƒ½**ï¼š
 ```csharp
-// ? ²{¦b§¹¥ş¤ä´©
+// ? ç¾åœ¨å®Œå…¨æ”¯æ´
 new FilterRule { Property = "Salary", Operator = FilterOperator.In, Value = new object[] { 50000m, null } }
 ```
 
-## ?? ¤wª¾°İÃD­×´_
+## ?? å·²çŸ¥å•é¡Œä¿®å¾©
 
-| °İÃD | ª¬ºA | »¡©ú |
+| å•é¡Œ | ç‹€æ…‹ | èªªæ˜ |
 |------|------|------|
-| Decimal Ãş«¬Âà´«²§±` | ? ¤w­×´_ | ¨Ï¥Î TryParse ¦w¥şÂà´« |
-| In ¾Ş§@²Å°}¦CÃş«¬¿ù»~ | ? ¤w­×´_ | ¥¿½T³B²z¤¸¯ÀÃş«¬Âà´« |
-| NotBetween Âù­«§_©w | ? ¤w­×´_ | ²Î¤@§_©wÅŞ¿è³B²z |
-| Nullable ¤ñ¸û¦æ¬°¤£¤@­P | ? ¤w­×´_ | ¼Ğ·Ç¤Æ null ­È³B²z |
+| Decimal é¡å‹è½‰æ›ç•°å¸¸ | ? å·²ä¿®å¾© | ä½¿ç”¨ TryParse å®‰å…¨è½‰æ› |
+| In æ“ä½œç¬¦é™£åˆ—é¡å‹éŒ¯èª¤ | ? å·²ä¿®å¾© | æ­£ç¢ºè™•ç†å…ƒç´ é¡å‹è½‰æ› |
+| NotBetween é›™é‡å¦å®š | ? å·²ä¿®å¾© | çµ±ä¸€å¦å®šé‚è¼¯è™•ç† |
+| Nullable æ¯”è¼ƒè¡Œç‚ºä¸ä¸€è‡´ | ? å·²ä¿®å¾© | æ¨™æº–åŒ– null å€¼è™•ç† |
 
-## ?? ¤U¤@¨B­pµe
+## ?? ä¸‹ä¸€æ­¥è¨ˆç•«
 
-### v1.0.84 ¹w­p¥\¯à
-- ?? ¤ä´© `DateOnly` ©M `TimeOnly` (.NET 6+)
-- ?? ¼W±j `Guid` Ãş«¬¬d¸ß¥\¯à
-- ?? ·s¼W¦Û­q¹Bºâ¤lÂX®i¾÷¨î
-- ?? ®Ä¯à°ò·Ç´ú¸Õ¤u¨ã
+### v1.0.84 é è¨ˆåŠŸèƒ½
+- ?? æ”¯æ´ `DateOnly` å’Œ `TimeOnly` (.NET 6+)
+- ?? å¢å¼· `Guid` é¡å‹æŸ¥è©¢åŠŸèƒ½
+- ?? æ–°å¢è‡ªè¨‚é‹ç®—å­æ“´å±•æ©Ÿåˆ¶
+- ?? æ•ˆèƒ½åŸºæº–æ¸¬è©¦å·¥å…·
 
-### ªø´Á³W¹º
-- ?? ¬d¸ß§Ö¨ú¾÷¨î
-- ?? «D¦P¨B¬d¸ß¤ä´©
-- ?? ¦h»y¨¥¿ù»~°T®§
-- ?? ¬d¸ß¤ÀªR¤u¨ã
+### é•·æœŸè¦åŠƒ
+- ?? æŸ¥è©¢å¿«å–æ©Ÿåˆ¶
+- ?? éåŒæ­¥æŸ¥è©¢æ”¯æ´
+- ?? å¤šèªè¨€éŒ¯èª¤è¨Šæ¯
+- ?? æŸ¥è©¢åˆ†æå·¥å…·
 
-## ?? ·PÁÂ
+## ?? æ„Ÿè¬
 
-¯S§O·PÁÂªÀ¸s¦^õX¡AÅı§Ú­Ì¯à°÷ÃÑ§O¨Ã­×´_³o¨Ç­«­n°İÃD¡C
+ç‰¹åˆ¥æ„Ÿè¬ç¤¾ç¾¤å›é¥‹ï¼Œè®“æˆ‘å€‘èƒ½å¤ è­˜åˆ¥ä¸¦ä¿®å¾©é€™äº›é‡è¦å•é¡Œã€‚
 
 ---
 
-## ?? Ápµ¸¸ê°T
+## ?? è¯çµ¡è³‡è¨Š
 
 - **GitHub**: [DynamicPredicateBuilder](https://github.com/Antfire70007/DynamicPredicateBuilder)
-- **Issues**: [¦^³ø°İÃD](https://github.com/Antfire70007/DynamicPredicateBuilder/issues)
-- **NuGet**: [®M¥ó­¶­±](https://www.nuget.org/packages/DynamicPredicateBuilder/)
+- **Issues**: [å›å ±å•é¡Œ](https://github.com/Antfire70007/DynamicPredicateBuilder/issues)
+- **NuGet**: [å¥—ä»¶é é¢](https://www.nuget.org/packages/DynamicPredicateBuilder/)
 
 ---
 
-**ª©¥»**: v1.0.83  
-**µo¥¬¤é´Á**: 2024-12-19  
-**¬Û®e©Ê**: .NET 7.0, .NET 8.0, .NET 9.0
+**ç‰ˆæœ¬**: v1.0.83  
+**ç™¼å¸ƒæ—¥æœŸ**: 2024-12-19  
+**ç›¸å®¹æ€§**: .NET 7.0, .NET 8.0, .NET 9.0

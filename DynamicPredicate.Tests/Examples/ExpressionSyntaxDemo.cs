@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using DynamicPredicateBuilder;
 using DynamicPredicateBuilder.Models;
 using Newtonsoft.Json;
@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace DynamicPredicate.Tests.Examples
 {
     /// <summary>
-    /// Expression »yªk¨Ï¥Î¥Ü½d
+    /// Expression èªæ³•ä½¿ç”¨ç¤ºç¯„
     /// </summary>
     public class ExpressionSyntaxDemo
     {
@@ -20,37 +20,37 @@ namespace DynamicPredicate.Tests.Examples
         }
 
         /// <summary>
-        /// ®i¥Ü Expression »yªkªº±j¤j¥\¯à
+        /// å±•ç¤º Expression èªæ³•çš„å¼·å¤§åŠŸèƒ½
         /// </summary>
         public static void DemoExpressionSyntax()
         {
-            Console.WriteLine("=== FilterDictionaryBuilder Expression »yªk¥Ü½d ===\n");
+            Console.WriteLine("=== FilterDictionaryBuilder Expression èªæ³•ç¤ºç¯„ ===\n");
 
-            // ²Å¦X¥Î¤á­ì©l»İ¨D¡G¤ä´© x => x.Property »yªk
+            // ç¬¦åˆç”¨æˆ¶åŸå§‹éœ€æ±‚ï¼šæ”¯æ´ x => x.Property èªæ³•
             var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
                 .Compare(LogicalOperator.Or, rules => rules
-                    .Like(x => x.LandNo, "A123")        // ? ±j«¬§O¤ä´©
-                    .Like(x => x.CityCode, "TPE")       // ? IntelliSense ¤ä´©
+                    .Like(x => x.LandNo, "A123")        // ? å¼·å‹åˆ¥æ”¯æ´
+                    .Like(x => x.CityCode, "TPE")       // ? IntelliSense æ”¯æ´
                     .Compare(LogicalOperator.And, innerRules => innerRules
-                        .Equal(x => x.CaseOwner, "John Doe")    // ? ­«ºc¦w¥ş
-                        .GreaterThan(x => x.Price, 1000000)     // ? ½sÄ¶®É´ÁÀË¬d
+                        .Equal(x => x.CaseOwner, "John Doe")    // ? é‡æ§‹å®‰å…¨
+                        .GreaterThan(x => x.Price, 1000000)     // ? ç·¨è­¯æ™‚æœŸæª¢æŸ¥
                     )
                 )
                 .Build();
 
-            Console.WriteLine("Expression »yªkµ²ªG:");
+            Console.WriteLine("Expression èªæ³•çµæœ:");
             Console.WriteLine(JsonConvert.SerializeObject(query, Formatting.Indented));
 
-            Console.WriteLine("\n=== »yªk¤ñ¸û ===\n");
+            Console.WriteLine("\n=== èªæ³•æ¯”è¼ƒ ===\n");
 
-            // ¹ï¤ñ: ­ì©l¼gªk vs Expression »yªk
-            Console.WriteLine("­ì©l¼gªk (Ácº¾):");
-            Console.WriteLine("nameof(LandDTO.LandNo) - »İ­n¤â°ÊºûÅ@");
+            // å°æ¯”: åŸå§‹å¯«æ³• vs Expression èªæ³•
+            Console.WriteLine("åŸå§‹å¯«æ³• (ç¹ç‘£):");
+            Console.WriteLine("nameof(LandDTO.LandNo) - éœ€è¦æ‰‹å‹•ç¶­è­·");
             
-            Console.WriteLine("\nExpression »yªk (Â²¼ä):");
-            Console.WriteLine("x => x.LandNo - ±j«¬§O¡B¦Û°Ê§¹¦¨¡B­«ºc¦w¥ş");
+            Console.WriteLine("\nExpression èªæ³• (ç°¡æ½”):");
+            Console.WriteLine("x => x.LandNo - å¼·å‹åˆ¥ã€è‡ªå‹•å®Œæˆã€é‡æ§‹å®‰å…¨");
 
-            Console.WriteLine("\n=== ¤ä´©ªº©Ò¦³¹Bºâ¤l ===\n");
+            Console.WriteLine("\n=== æ”¯æ´çš„æ‰€æœ‰é‹ç®—å­ ===\n");
 
             var allOperators = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
                 .Equal(x => x.CaseOwner, "John")
@@ -66,7 +66,7 @@ namespace DynamicPredicate.Tests.Examples
                 .LessThanOrEqual(x => x.Price, 8000000)
                 .Build();
 
-            Console.WriteLine("©Ò¦³¹Bºâ¤l¥Ü½d:");
+            Console.WriteLine("æ‰€æœ‰é‹ç®—å­ç¤ºç¯„:");
             Console.WriteLine(JsonConvert.SerializeObject(allOperators, Formatting.Indented));
         }
     }

@@ -1,13 +1,13 @@
-# FilterDictionaryBuilder ¨Ï¥Î»¡©ú
+ï»¿# FilterDictionaryBuilder ä½¿ç”¨èªªæ˜
 
-`FilterDictionaryBuilder` ¬O¤@­Ó¤ä´© Fluent API ªº¹LÂo±ø¥ó«Øºc¾¹¡A¥i¥HÅı§A¥Î§óª½Æ[ªº¤è¦¡«Ø¥ß½ÆÂøªº¬d¸ß±ø¥ó¡C²{¦b¤ä´©±j«¬§Oªº Expression »yªk¡I
+`FilterDictionaryBuilder` æ˜¯ä¸€å€‹æ”¯æ´ Fluent API çš„éæ¿¾æ¢ä»¶å»ºæ§‹å™¨ï¼Œå¯ä»¥è®“ä½ ç”¨æ›´ç›´è§€çš„æ–¹å¼å»ºç«‹è¤‡é›œçš„æŸ¥è©¢æ¢ä»¶ã€‚ç¾åœ¨æ”¯æ´å¼·å‹åˆ¥çš„ Expression èªæ³•ï¼
 
-## §Ö³t¶}©l
+## å¿«é€Ÿé–‹å§‹
 
-### °ò¥»¨Ï¥Î¤è¦¡ (¦r¦êª©¥»)
+### åŸºæœ¬ä½¿ç”¨æ–¹å¼ (å­—ä¸²ç‰ˆæœ¬)
 
 ```csharp
-// Â²³æ¬d¸ß
+// ç°¡å–®æŸ¥è©¢
 var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .WithLogicalOperator(LogicalOperator.Or)
     .Like(nameof(LandDTO.LandNo), "A123")
@@ -15,10 +15,10 @@ var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .Build();
 ```
 
-### °ò¥»¨Ï¥Î¤è¦¡ (Expression ª©¥») ? ·s¥\¯à
+### åŸºæœ¬ä½¿ç”¨æ–¹å¼ (Expression ç‰ˆæœ¬) ? æ–°åŠŸèƒ½
 
 ```csharp
-// ±j«¬§O¬d¸ß - ¦³½sÄ¶®É´ÁÀË¬d
+// å¼·å‹åˆ¥æŸ¥è©¢ - æœ‰ç·¨è­¯æ™‚æœŸæª¢æŸ¥
 var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .WithLogicalOperator(LogicalOperator.Or)
     .Like(x => x.LandNo, "A123")
@@ -26,10 +26,10 @@ var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .Build();
 ```
 
-### ±_ª¬¬d¸ß (Expression ª©¥»)
+### å·¢ç‹€æŸ¥è©¢ (Expression ç‰ˆæœ¬)
 
 ```csharp
-// ½ÆÂø±_ª¬¬d¸ß
+// è¤‡é›œå·¢ç‹€æŸ¥è©¢
 var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .WithLogicalOperator(LogicalOperator.Or)
     .Like(x => x.LandNo, landNo)
@@ -41,65 +41,65 @@ var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .Build();
 ```
 
-## API °Ñ¦Ò
+## API åƒè€ƒ
 
-### «Ø¥ß Builder
+### å»ºç«‹ Builder
 
 ```csharp
-// ¤èªk1: ÀRºA¤u¼t¤èªk
+// æ–¹æ³•1: éœæ…‹å·¥å» æ–¹æ³•
 var builder = FilterDictionaryBuilder.QueryBuilder<MyEntity>();
 
-// ¤èªk2: ¥t¤@­ÓÀRºA¤u¼t¤èªk
+// æ–¹æ³•2: å¦ä¸€å€‹éœæ…‹å·¥å» æ–¹æ³•
 var builder = FilterDictionaryBuilder.Create<MyEntity>();
 
-// ¤èªk3: ªx«¬Ãş§OªºÀRºA¤èªk
+// æ–¹æ³•3: æ³›å‹é¡åˆ¥çš„éœæ…‹æ–¹æ³•
 var builder = FilterDictionaryBuilder<MyEntity>.Create();
 ```
 
-### ³]©w¸s²ÕÄİ©Ê
+### è¨­å®šç¾¤çµ„å±¬æ€§
 
 ```csharp
 builder
-    .WithLogicalOperator(LogicalOperator.And)    // ³]©w¸s²Õ¤ºÅŞ¿è¹Bºâ¤l
-    .WithInterOperator(LogicalOperator.Or)       // ³]©w»P¤U¤@¸s²Õªº³s±µ¹Bºâ¤l
-    .Negate(true);                               // §_©w¾ã­Ó¸s²Õ
+    .WithLogicalOperator(LogicalOperator.And)    // è¨­å®šç¾¤çµ„å…§é‚è¼¯é‹ç®—å­
+    .WithInterOperator(LogicalOperator.Or)       // è¨­å®šèˆ‡ä¸‹ä¸€ç¾¤çµ„çš„é€£æ¥é‹ç®—å­
+    .Negate(true);                               // å¦å®šæ•´å€‹ç¾¤çµ„
 ```
 
-### °ò¥»±ø¥ó¤èªk
+### åŸºæœ¬æ¢ä»¶æ–¹æ³•
 
-#### ¦r¦êª©¥»
+#### å­—ä¸²ç‰ˆæœ¬
 ```csharp
 builder
-    .Add(property, FilterOperator.Equal, value, isNegated)  // ³q¥Î¤èªk
-    .Equal(property, value, isNegated)                      // µ¥©ó
-    .Like(property, value, isNegated)                       // ¼Ò½k¤ñ¹ï
-    .Contains(property, value, isNegated)                   // ¥]§t
-    .In(property, values, isNegated)                        // ¦b¶°¦X¤¤
-    .Between(property, min, max, isNegated)                 // ¦b½d³ò¤º
-    .GreaterThan(property, value, isNegated)                // ¤j©ó
-    .LessThan(property, value, isNegated);                  // ¤p©ó
+    .Add(property, FilterOperator.Equal, value, isNegated)  // é€šç”¨æ–¹æ³•
+    .Equal(property, value, isNegated)                      // ç­‰æ–¼
+    .Like(property, value, isNegated)                       // æ¨¡ç³Šæ¯”å°
+    .Contains(property, value, isNegated)                   // åŒ…å«
+    .In(property, values, isNegated)                        // åœ¨é›†åˆä¸­
+    .Between(property, min, max, isNegated)                 // åœ¨ç¯„åœå…§
+    .GreaterThan(property, value, isNegated)                // å¤§æ–¼
+    .LessThan(property, value, isNegated);                  // å°æ–¼
 ```
 
-#### Expression ª©¥» ? ·s¥\¯à
+#### Expression ç‰ˆæœ¬ ? æ–°åŠŸèƒ½
 ```csharp
 builder
-    .Add(x => x.Property, FilterOperator.Equal, value, isNegated)  // ³q¥Î¤èªk
-    .Equal(x => x.Property, value, isNegated)                      // µ¥©ó
-    .Like(x => x.Property, value, isNegated)                       // ¼Ò½k¤ñ¹ï
-    .Contains(x => x.Property, value, isNegated)                   // ¥]§t
-    .In(x => x.Property, values, isNegated)                        // ¦b¶°¦X¤¤
-    .Between(x => x.Property, min, max, isNegated)                 // ¦b½d³ò¤º
-    .GreaterThan(x => x.Property, value, isNegated)                // ¤j©ó
-    .LessThan(x => x.Property, value, isNegated)                   // ¤p©ó
-    .GreaterThanOrEqual(x => x.Property, value, isNegated)         // ¤j©óµ¥©ó
-    .LessThanOrEqual(x => x.Property, value, isNegated)            // ¤p©óµ¥©ó
-    .StartsWith(x => x.Property, value, isNegated)                 // ¶}ÀY¥]§t
-    .EndsWith(x => x.Property, value, isNegated);                  // µ²§À¥]§t
+    .Add(x => x.Property, FilterOperator.Equal, value, isNegated)  // é€šç”¨æ–¹æ³•
+    .Equal(x => x.Property, value, isNegated)                      // ç­‰æ–¼
+    .Like(x => x.Property, value, isNegated)                       // æ¨¡ç³Šæ¯”å°
+    .Contains(x => x.Property, value, isNegated)                   // åŒ…å«
+    .In(x => x.Property, values, isNegated)                        // åœ¨é›†åˆä¸­
+    .Between(x => x.Property, min, max, isNegated)                 // åœ¨ç¯„åœå…§
+    .GreaterThan(x => x.Property, value, isNegated)                // å¤§æ–¼
+    .LessThan(x => x.Property, value, isNegated)                   // å°æ–¼
+    .GreaterThanOrEqual(x => x.Property, value, isNegated)         // å¤§æ–¼ç­‰æ–¼
+    .LessThanOrEqual(x => x.Property, value, isNegated)            // å°æ–¼ç­‰æ–¼
+    .StartsWith(x => x.Property, value, isNegated)                 // é–‹é ­åŒ…å«
+    .EndsWith(x => x.Property, value, isNegated);                  // çµå°¾åŒ…å«
 ```
 
-### Äİ©Ê¤ñ¸û
+### å±¬æ€§æ¯”è¼ƒ
 
-#### ¦r¦êª©¥»
+#### å­—ä¸²ç‰ˆæœ¬
 ```csharp
 builder.AddPropertyComparison(
     property, 
@@ -109,7 +109,7 @@ builder.AddPropertyComparison(
 );
 ```
 
-#### Expression ª©¥» ? ·s¥\¯à
+#### Expression ç‰ˆæœ¬ ? æ–°åŠŸèƒ½
 ```csharp
 builder.AddPropertyComparison(
     x => x.Property1, 
@@ -119,7 +119,7 @@ builder.AddPropertyComparison(
 );
 ```
 
-### ±_ª¬¸s²Õ
+### å·¢ç‹€ç¾¤çµ„
 
 ```csharp
 builder.Compare(LogicalOperator.And, subRules => subRules
@@ -132,25 +132,25 @@ builder.Compare(LogicalOperator.And, subRules => subRules
 , isNegated);
 ```
 
-### µ²ªG¿é¥X
+### çµæœè¼¸å‡º
 
 ```csharp
-// ¿é¥X¬°¦r¨å
+// è¼¸å‡ºç‚ºå­—å…¸
 Dictionary<string, object> dict = builder.Build();
 
-// ¿é¥X¬° FilterGroup
+// è¼¸å‡ºç‚º FilterGroup
 FilterGroup group = builder.ToFilterGroup();
 
-// Áô¦¡Âà´«
-Dictionary<string, object> dict = builder;  // ¦Û°ÊÂà´«¬°¦r¨å
-FilterGroup group = builder;                // ¦Û°ÊÂà´«¬° FilterGroup
+// éš±å¼è½‰æ›
+Dictionary<string, object> dict = builder;  // è‡ªå‹•è½‰æ›ç‚ºå­—å…¸
+FilterGroup group = builder;                // è‡ªå‹•è½‰æ›ç‚º FilterGroup
 ```
 
-## ¹ê¥Î½d¨Ò
+## å¯¦ç”¨ç¯„ä¾‹
 
-### ½d¨Ò1: ²Å¦X­ì©l»İ¨DªºÂ²¤Æ»yªk
+### ç¯„ä¾‹1: ç¬¦åˆåŸå§‹éœ€æ±‚çš„ç°¡åŒ–èªæ³•
 
-**­ì¥»ªº¼gªk:**
+**åŸæœ¬çš„å¯«æ³•:**
 ```csharp
 var dict = new List<object>();
 dict.Add(new Dictionary<string, object>
@@ -174,7 +174,7 @@ var rawDict = new Dictionary<string, object>
 };
 ```
 
-**·sªº¼gªk (¦r¦êª©¥»):**
+**æ–°çš„å¯«æ³• (å­—ä¸²ç‰ˆæœ¬):**
 ```csharp
 var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .WithLogicalOperator(LogicalOperator.Or)
@@ -183,7 +183,7 @@ var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .Build();
 ```
 
-**·sªº¼gªk (Expression ª©¥») ? ±ÀÂË:**
+**æ–°çš„å¯«æ³• (Expression ç‰ˆæœ¬) ? æ¨è–¦:**
 ```csharp
 var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .WithLogicalOperator(LogicalOperator.Or)
@@ -192,23 +192,23 @@ var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .Build();
 ```
 
-### ½d¨Ò2: ½ÆÂøªº¦h¼h±_ª¬¬d¸ß (Expression ª©¥»)
+### ç¯„ä¾‹2: è¤‡é›œçš„å¤šå±¤å·¢ç‹€æŸ¥è©¢ (Expression ç‰ˆæœ¬)
 
 ```csharp
 var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .WithLogicalOperator(LogicalOperator.And)
     .Compare(LogicalOperator.Or, mainConditions => mainConditions
-        // ¥D­n±ø¥ó²Õ
+        // ä¸»è¦æ¢ä»¶çµ„
         .Like(x => x.LandNo, "A123")
         .In(x => x.CityCode, new[] { "TPE", "KHH", "TCH" })
         
-        // ¯S®í±ø¥ó¤l²Õ
+        // ç‰¹æ®Šæ¢ä»¶å­çµ„
         .Compare(LogicalOperator.And, specialConditions => specialConditions
             .Equal(x => x.CaseOwner, "VIP Owner")
             .Between(x => x.Price, 5000000, 50000000)
         )
     )
-    // ®É¶¡½d³ò­­¨î
+    // æ™‚é–“ç¯„åœé™åˆ¶
     .Compare(LogicalOperator.And, timeConditions => timeConditions
         .GreaterThan(x => x.CreateDate, DateTime.Now.AddMonths(-6))
         .LessThan(x => x.CreateDate, DateTime.Now)
@@ -216,91 +216,91 @@ var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .Build();
 ```
 
-### ½d¨Ò3: §_©w±ø¥ó (Expression ª©¥»)
+### ç¯„ä¾‹3: å¦å®šæ¢ä»¶ (Expression ç‰ˆæœ¬)
 
 ```csharp
 var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
-    .Equal(x => x.CaseOwner, "Blacklisted Owner", isNegated: true)  // ¤£¬O¯S©w·~¥D
+    .Equal(x => x.CaseOwner, "Blacklisted Owner", isNegated: true)  // ä¸æ˜¯ç‰¹å®šæ¥­ä¸»
     .Compare(LogicalOperator.Or, priceRules => priceRules
         .LessThan(x => x.Price, 500000)
         .GreaterThan(x => x.Price, 10000000),
-        isNegated: true)  // ¤£¦b»ù®æ½d³ò¤º
+        isNegated: true)  // ä¸åœ¨åƒ¹æ ¼ç¯„åœå…§
     .Build();
 ```
 
-### ½d¨Ò4: ²V¦X¨Ï¥Î Expression ©M¦r¦êª©¥»
+### ç¯„ä¾‹4: æ··åˆä½¿ç”¨ Expression å’Œå­—ä¸²ç‰ˆæœ¬
 
 ```csharp
 var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .WithLogicalOperator(LogicalOperator.And)
-    // Expression ª©¥» - ¾A¥Î©ó¤wª¾ªº±j«¬§OÄİ©Ê
+    // Expression ç‰ˆæœ¬ - é©ç”¨æ–¼å·²çŸ¥çš„å¼·å‹åˆ¥å±¬æ€§
     .Like(x => x.LandNo, "A123")
     .GreaterThan(x => x.Price, 1000000)
-    // ¦r¦êª©¥» - ¾A¥Î©ó°ÊºAÄİ©Ê¦WºÙ
+    // å­—ä¸²ç‰ˆæœ¬ - é©ç”¨æ–¼å‹•æ…‹å±¬æ€§åç¨±
     .Equal(nameof(LandDTO.CaseOwner), "John Doe")
-    .Contains("DynamicProperty", "value")  // °²³]¦³°ÊºAÄİ©Ê
+    .Contains("DynamicProperty", "value")  // å‡è¨­æœ‰å‹•æ…‹å±¬æ€§
     .Build();
 ```
 
-### ½d¨Ò5: Äİ©Ê¹ïÄİ©Ê¤ñ¸û (Expression ª©¥»)
+### ç¯„ä¾‹5: å±¬æ€§å°å±¬æ€§æ¯”è¼ƒ (Expression ç‰ˆæœ¬)
 
 ```csharp
 var query = FilterDictionaryBuilder.QueryBuilder<LandDTO>()
     .WithLogicalOperator(LogicalOperator.And)
-    // Äİ©Ê¹ïÄİ©Ê¤ñ¸û
+    // å±¬æ€§å°å±¬æ€§æ¯”è¼ƒ
     .AddPropertyComparison(x => x.LandNo, FilterOperator.Equal, x => x.CityCode)
-    // ¨ä¥L±ø¥ó
+    // å…¶ä»–æ¢ä»¶
     .GreaterThan(x => x.Price, 1000000)
     .Build();
 ```
 
-## »P FilterBuilder ¾ã¦X
+## èˆ‡ FilterBuilder æ•´åˆ
 
-«Ø¥ßªº¬d¸ß±ø¥ó¥i¥Hª½±µ»P²{¦³ªº `FilterBuilder` ¾ã¦X¨Ï¥Î¡G
+å»ºç«‹çš„æŸ¥è©¢æ¢ä»¶å¯ä»¥ç›´æ¥èˆ‡ç¾æœ‰çš„ `FilterBuilder` æ•´åˆä½¿ç”¨ï¼š
 
 ```csharp
-// «Ø¥ß¬d¸ß±ø¥ó
+// å»ºç«‹æŸ¥è©¢æ¢ä»¶
 FilterGroup filterGroup = FilterDictionaryBuilder.QueryBuilder<MyEntity>()
     .Like("Name", "test")
     .GreaterThan("Age", 18)
     .ToFilterGroup();
 
-// ¨Ï¥Î FilterBuilder «Ø¥ß Expression
+// ä½¿ç”¨ FilterBuilder å»ºç«‹ Expression
 var expression = FilterBuilder.Build<MyEntity>(filterGroup);
 
-// À³¥Î¨ì LINQ ¬d¸ß
+// æ‡‰ç”¨åˆ° LINQ æŸ¥è©¢
 var results = dbContext.MyEntities.Where(expression).ToList();
 ```
 
-## Àu¶Õ
+## å„ªå‹¢
 
-1. **¥iÅª©Ê¨Î**: Fluent API Åıµ{¦¡½X§óª½Æ[©öÀ´
-2. **Ãş«¬¦w¥ş**: ªx«¬¤ä´©©M Expression »yªk´£¨Ñ½sÄ¶®É´ÁªºÃş«¬ÀË¬d ?
-3. **IntelliSense ¤ä´©**: Expression ª©¥»´£¨Ñ§¹¾ãªº IDE ¦Û°Ê§¹¦¨ ?
-4. **­«ºc¤Íµ½**: ¨Ï¥Î Expression ®ÉÄİ©Ê­«·s©R¦W·|¦Û°Ê§ó·s ?
-5. **¥\¯à§¹¾ã**: ¤ä´©©Ò¦³²{¦³ªº¹LÂo¹Bºâ¤l©M±_ª¬µ²ºc
-6. **¦V«á¬Û®e**: §¹¥ş¬Û®e²{¦³ªº¦r¨å®æ¦¡©M FilterGroup
-7. **¼u©Ê°ª**: ¤ä´©Áô¦¡Âà´«©M¦hºØ«Ø¥ß¤è¦¡
-8. **Âù»yªk¤ä´©**: ¦P®É¤ä´©±j«¬§O Expression ©M°ÊºA¦r¦ê»yªk ?
-9. **©ö©ó´ú¸Õ**: ²M´·ªº API µ²ºc«K©ó³æ¤¸´ú¸Õ
+1. **å¯è®€æ€§ä½³**: Fluent API è®“ç¨‹å¼ç¢¼æ›´ç›´è§€æ˜“æ‡‚
+2. **é¡å‹å®‰å…¨**: æ³›å‹æ”¯æ´å’Œ Expression èªæ³•æä¾›ç·¨è­¯æ™‚æœŸçš„é¡å‹æª¢æŸ¥ ?
+3. **IntelliSense æ”¯æ´**: Expression ç‰ˆæœ¬æä¾›å®Œæ•´çš„ IDE è‡ªå‹•å®Œæˆ ?
+4. **é‡æ§‹å‹å–„**: ä½¿ç”¨ Expression æ™‚å±¬æ€§é‡æ–°å‘½åæœƒè‡ªå‹•æ›´æ–° ?
+5. **åŠŸèƒ½å®Œæ•´**: æ”¯æ´æ‰€æœ‰ç¾æœ‰çš„éæ¿¾é‹ç®—å­å’Œå·¢ç‹€çµæ§‹
+6. **å‘å¾Œç›¸å®¹**: å®Œå…¨ç›¸å®¹ç¾æœ‰çš„å­—å…¸æ ¼å¼å’Œ FilterGroup
+7. **å½ˆæ€§é«˜**: æ”¯æ´éš±å¼è½‰æ›å’Œå¤šç¨®å»ºç«‹æ–¹å¼
+8. **é›™èªæ³•æ”¯æ´**: åŒæ™‚æ”¯æ´å¼·å‹åˆ¥ Expression å’Œå‹•æ…‹å­—ä¸²èªæ³• ?
+9. **æ˜“æ–¼æ¸¬è©¦**: æ¸…æ™°çš„ API çµæ§‹ä¾¿æ–¼å–®å…ƒæ¸¬è©¦
 
-## ¦ó®É¨Ï¥Î­şºØ»yªk
+## ä½•æ™‚ä½¿ç”¨å“ªç¨®èªæ³•
 
-### Expression ª©¥» (±ÀÂË) ?
-- ? Äİ©Ê¦WºÙ¦b½sÄ¶®É´Á¤wª¾
-- ? »İ­n IntelliSense ¤ä´©
-- ? »İ­n­«ºc¦w¥ş©Ê
-- ? ¹Î¶¤°¾¦n±j«¬§Oµ{¦¡½X
+### Expression ç‰ˆæœ¬ (æ¨è–¦) ?
+- ? å±¬æ€§åç¨±åœ¨ç·¨è­¯æ™‚æœŸå·²çŸ¥
+- ? éœ€è¦ IntelliSense æ”¯æ´
+- ? éœ€è¦é‡æ§‹å®‰å…¨æ€§
+- ? åœ˜éšŠåå¥½å¼·å‹åˆ¥ç¨‹å¼ç¢¼
 
-### ¦r¦êª©¥»
-- ? °ÊºAÄİ©Ê¦WºÙ (±q³]©wÀÉÅª¨úµ¥)
-- ? »İ­n¦V«á¬Û®eÂÂµ{¦¡½X
-- ? Äİ©Ê¦WºÙ¨Ó¦Û¥~³¡¨Ó·½ (¦p API)
+### å­—ä¸²ç‰ˆæœ¬
+- ? å‹•æ…‹å±¬æ€§åç¨± (å¾è¨­å®šæª”è®€å–ç­‰)
+- ? éœ€è¦å‘å¾Œç›¸å®¹èˆŠç¨‹å¼ç¢¼
+- ? å±¬æ€§åç¨±ä¾†è‡ªå¤–éƒ¨ä¾†æº (å¦‚ API)
 
-## ª`·N¨Æ¶µ
+## æ³¨æ„äº‹é …
 
-- **Expression ª©¥»**: ¤ä´©Â²³æÄİ©Ê©M±_ª¬Äİ©Ê (¦p `x => x.User.Name`)
-- **¦r¦êª©¥»**: Äİ©Ê¦WºÙ«ØÄ³¨Ï¥Î `nameof()` ¹Bºâ¤l½T«OÃş«¬¦w¥ş
-- ±_ª¬¼h¯Å¨S¦³­­¨î¡A¦ı«ØÄ³¤£­n¹L²`¥Hºû«ù¥iÅª©Ê
-- ©Ò¦³¤èªk³£¤ä´© `isNegated` °Ñ¼Æ¨Ó¤ÏÂà±ø¥ó
-- Expression ©M¦r¦êª©¥»¥i¥H¦b¦P¤@­Ó¬d¸ß¤¤²V¦X¨Ï¥Î
+- **Expression ç‰ˆæœ¬**: æ”¯æ´ç°¡å–®å±¬æ€§å’Œå·¢ç‹€å±¬æ€§ (å¦‚ `x => x.User.Name`)
+- **å­—ä¸²ç‰ˆæœ¬**: å±¬æ€§åç¨±å»ºè­°ä½¿ç”¨ `nameof()` é‹ç®—å­ç¢ºä¿é¡å‹å®‰å…¨
+- å·¢ç‹€å±¤ç´šæ²’æœ‰é™åˆ¶ï¼Œä½†å»ºè­°ä¸è¦éæ·±ä»¥ç¶­æŒå¯è®€æ€§
+- æ‰€æœ‰æ–¹æ³•éƒ½æ”¯æ´ `isNegated` åƒæ•¸ä¾†åè½‰æ¢ä»¶
+- Expression å’Œå­—ä¸²ç‰ˆæœ¬å¯ä»¥åœ¨åŒä¸€å€‹æŸ¥è©¢ä¸­æ··åˆä½¿ç”¨

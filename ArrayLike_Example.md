@@ -1,48 +1,48 @@
-# ArrayLike ¥\¯à¥Ü¨Ò
+ï»¿# ArrayLike åŠŸèƒ½ç¤ºä¾‹
 
-## ·§­z
-¬° `FilterDictionaryBuilder` ·s¼W§¹¾ãªº°}¦C¾ÉÄı¤èªk¤ä´©¡A¥]¬A `ArrayLike` ©M¨ä¥L©Ò¦³¹Bºâ¤l¡C
+## æ¦‚è¿°
+ç‚º `FilterDictionaryBuilder` æ–°å¢å®Œæ•´çš„é™£åˆ—å°è¦½æ–¹æ³•æ”¯æ´ï¼ŒåŒ…æ‹¬ `ArrayLike` å’Œå…¶ä»–æ‰€æœ‰é‹ç®—å­ã€‚
 
-## ·s¼Wªº°}¦C¾ÉÄı¤èªk
+## æ–°å¢çš„é™£åˆ—å°è¦½æ–¹æ³•
 
-### °ò¥»¤èªk
-- `ArrayEqual` - °}¦C¤¸¯Àµ¥©ó«ü©w­È
-- `ArrayNotEqual` - °}¦C¤¸¯À¤£µ¥©ó«ü©w­È
-- `ArrayLike` - °}¦C¤¸¯À²Å¦X Like ±ø¥ó ? **·s¼W**
-- `ArrayNotLike` - °}¦C¤¸¯À¤£²Å¦X Like ±ø¥ó
-- `ArrayContains` - °}¦C¤¸¯À¥]§t«ü©w¦r¦ê
-- `ArrayNotContains` - °}¦C¤¸¯À¤£¥]§t«ü©w¦r¦ê
+### åŸºæœ¬æ–¹æ³•
+- `ArrayEqual` - é™£åˆ—å…ƒç´ ç­‰æ–¼æŒ‡å®šå€¼
+- `ArrayNotEqual` - é™£åˆ—å…ƒç´ ä¸ç­‰æ–¼æŒ‡å®šå€¼
+- `ArrayLike` - é™£åˆ—å…ƒç´ ç¬¦åˆ Like æ¢ä»¶ ? **æ–°å¢**
+- `ArrayNotLike` - é™£åˆ—å…ƒç´ ä¸ç¬¦åˆ Like æ¢ä»¶
+- `ArrayContains` - é™£åˆ—å…ƒç´ åŒ…å«æŒ‡å®šå­—ä¸²
+- `ArrayNotContains` - é™£åˆ—å…ƒç´ ä¸åŒ…å«æŒ‡å®šå­—ä¸²
 
-### ¤ñ¸û¤èªk
-- `ArrayGreaterThan` - °}¦C¤¸¯À¤j©ó«ü©w­È
-- `ArrayGreaterThanOrEqual` - °}¦C¤¸¯À¤j©óµ¥©ó«ü©w­È
-- `ArrayLessThan` - °}¦C¤¸¯À¤p©ó«ü©w­È
-- `ArrayLessThanOrEqual` - °}¦C¤¸¯À¤p©óµ¥©ó«ü©w­È
+### æ¯”è¼ƒæ–¹æ³•
+- `ArrayGreaterThan` - é™£åˆ—å…ƒç´ å¤§æ–¼æŒ‡å®šå€¼
+- `ArrayGreaterThanOrEqual` - é™£åˆ—å…ƒç´ å¤§æ–¼ç­‰æ–¼æŒ‡å®šå€¼
+- `ArrayLessThan` - é™£åˆ—å…ƒç´ å°æ–¼æŒ‡å®šå€¼
+- `ArrayLessThanOrEqual` - é™£åˆ—å…ƒç´ å°æ–¼ç­‰æ–¼æŒ‡å®šå€¼
 
-### ¦r¦ê¤èªk
-- `ArrayStartsWith` - °}¦C¤¸¯À¥H«ü©w¦r¦ê¶}ÀY
-- `ArrayEndsWith` - °}¦C¤¸¯À¥H«ü©w¦r¦êµ²§À
+### å­—ä¸²æ–¹æ³•
+- `ArrayStartsWith` - é™£åˆ—å…ƒç´ ä»¥æŒ‡å®šå­—ä¸²é–‹é ­
+- `ArrayEndsWith` - é™£åˆ—å…ƒç´ ä»¥æŒ‡å®šå­—ä¸²çµå°¾
 
-### ½d³ò¤èªk
-- `ArrayIn` - °}¦C¤¸¯À¦b«ü©w¶°¦X¤¤
-- `ArrayNotIn` - °}¦C¤¸¯À¤£¦b«ü©w¶°¦X¤¤
-- `ArrayBetween` - °}¦C¤¸¯À¦b«ü©w½d³ò¤º
-- `ArrayNotBetween` - °}¦C¤¸¯À¤£¦b«ü©w½d³ò¤º
+### ç¯„åœæ–¹æ³•
+- `ArrayIn` - é™£åˆ—å…ƒç´ åœ¨æŒ‡å®šé›†åˆä¸­
+- `ArrayNotIn` - é™£åˆ—å…ƒç´ ä¸åœ¨æŒ‡å®šé›†åˆä¸­
+- `ArrayBetween` - é™£åˆ—å…ƒç´ åœ¨æŒ‡å®šç¯„åœå…§
+- `ArrayNotBetween` - é™£åˆ—å…ƒç´ ä¸åœ¨æŒ‡å®šç¯„åœå…§
 
-### ¦s¦b©Ê¤èªk
-- `ArrayAny` - °}¦C¤¤¦³¥ô¦ó¤¸¯À²Å¦X±ø¥ó
-- `ArrayNotAny` - °}¦C¤¤¨S¦³¥ô¦ó¤¸¯À²Å¦X±ø¥ó
+### å­˜åœ¨æ€§æ–¹æ³•
+- `ArrayAny` - é™£åˆ—ä¸­æœ‰ä»»ä½•å…ƒç´ ç¬¦åˆæ¢ä»¶
+- `ArrayNotAny` - é™£åˆ—ä¸­æ²’æœ‰ä»»ä½•å…ƒç´ ç¬¦åˆæ¢ä»¶
 
-## ¨Ï¥Î½d¨Ò
+## ä½¿ç”¨ç¯„ä¾‹
 
-### 1. ArrayLike ¦r¦ê¤Ç°t
+### 1. ArrayLike å­—ä¸²åŒ¹é…
 ```csharp
 using var context = CreateContractTestContext();
 
-// ¬d§ä«Ø®×¦WºÙ¥]§t "»¨¦v" ªº¦X¬ù
+// æŸ¥æ‰¾å»ºæ¡ˆåç¨±åŒ…å« "è±ªå®…" çš„åˆç´„
 var filterGroup = FilterDictionaryBuilder.QueryBuilder<Contract>()
     .WithLogicalOperator(LogicalOperator.And)
-    .ArrayLike(c => c.BuildContracts, bc => bc.Build.Name, "»¨¦v")
+    .ArrayLike(c => c.BuildContracts, bc => bc.Build.Name, "è±ªå®…")
     .ToFilterGroup();
 
 var predicate = FilterBuilder.Build<Contract>(filterGroup);
@@ -52,42 +52,42 @@ var results = context.Contracts
     .Where(predicate)
     .ToList();
 
-// µ²ªG¡G§ä¨ì "»¨¦vÁÊ¶R¦X¬ù"
+// çµæœï¼šæ‰¾åˆ° "è±ªå®…è³¼è²·åˆç´„"
 ```
 
-### 2. ArrayContains ¦r¦ê¥]§t
+### 2. ArrayContains å­—ä¸²åŒ…å«
 ```csharp
-// ¬d§ä«Ø®×¦ì¸m¥]§t "¥x¥_¥«" ªº¦X¬ù
+// æŸ¥æ‰¾å»ºæ¡ˆä½ç½®åŒ…å« "å°åŒ—å¸‚" çš„åˆç´„
 var filterGroup = FilterDictionaryBuilder.QueryBuilder<Contract>()
-    .ArrayStartsWith(c => c.BuildContracts, bc => bc.Build.Location, "¥x¥_¥«")
+    .ArrayStartsWith(c => c.BuildContracts, bc => bc.Build.Location, "å°åŒ—å¸‚")
     .ToFilterGroup();
 ```
 
-### 3. ArrayIn ¶°¦X¬d¸ß
+### 3. ArrayIn é›†åˆæŸ¥è©¢
 ```csharp
-// ¬d§ä AptId ¦b«ü©w¶°¦X¤¤ªº¦X¬ù
+// æŸ¥æ‰¾ AptId åœ¨æŒ‡å®šé›†åˆä¸­çš„åˆç´„
 var filterGroup = FilterDictionaryBuilder.QueryBuilder<Contract>()
     .ArrayIn(c => c.BuildContracts, bc => bc.Build.AptId, new object[] { 1001L, 1002L })
     .ToFilterGroup();
 ```
 
-### 4. ArrayBetween ½d³ò¬d¸ß
+### 4. ArrayBetween ç¯„åœæŸ¥è©¢
 ```csharp
-// ¬d§ä AptId ¦b 1001-1003 ½d³ò¤ºªº¦X¬ù
+// æŸ¥æ‰¾ AptId åœ¨ 1001-1003 ç¯„åœå…§çš„åˆç´„
 var filterGroup = FilterDictionaryBuilder.QueryBuilder<Contract>()
     .ArrayBetween(c => c.BuildContracts, bc => bc.Build.AptId, 1001L, 1003L)
     .ToFilterGroup();
 ```
 
-### 5. ½ÆÂø²Õ¦X¬d¸ß
+### 5. è¤‡é›œçµ„åˆæŸ¥è©¢
 ```csharp
-// ½ÆÂø¬d¸ß¡Gµ²¦X¦hºØ°}¦C¾ÉÄı¤èªk
+// è¤‡é›œæŸ¥è©¢ï¼šçµåˆå¤šç¨®é™£åˆ—å°è¦½æ–¹æ³•
 var filterGroup = FilterDictionaryBuilder.QueryBuilder<Contract>()
     .WithLogicalOperator(LogicalOperator.And)
     .ArrayGreaterThan(c => c.BuildContracts, bc => bc.Build.AptId, 1000L)
-    .ArrayLike(c => c.BuildContracts, bc => bc.Build.Location, "¥x¥_¥«")
-    .ArrayNotEqual(c => c.BuildContracts, bc => bc.ContractType, "¦Û¦í")
-    .Contains(c => c.Name, "ÁÊ¶R")
+    .ArrayLike(c => c.BuildContracts, bc => bc.Build.Location, "å°åŒ—å¸‚")
+    .ArrayNotEqual(c => c.BuildContracts, bc => bc.ContractType, "è‡ªä½")
+    .Contains(c => c.Name, "è³¼è²·")
     .ToFilterGroup();
 
 var predicate = FilterBuilder.Build<Contract>(filterGroup);
@@ -98,32 +98,32 @@ var results = context.Contracts
     .ToList();
 ```
 
-## °}¦C¾ÉÄı»yªk
+## é™£åˆ—å°è¦½èªæ³•
 
-©Ò¦³°}¦C¾ÉÄı¤èªk³£·|¦Û°Ê¥Í¦¨¥¿½Tªº»yªk¡G
+æ‰€æœ‰é™£åˆ—å°è¦½æ–¹æ³•éƒ½æœƒè‡ªå‹•ç”Ÿæˆæ­£ç¢ºçš„èªæ³•ï¼š
 ```
-{¶°¦XÄİ©Ê}[].{¥Ø¼ĞÄİ©Ê}
+{é›†åˆå±¬æ€§}[].{ç›®æ¨™å±¬æ€§}
 ```
 
-¨Ò¦p¡G
+ä¾‹å¦‚ï¼š
 - `BuildContracts[].Build.AptId`
 - `BuildContracts[].Build.Name`
 - `BuildContracts[].Build.Location`
 
-## ¤ä´©ªº¸ê®ÆÃş«¬
+## æ”¯æ´çš„è³‡æ–™é¡å‹
 
-- ¦r¦êÃş«¬¡G¤ä´© `Like`¡B`Contains`¡B`StartsWith`¡B`EndsWith` µ¥¦r¦ê¾Ş§@
-- ¼Æ­ÈÃş«¬¡G¤ä´©©Ò¦³¤ñ¸û©M½d³ò¾Ş§@
-- ¥iªÅÃş«¬¡G¥¿½T³B²z `null` ­È
-- ¶°¦XÃş«¬¡G¤ä´© `In`¡B`NotIn` ¾Ş§@
+- å­—ä¸²é¡å‹ï¼šæ”¯æ´ `Like`ã€`Contains`ã€`StartsWith`ã€`EndsWith` ç­‰å­—ä¸²æ“ä½œ
+- æ•¸å€¼é¡å‹ï¼šæ”¯æ´æ‰€æœ‰æ¯”è¼ƒå’Œç¯„åœæ“ä½œ
+- å¯ç©ºé¡å‹ï¼šæ­£ç¢ºè™•ç† `null` å€¼
+- é›†åˆé¡å‹ï¼šæ”¯æ´ `In`ã€`NotIn` æ“ä½œ
 
-## ´ú¸ÕÂĞ»\
+## æ¸¬è©¦è¦†è“‹
 
-©Ò¦³·s¼Wªº°}¦C¾ÉÄı¤èªk³£¤w¸g¹L§¹¾ã´ú¸Õ¡A¥]¬A¡G
-- °ò¥»¥\¯à´ú¸Õ
-- ¦r¦ê¾Ş§@´ú¸Õ
-- ¤ñ¸û¾Ş§@´ú¸Õ
-- °ª¯Å¾Ş§@´ú¸Õ
-- ½ÆÂø²Õ¦X¬d¸ß´ú¸Õ
+æ‰€æœ‰æ–°å¢çš„é™£åˆ—å°è¦½æ–¹æ³•éƒ½å·²ç¶“éå®Œæ•´æ¸¬è©¦ï¼ŒåŒ…æ‹¬ï¼š
+- åŸºæœ¬åŠŸèƒ½æ¸¬è©¦
+- å­—ä¸²æ“ä½œæ¸¬è©¦
+- æ¯”è¼ƒæ“ä½œæ¸¬è©¦
+- é«˜ç´šæ“ä½œæ¸¬è©¦
+- è¤‡é›œçµ„åˆæŸ¥è©¢æ¸¬è©¦
 
-Á`­p´ú¸Õ¡G116 ­Ó¡A¥ş³¡³q¹L ?
+ç¸½è¨ˆæ¸¬è©¦ï¼š116 å€‹ï¼Œå…¨éƒ¨é€šé ?
