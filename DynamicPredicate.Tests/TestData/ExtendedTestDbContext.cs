@@ -1,15 +1,15 @@
-using Microsoft.EntityFrameworkCore;
+ï»¿using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPredicate.Tests.TestData
 {
     /// <summary>
-    /// ÂX®iªº´ú¸Õ DbContext¡A¥Î©ó½ÆÂøªº¾ÉÄıÄİ©Ê
+    /// æ“´å±•çš„æ¸¬è©¦ DbContextï¼Œç”¨æ–¼è¤‡é›œçš„å°è¦½å±¬æ€§
     /// </summary>
     public class ExtendedTestDbContext : DbContext
     {
         public ExtendedTestDbContext(DbContextOptions<ExtendedTestDbContext> options) : base(options) { }
 
-        // ­ì¦³ªº DbSet
+        // åŸæœ‰çš„ DbSet
         public DbSet<Company> Companies { get; set; } = null!;
         public DbSet<Department> Departments { get; set; } = null!;
         public DbSet<Employee> Employees { get; set; } = null!;
@@ -19,50 +19,50 @@ namespace DynamicPredicate.Tests.TestData
         public DbSet<EmployeeProfile> EmployeeProfiles { get; set; } = null!;
         public DbSet<ProjectDetail> ProjectDetails { get; set; } = null!;
 
-        // ·s¼Wªº¦X¬ù¬ÛÃö DbSet
+        // æ–°å¢çš„åˆç´„ç›¸é—œ DbSet
         public DbSet<Contract> Contracts { get; set; } = null!;
         public DbSet<BuildContract> BuildContracts { get; set; } = null!;
         public DbSet<Build> Builds { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // ¤½¥q - ³¡ªùÃöÁp
+            // å…¬å¸ - éƒ¨é–€é—œè¯
             modelBuilder.Entity<Department>()
                 .HasOne(d => d.Company)
                 .WithMany(c => c.Departments)
                 .HasForeignKey(d => d.CompanyId);
 
-            // ³¡ªù - ­û¤uÃöÁp
+            // éƒ¨é–€ - å“¡å·¥é—œè¯
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Department)
                 .WithMany(d => d.Employees)
                 .HasForeignKey(e => e.DepartmentId);
 
-            // ³¡ªù - ºŞ²zªÌÃöÁp (¤@¹ï¤@)
+            // éƒ¨é–€ - ç®¡ç†è€…é—œè¯ (ä¸€å°ä¸€)
             modelBuilder.Entity<Manager>()
                 .HasOne(m => m.Department)
                 .WithOne(d => d.Manager)
                 .HasForeignKey<Manager>(m => m.DepartmentId);
 
-            // ­û¤u - ­û¤uÀÉ®×ÃöÁp (¤@¹ï¤@)
+            // å“¡å·¥ - å“¡å·¥æª”æ¡ˆé—œè¯ (ä¸€å°ä¸€)
             modelBuilder.Entity<EmployeeProfile>()
                 .HasOne(p => p.Employee)
                 .WithOne(e => e.Profile)
                 .HasForeignKey<EmployeeProfile>(p => p.EmployeeId);
 
-            // ¤½¥q - ±M®×ÃöÁp
+            // å…¬å¸ - å°ˆæ¡ˆé—œè¯
             modelBuilder.Entity<Project>()
                 .HasOne(p => p.Company)
                 .WithMany(c => c.Projects)
                 .HasForeignKey(p => p.CompanyId);
 
-            // ±M®× - ±M®×¸Ô²Ó¸ê®ÆÃöÁp (¤@¹ï¤@)
+            // å°ˆæ¡ˆ - å°ˆæ¡ˆè©³ç´°è³‡æ–™é—œè¯ (ä¸€å°ä¸€)
             modelBuilder.Entity<ProjectDetail>()
                 .HasOne(pd => pd.Project)
                 .WithOne(p => p.Detail)
                 .HasForeignKey<ProjectDetail>(pd => pd.ProjectId);
 
-            // ±M®×¤À°tÃöÁp (¦h¹ï¦h)
+            // å°ˆæ¡ˆåˆ†é…é—œè¯ (å¤šå°å¤š)
             modelBuilder.Entity<ProjectAssignment>()
                 .HasOne(pa => pa.Employee)
                 .WithMany(e => e.ProjectAssignments)
@@ -73,20 +73,20 @@ namespace DynamicPredicate.Tests.TestData
                 .WithMany(p => p.ProjectAssignments)
                 .HasForeignKey(pa => pa.ProjectId);
 
-            // ¦X¬ù¬ÛÃöªºÃöÁp³]©w
-            // ¦X¬ù - «Ø®×¦X¬ùÃöÁp (¤@¹ï¦h)
+            // åˆç´„ç›¸é—œçš„é—œè¯è¨­å®š
+            // åˆç´„ - å»ºæ¡ˆåˆç´„é—œè¯ (ä¸€å°å¤š)
             modelBuilder.Entity<BuildContract>()
                 .HasOne(bc => bc.Contract)
                 .WithMany(c => c.BuildContracts)
                 .HasForeignKey(bc => bc.ContractId);
 
-            // «Ø®× - «Ø®×¦X¬ùÃöÁp (¤@¹ï¦h)
+            // å»ºæ¡ˆ - å»ºæ¡ˆåˆç´„é—œè¯ (ä¸€å°å¤š)
             modelBuilder.Entity<BuildContract>()
                 .HasOne(bc => bc.Build)
                 .WithMany(b => b.BuildContracts)
                 .HasForeignKey(bc => bc.BuildId);
 
-            // ³]©w decimal ºë«×
+            // è¨­å®š decimal ç²¾åº¦
             modelBuilder.Entity<Employee>()
                 .Property(e => e.Salary)
                 .HasPrecision(18, 2);

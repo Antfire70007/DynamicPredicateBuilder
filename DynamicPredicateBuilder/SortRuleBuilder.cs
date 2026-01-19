@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -7,37 +7,37 @@ using DynamicPredicateBuilder.Models;
 namespace DynamicPredicateBuilder
 {
     /// <summary>
-    /// ¤ä´© Fluent API ªº±Æ§Ç³W«h«Øºc¾¹
+    /// æ”¯æ´ Fluent API çš„æ’åºè¦å‰‡å»ºæ§‹å™¨
     /// </summary>
-    /// <typeparam name="T">¥Ø¼Ğ¹êÅéÃş«¬</typeparam>
+    /// <typeparam name="T">ç›®æ¨™å¯¦é«”é¡å‹</typeparam>
     public class SortRuleBuilder<T>
     {
         private readonly List<SortRule> _sortRules = new();
 
         /// <summary>
-        /// «Ø¥ß·sªº SortBuilder ¹ê¨Ò
+        /// å»ºç«‹æ–°çš„ SortBuilder å¯¦ä¾‹
         /// </summary>
-        /// <typeparam name="TEntity">¥Ø¼Ğ¹êÅéÃş«¬</typeparam>
-        /// <returns>SortRuleBuilder ¹ê¨Ò</returns>
+        /// <typeparam name="TEntity">ç›®æ¨™å¯¦é«”é¡å‹</typeparam>
+        /// <returns>SortRuleBuilder å¯¦ä¾‹</returns>
         public static SortRuleBuilder<TEntity> SortBuilder<TEntity>()
         {
             return new SortRuleBuilder<TEntity>();
         }
 
         /// <summary>
-        /// «Ø¥ß·sªº SortBuilder ¹ê¨Ò (ªx«¬±ÀÂ_ª©¥»)
+        /// å»ºç«‹æ–°çš„ SortBuilder å¯¦ä¾‹ (æ³›å‹æ¨æ–·ç‰ˆæœ¬)
         /// </summary>
-        /// <returns>SortRuleBuilder ¹ê¨Ò</returns>
+        /// <returns>SortRuleBuilder å¯¦ä¾‹</returns>
         public static SortRuleBuilder<T> Create()
         {
             return new SortRuleBuilder<T>();
         }
 
         /// <summary>
-        /// ±q Expression ¤¤´£¨úÄİ©Ê¦WºÙ
+        /// å¾ Expression ä¸­æå–å±¬æ€§åç¨±
         /// </summary>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <returns>Äİ©Ê¦WºÙ</returns>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <returns>å±¬æ€§åç¨±</returns>
         private static string GetPropertyName<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
         {
             if (propertyExpression.Body is MemberExpression memberExpr)
@@ -55,10 +55,10 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// ¨ú±o¦¨­û¸ô®|¡]¤ä´©±_ª¬Äİ©Ê¦p x.User.Name¡^
+        /// å–å¾—æˆå“¡è·¯å¾‘ï¼ˆæ”¯æ´å·¢ç‹€å±¬æ€§å¦‚ x.User.Nameï¼‰
         /// </summary>
-        /// <param name="memberExpression">¦¨­ûªí¹F¦¡</param>
-        /// <returns>Äİ©Ê¸ô®|</returns>
+        /// <param name="memberExpression">æˆå“¡è¡¨é”å¼</param>
+        /// <returns>å±¬æ€§è·¯å¾‘</returns>
         private static string GetMemberPath(MemberExpression memberExpression)
         {
             var path = new List<string>();
@@ -75,11 +75,11 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// ²K¥[±Æ§Ç³W«h
+        /// æ·»åŠ æ’åºè¦å‰‡
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="descending">¬O§_­°§Ç±Æ§Ç</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="descending">æ˜¯å¦é™åºæ’åº</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public SortRuleBuilder<T> Add(string property, bool descending = false)
         {
             _sortRules.Add(new SortRule
@@ -91,12 +91,12 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// ²K¥[±Æ§Ç³W«h (Expression ª©¥»)
+        /// æ·»åŠ æ’åºè¦å‰‡ (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="descending">¬O§_­°§Ç±Æ§Ç</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="descending">æ˜¯å¦é™åºæ’åº</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public SortRuleBuilder<T> Add<TProperty>(Expression<Func<T, TProperty>> propertyExpression, bool descending = false)
         {
             var propertyName = GetPropertyName(propertyExpression);
@@ -104,111 +104,210 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// ²K¥[¤É§Ç±Æ§Ç³W«h
+        /// æ·»åŠ å‡åºæ’åºè¦å‰‡
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public SortRuleBuilder<T> Ascending(string property)
         {
             return Add(property, false);
         }
 
         /// <summary>
-        /// ²K¥[¤É§Ç±Æ§Ç³W«h (Expression ª©¥»)
+        /// æ·»åŠ å‡åºæ’åºè¦å‰‡ (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public SortRuleBuilder<T> Ascending<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
         {
             return Add(propertyExpression, false);
         }
 
         /// <summary>
-        /// ²K¥[­°§Ç±Æ§Ç³W«h
+        /// æ·»åŠ é™åºæ’åºè¦å‰‡
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public SortRuleBuilder<T> Descending(string property)
         {
             return Add(property, true);
         }
 
         /// <summary>
-        /// ²K¥[­°§Ç±Æ§Ç³W«h (Expression ª©¥»)
+        /// æ·»åŠ é™åºæ’åºè¦å‰‡ (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public SortRuleBuilder<T> Descending<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
         {
             return Add(propertyExpression, true);
         }
 
         /// <summary>
-        /// ²K¥[ ThenBy ±Æ§Ç³W«h (»P«e¤@­Ó±Æ§Ç³W«h¬Û¦P±¡ªp¤Uªº¦¸­n±Æ§Ç)
+        /// æ·»åŠ  ThenBy æ’åºè¦å‰‡ (èˆ‡å‰ä¸€å€‹æ’åºè¦å‰‡ç›¸åŒæƒ…æ³ä¸‹çš„æ¬¡è¦æ’åº)
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public SortRuleBuilder<T> ThenBy(string property)
         {
             return Add(property, false);
         }
 
         /// <summary>
-        /// ²K¥[ ThenBy ±Æ§Ç³W«h (Expression ª©¥»)
+        /// æ·»åŠ  ThenBy æ’åºè¦å‰‡ (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public SortRuleBuilder<T> ThenBy<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
         {
             return Add(propertyExpression, false);
         }
 
         /// <summary>
-        /// ²K¥[ ThenByDescending ±Æ§Ç³W«h
+        /// æ·»åŠ  ThenByDescending æ’åºè¦å‰‡
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public SortRuleBuilder<T> ThenByDescending(string property)
         {
             return Add(property, true);
         }
 
         /// <summary>
-        /// ²K¥[ ThenByDescending ±Æ§Ç³W«h (Expression ª©¥»)
+        /// æ·»åŠ  ThenByDescending æ’åºè¦å‰‡ (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public SortRuleBuilder<T> ThenByDescending<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
         {
             return Add(propertyExpression, true);
         }
 
         /// <summary>
-        /// «Ø¥ß±Æ§Ç³W«h²M³æ
+        /// æ·»åŠ é™£åˆ—å°è¦½å±¬æ€§æ’åºè¦å‰‡ï¼ˆé€šç”¨æ–¹æ³•ï¼‰
         /// </summary>
-        /// <returns>±Æ§Ç³W«h²M³æ</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="descending">æ˜¯å¦é™åºæ’åº</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
+        public SortRuleBuilder<T> AddArrayNavigation<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression,
+            bool descending = false)
+        {
+            // æå–é›†åˆå±¬æ€§åç¨±
+            var collectionName = GetPropertyName(collectionExpression);
+            
+            // æå–ç›®æ¨™å±¬æ€§åç¨±
+            string targetPropertyName;
+            if (propertyExpression.Body is MemberExpression memberExpr)
+            {
+                targetPropertyName = GetMemberPath(memberExpr);
+            }
+            else if (propertyExpression.Body is UnaryExpression unaryExpr && 
+                     unaryExpr.Operand is MemberExpression memberOperand)
+            {
+                targetPropertyName = GetMemberPath(memberOperand);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid property expression", nameof(propertyExpression));
+            }
+            
+            // æ§‹é€ é™£åˆ—å°è¦½èªæ³•ï¼šCollectionName[].PropertyName
+            var navigationProperty = $"{collectionName}[].{targetPropertyName}";
+            
+            return Add(navigationProperty, descending);
+        }
+
+        /// <summary>
+        /// æ·»åŠ é™£åˆ—å°è¦½å±¬æ€§å‡åºæ’åºè¦å‰‡
+        /// </summary>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
+        public SortRuleBuilder<T> ArrayAscending<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression)
+        {
+            return AddArrayNavigation(collectionExpression, propertyExpression, false);
+        }
+
+        /// <summary>
+        /// æ·»åŠ é™£åˆ—å°è¦½å±¬æ€§é™åºæ’åºè¦å‰‡
+        /// </summary>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
+        public SortRuleBuilder<T> ArrayDescending<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression)
+        {
+            return AddArrayNavigation(collectionExpression, propertyExpression, true);
+        }
+
+        /// <summary>
+        /// æ·»åŠ é™£åˆ—å°è¦½å±¬æ€§ ThenBy æ’åºè¦å‰‡
+        /// </summary>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
+        public SortRuleBuilder<T> ArrayThenBy<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression)
+        {
+            return AddArrayNavigation(collectionExpression, propertyExpression, false);
+        }
+
+        /// <summary>
+        /// æ·»åŠ é™£åˆ—å°è¦½å±¬æ€§ ThenByDescending æ’åºè¦å‰‡
+        /// </summary>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
+        public SortRuleBuilder<T> ArrayThenByDescending<TCollection, TProperty>(
+            Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
+            Expression<Func<TCollection, TProperty>> propertyExpression)
+        {
+            return AddArrayNavigation(collectionExpression, propertyExpression, true);
+        }
+
+        /// <summary>
+        /// å»ºç«‹æ’åºè¦å‰‡æ¸…å–®
+        /// </summary>
+        /// <returns>æ’åºè¦å‰‡æ¸…å–®</returns>
         public List<SortRule> Build()
         {
             return _sortRules.ToList();
         }
 
         /// <summary>
-        /// Áô¦¡Âà´«¬°±Æ§Ç³W«h²M³æ
+        /// éš±å¼è½‰æ›ç‚ºæ’åºè¦å‰‡æ¸…å–®
         /// </summary>
-        /// <param name="builder">Builder ¹ê¨Ò</param>
+        /// <param name="builder">Builder å¯¦ä¾‹</param>
         public static implicit operator List<SortRule>(SortRuleBuilder<T> builder)
         {
             return builder.Build();
         }
 
         /// <summary>
-        /// Áô¦¡Âà´«¬°±Æ§Ç³W«h°}¦C
+        /// éš±å¼è½‰æ›ç‚ºæ’åºè¦å‰‡é™£åˆ—
         /// </summary>
-        /// <param name="builder">Builder ¹ê¨Ò</param>
+        /// <param name="builder">Builder å¯¦ä¾‹</param>
         public static implicit operator SortRule[](SortRuleBuilder<T> builder)
         {
             return builder.Build().ToArray();
@@ -216,25 +315,25 @@ namespace DynamicPredicateBuilder
     }
 
     /// <summary>
-    /// ÀRºA¤u¼tÃş§O¡A´£¨ÑÂ²¤Æªº«Ø¥ß¤èªk
+    /// éœæ…‹å·¥å» é¡åˆ¥ï¼Œæä¾›ç°¡åŒ–çš„å»ºç«‹æ–¹æ³•
     /// </summary>
     public static class SortRuleBuilder
     {
         /// <summary>
-        /// «Ø¥ß·sªº SortBuilder ¹ê¨Ò
+        /// å»ºç«‹æ–°çš„ SortBuilder å¯¦ä¾‹
         /// </summary>
-        /// <typeparam name="T">¥Ø¼Ğ¹êÅéÃş«¬</typeparam>
-        /// <returns>SortRuleBuilder ¹ê¨Ò</returns>
+        /// <typeparam name="T">ç›®æ¨™å¯¦é«”é¡å‹</typeparam>
+        /// <returns>SortRuleBuilder å¯¦ä¾‹</returns>
         public static SortRuleBuilder<T> SortBuilder<T>()
         {
             return new SortRuleBuilder<T>();
         }
 
         /// <summary>
-        /// «Ø¥ß·sªº SortBuilder ¹ê¨Ò
+        /// å»ºç«‹æ–°çš„ SortBuilder å¯¦ä¾‹
         /// </summary>
-        /// <typeparam name="T">¥Ø¼Ğ¹êÅéÃş«¬</typeparam>
-        /// <returns>SortRuleBuilder ¹ê¨Ò</returns>
+        /// <typeparam name="T">ç›®æ¨™å¯¦é«”é¡å‹</typeparam>
+        /// <returns>SortRuleBuilder å¯¦ä¾‹</returns>
         public static SortRuleBuilder<T> Create<T>()
         {
             return new SortRuleBuilder<T>();

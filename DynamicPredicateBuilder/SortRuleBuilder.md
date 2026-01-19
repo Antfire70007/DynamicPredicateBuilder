@@ -1,93 +1,93 @@
-# SortRuleBuilder ¨Ï¥Î»¡©ú
+ï»¿# SortRuleBuilder ä½¿ç”¨èªªæ˜
 
-`SortRuleBuilder` ¬O¤@­Ó¤ä´© Fluent API ªº±Æ§Ç³W«h«Øºc¾¹¡A¥i¥HÅı§A¥Î§óª½Æ[ªº¤è¦¡«Ø¥ß±Æ§Ç±ø¥ó¡C¤ä´©±j«¬§Oªº Expression »yªk¡I
+`SortRuleBuilder` æ˜¯ä¸€å€‹æ”¯æ´ Fluent API çš„æ’åºè¦å‰‡å»ºæ§‹å™¨ï¼Œå¯ä»¥è®“ä½ ç”¨æ›´ç›´è§€çš„æ–¹å¼å»ºç«‹æ’åºæ¢ä»¶ã€‚æ”¯æ´å¼·å‹åˆ¥çš„ Expression èªæ³•ï¼
 
-## §Ö³t¶}©l
+## å¿«é€Ÿé–‹å§‹
 
-### °ò¥»¨Ï¥Î¤è¦¡ (¦r¦êª©¥»)
+### åŸºæœ¬ä½¿ç”¨æ–¹å¼ (å­—ä¸²ç‰ˆæœ¬)
 
 ```csharp
-// Â²³æ±Æ§Ç
+// ç°¡å–®æ’åº
 var sortRules = SortRuleBuilder.SortBuilder<UserDTO>()
     .Ascending(nameof(UserDTO.Username))
     .Descending(nameof(UserDTO.CreatedDate))
     .Build();
 ```
 
-### °ò¥»¨Ï¥Î¤è¦¡ (Expression ª©¥»)
+### åŸºæœ¬ä½¿ç”¨æ–¹å¼ (Expression ç‰ˆæœ¬)
 
 ```csharp
-// ±j«¬§O±Æ§Ç - ¦³½sÄ¶®É´ÁÀË¬d
+// å¼·å‹åˆ¥æ’åº - æœ‰ç·¨è­¯æ™‚æœŸæª¢æŸ¥
 var sortRules = SortRuleBuilder.SortBuilder<UserDTO>()
     .Ascending(x => x.Username)
     .Descending(x => x.CreatedDate)
     .Build();
 ```
 
-### ¦h¼h¯Å±Æ§Ç (Expression ª©¥»)
+### å¤šå±¤ç´šæ’åº (Expression ç‰ˆæœ¬)
 
 ```csharp
-// ¥D­n±Æ§Ç±ø¥ó»P¦¸­n±Æ§Ç±ø¥ó
+// ä¸»è¦æ’åºæ¢ä»¶èˆ‡æ¬¡è¦æ’åºæ¢ä»¶
 var sortRules = SortRuleBuilder.SortBuilder<UserDTO>()
-    .Ascending(x => x.Department)      // ¥ı«ö³¡ªù¤É§Ç±Æ§Ç
-    .ThenBy(x => x.Username)           // ¬Û¦P³¡ªù«ö¥Î¤á¦W¤É§Ç±Æ§Ç
-    .ThenByDescending(x => x.Age)      // ¬Û¦P¥Î¤á¦W«ö¦~ÄÖ­°§Ç±Æ§Ç
+    .Ascending(x => x.Department)      // å…ˆæŒ‰éƒ¨é–€å‡åºæ’åº
+    .ThenBy(x => x.Username)           // ç›¸åŒéƒ¨é–€æŒ‰ç”¨æˆ¶åå‡åºæ’åº
+    .ThenByDescending(x => x.Age)      // ç›¸åŒç”¨æˆ¶åæŒ‰å¹´é½¡é™åºæ’åº
     .Build();
 ```
 
-## API °Ñ¦Ò
+## API åƒè€ƒ
 
-### «Ø¥ß Builder
+### å»ºç«‹ Builder
 
 ```csharp
-// ¤èªk1: ÀRºA¤u¼t¤èªk
+// æ–¹æ³•1: éœæ…‹å·¥å» æ–¹æ³•
 var builder = SortRuleBuilder.SortBuilder<MyEntity>();
 
-// ¤èªk2: ¥t¤@­ÓÀRºA¤u¼t¤èªk
+// æ–¹æ³•2: å¦ä¸€å€‹éœæ…‹å·¥å» æ–¹æ³•
 var builder = SortRuleBuilder.Create<MyEntity>();
 
-// ¤èªk3: ªx«¬Ãş§OªºÀRºA¤èªk
+// æ–¹æ³•3: æ³›å‹é¡åˆ¥çš„éœæ…‹æ–¹æ³•
 var builder = SortRuleBuilder<MyEntity>.Create();
 ```
 
-### °ò¥»±Æ§Ç¤èªk
+### åŸºæœ¬æ’åºæ–¹æ³•
 
-#### ¦r¦êª©¥»
+#### å­—ä¸²ç‰ˆæœ¬
 ```csharp
 builder
-    .Add(property, descending)          // ³q¥Î¤èªk¡A¥i«ü©w¬O§_­°§Ç
-    .Ascending(property)                // ¤É§Ç±Æ§Ç
-    .Descending(property)               // ­°§Ç±Æ§Ç
-    .ThenBy(property)                   // ¦¸­n¤É§Ç±Æ§Ç
-    .ThenByDescending(property);        // ¦¸­n­°§Ç±Æ§Ç
+    .Add(property, descending)          // é€šç”¨æ–¹æ³•ï¼Œå¯æŒ‡å®šæ˜¯å¦é™åº
+    .Ascending(property)                // å‡åºæ’åº
+    .Descending(property)               // é™åºæ’åº
+    .ThenBy(property)                   // æ¬¡è¦å‡åºæ’åº
+    .ThenByDescending(property);        // æ¬¡è¦é™åºæ’åº
 ```
 
-#### Expression ª©¥»
+#### Expression ç‰ˆæœ¬
 ```csharp
 builder
-    .Add(x => x.Property, descending)   // ³q¥Î¤èªk¡A¥i«ü©w¬O§_­°§Ç
-    .Ascending(x => x.Property)         // ¤É§Ç±Æ§Ç
-    .Descending(x => x.Property)        // ­°§Ç±Æ§Ç
-    .ThenBy(x => x.Property)            // ¦¸­n¤É§Ç±Æ§Ç
-    .ThenByDescending(x => x.Property); // ¦¸­n­°§Ç±Æ§Ç
+    .Add(x => x.Property, descending)   // é€šç”¨æ–¹æ³•ï¼Œå¯æŒ‡å®šæ˜¯å¦é™åº
+    .Ascending(x => x.Property)         // å‡åºæ’åº
+    .Descending(x => x.Property)        // é™åºæ’åº
+    .ThenBy(x => x.Property)            // æ¬¡è¦å‡åºæ’åº
+    .ThenByDescending(x => x.Property); // æ¬¡è¦é™åºæ’åº
 ```
 
-### µ²ªG¿é¥X
+### çµæœè¼¸å‡º
 
 ```csharp
-// ¿é¥X¬°±Æ§Ç³W«h¦Cªí
+// è¼¸å‡ºç‚ºæ’åºè¦å‰‡åˆ—è¡¨
 List<SortRule> rules = builder.Build();
 
-// Áô¦¡Âà´«
-List<SortRule> rules = builder;         // ¦Û°ÊÂà´«¬°¦Cªí
-SortRule[] rulesArray = builder;        // ¦Û°ÊÂà´«¬°°}¦C
+// éš±å¼è½‰æ›
+List<SortRule> rules = builder;         // è‡ªå‹•è½‰æ›ç‚ºåˆ—è¡¨
+SortRule[] rulesArray = builder;        // è‡ªå‹•è½‰æ›ç‚ºé™£åˆ—
 ```
 
-## ¹ê¥Î½d¨Ò
+## å¯¦ç”¨ç¯„ä¾‹
 
-### ½d¨Ò1: ³æ¤@±Æ§Ç±ø¥ó
+### ç¯„ä¾‹1: å–®ä¸€æ’åºæ¢ä»¶
 
-**­ì¥»ªº¼gªk:**
+**åŸæœ¬çš„å¯«æ³•:**
 ```csharp
 var sortRules = new List<SortRule>
 {
@@ -99,47 +99,47 @@ var sortRules = new List<SortRule>
 };
 ```
 
-**·sªº¼gªk (¦r¦êª©¥»):**
+**æ–°çš„å¯«æ³• (å­—ä¸²ç‰ˆæœ¬):**
 ```csharp
 var sortRules = SortRuleBuilder.SortBuilder<UserDTO>()
     .Ascending(nameof(UserDTO.Username))
     .Build();
 ```
 
-**·sªº¼gªk (Expression ª©¥») ¡V ±ÀÂË:**
+**æ–°çš„å¯«æ³• (Expression ç‰ˆæœ¬) â€“ æ¨è–¦:**
 ```csharp
 var sortRules = SortRuleBuilder.SortBuilder<UserDTO>()
     .Ascending(x => x.Username)
     .Build();
 ```
 
-### ½d¨Ò2: ¦h¼h¯Å±Æ§Ç (Expression ª©¥»)
+### ç¯„ä¾‹2: å¤šå±¤ç´šæ’åº (Expression ç‰ˆæœ¬)
 
 ```csharp
-// «Ø¥ß½ÆÂøªº¦h¼h¯Å±Æ§Ç
+// å»ºç«‹è¤‡é›œçš„å¤šå±¤ç´šæ’åº
 var sortRules = SortRuleBuilder.SortBuilder<OrderDTO>()
-    .Ascending(x => x.Customer.Region)      // ¥ı«ö«È¤á°Ï°ì¤É§Ç±Æ§Ç
-    .ThenBy(x => x.OrderDate)               // ¬Û¦P°Ï°ì«ö­q³æ¤é´Á¤É§Ç±Æ§Ç
-    .ThenByDescending(x => x.TotalAmount)   // ¬Û¦P¤é´Á«öÁ`ª÷ÃB­°§Ç±Æ§Ç
+    .Ascending(x => x.Customer.Region)      // å…ˆæŒ‰å®¢æˆ¶å€åŸŸå‡åºæ’åº
+    .ThenBy(x => x.OrderDate)               // ç›¸åŒå€åŸŸæŒ‰è¨‚å–®æ—¥æœŸå‡åºæ’åº
+    .ThenByDescending(x => x.TotalAmount)   // ç›¸åŒæ—¥æœŸæŒ‰ç¸½é‡‘é¡é™åºæ’åº
     .Build();
 ```
 
-### ½d¨Ò3: »P¬d¸ß½Ğ¨Dµ²¦X¨Ï¥Î
+### ç¯„ä¾‹3: èˆ‡æŸ¥è©¢è«‹æ±‚çµåˆä½¿ç”¨
 
 ```csharp
-// «Ø¥ß±Æ§Ç³W«h
+// å»ºç«‹æ’åºè¦å‰‡
 var sortRules = SortRuleBuilder.SortBuilder<ProductDTO>()
     .Descending(x => x.Price)
     .ThenBy(x => x.Name)
     .Build();
 
-// «Ø¥ß¹LÂo±ø¥ó
+// å»ºç«‹éæ¿¾æ¢ä»¶
 var filters = FilterDictionaryBuilder.QueryBuilder<ProductDTO>()
     .GreaterThan(x => x.Stock, 10)
     .Like(x => x.Category, "Electronics")
     .Build();
 
-// «Ø¥ß¬d¸ß½Ğ¨D
+// å»ºç«‹æŸ¥è©¢è«‹æ±‚
 var request = new QueryRequest
 {
     Filters = filters,
@@ -148,22 +148,22 @@ var request = new QueryRequest
     PageIndex = 0
 };
 
-// ¨Ï¥Î¬d¸ß½Ğ¨D
+// ä½¿ç”¨æŸ¥è©¢è«‹æ±‚
 var result = await _productService.QueryAsync(request);
 ```
 
-### ½d¨Ò4: ª½±µ»P LINQ ¾ã¦X
+### ç¯„ä¾‹4: ç›´æ¥èˆ‡ LINQ æ•´åˆ
 
 ```csharp
-// «Ø¥ß±Æ§Ç³W«h
+// å»ºç«‹æ’åºè¦å‰‡
 var sortBuilder = SortRuleBuilder.SortBuilder<User>()
     .Ascending(x => x.LastName)
     .ThenBy(x => x.FirstName);
 
-// ¨Ï¥Î±Æ§Ç³W«h¶i¦æ¬d¸ß
+// ä½¿ç”¨æ’åºè¦å‰‡é€²è¡ŒæŸ¥è©¢
 IQueryable<User> query = dbContext.Users;
 
-// °w¹ï¨C­Ó±Æ§Ç³W«h¨Ì§Ç®M¥Î
+// é‡å°æ¯å€‹æ’åºè¦å‰‡ä¾åºå¥—ç”¨
 foreach (var rule in sortBuilder.Build())
 {
     query = rule.Descending 
@@ -174,17 +174,17 @@ foreach (var rule in sortBuilder.Build())
 var results = query.ToList();
 ```
 
-## Àu¶Õ
+## å„ªå‹¢
 
-1. **¥iÅª©Ê¨Î**: Fluent API Åıµ{¦¡½X§óª½Æ[©öÀ´
-2. **Ãş«¬¦w¥ş**: ªx«¬¤ä´©´£¨Ñ½sÄ¶®É´ÁªºÃş«¬ÀË¬d
-3. **¥\¯à§¹¾ã**: ¤ä´©©Ò¦³±Æ§Ç»İ¨D©M½ÆÂøªº¦h¼h¯Å±Æ§Ç
-4. **¦V«á¬Û®e**: §¹¥ş¬Û®e²{¦³ªº SortRule ²M³æ®æ¦¡
-5. **¼u©Ê°ª**: ¤ä´©Áô¦¡Âà´«©M¦hºØ«Ø¥ß¤è¦¡
-6. **©ö©ó´ú¸Õ**: ²M´·ªº API µ²ºc«K©ó³æ¤¸´ú¸Õ
+1. **å¯è®€æ€§ä½³**: Fluent API è®“ç¨‹å¼ç¢¼æ›´ç›´è§€æ˜“æ‡‚
+2. **é¡å‹å®‰å…¨**: æ³›å‹æ”¯æ´æä¾›ç·¨è­¯æ™‚æœŸçš„é¡å‹æª¢æŸ¥
+3. **åŠŸèƒ½å®Œæ•´**: æ”¯æ´æ‰€æœ‰æ’åºéœ€æ±‚å’Œè¤‡é›œçš„å¤šå±¤ç´šæ’åº
+4. **å‘å¾Œç›¸å®¹**: å®Œå…¨ç›¸å®¹ç¾æœ‰çš„ SortRule æ¸…å–®æ ¼å¼
+5. **å½ˆæ€§é«˜**: æ”¯æ´éš±å¼è½‰æ›å’Œå¤šç¨®å»ºç«‹æ–¹å¼
+6. **æ˜“æ–¼æ¸¬è©¦**: æ¸…æ™°çš„ API çµæ§‹ä¾¿æ–¼å–®å…ƒæ¸¬è©¦
 
-## ª`·N¨Æ¶µ
+## æ³¨æ„äº‹é …
 
-- ±Æ§Ç³W«hªº¶¶§Ç«Ü­«­n¡A·|¨Ì·Ó²K¥[¶¶§Ç¶i¦æÀu¥ı¯Å±Æ§Ç
-- Äİ©Ê¦WºÙ«ØÄ³¨Ï¥Î `nameof()` ¹Bºâ¤l©Î Expression ½T«OÃş«¬¦w¥ş
-- `ThenBy` ©M `ThenByDescending` ¦b»y¸q¤W¬O¦¸­n±Æ§Ç¡A¦ı¥\¯à¤W»P `Ascending` ©M `Descending` ¬Û¦P
+- æ’åºè¦å‰‡çš„é †åºå¾ˆé‡è¦ï¼Œæœƒä¾ç…§æ·»åŠ é †åºé€²è¡Œå„ªå…ˆç´šæ’åº
+- å±¬æ€§åç¨±å»ºè­°ä½¿ç”¨ `nameof()` é‹ç®—å­æˆ– Expression ç¢ºä¿é¡å‹å®‰å…¨
+- `ThenBy` å’Œ `ThenByDescending` åœ¨èªç¾©ä¸Šæ˜¯æ¬¡è¦æ’åºï¼Œä½†åŠŸèƒ½ä¸Šèˆ‡ `Ascending` å’Œ `Descending` ç›¸åŒ

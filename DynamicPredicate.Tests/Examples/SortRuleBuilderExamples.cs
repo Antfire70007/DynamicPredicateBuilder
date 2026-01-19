@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Linq;
 using DynamicPredicateBuilder;
 using DynamicPredicateBuilder.Models;
@@ -7,38 +7,38 @@ using DynamicPredicate.Tests;
 namespace DynamicPredicate.Tests.Examples
 {
     /// <summary>
-    /// SortRuleBuilder ¨Ï¥Î½d¨Ò
+    /// SortRuleBuilder ä½¿ç”¨ç¯„ä¾‹
     /// </summary>
     public class SortRuleBuilderExamples
     {
         public void BasicSortingExamples()
         {
-            // Â²³æ±Æ§Ç - ¦r¦êª©¥»
+            // ç°¡å–®æ’åº - å­—ä¸²ç‰ˆæœ¬
             var sortRules1 = SortRuleBuilder.SortBuilder<User>()
                 .Ascending(nameof(User.Name))
                 .Descending(nameof(User.Age))
                 .Build();
 
-            // Â²³æ±Æ§Ç - Expression ª©¥»
+            // ç°¡å–®æ’åº - Expression ç‰ˆæœ¬
             var sortRules2 = SortRuleBuilder.SortBuilder<User>()
                 .Ascending(x => x.Name)
                 .Descending(x => x.Age)
                 .Build();
 
-            // ¦h¼h¯Å±Æ§Ç
+            // å¤šå±¤ç´šæ’åº
             var sortRules3 = SortRuleBuilder.SortBuilder<User>()
                 .Ascending(x => x.Status)
                 .ThenBy(x => x.Name)
                 .ThenByDescending(x => x.Age)
                 .Build();
 
-            // ¨Ï¥Î nullable decimal Äæ¦ì±Æ§Ç
+            // ä½¿ç”¨ nullable decimal æ¬„ä½æ’åº
             var sortRules4 = SortRuleBuilder.SortBuilder<User>()
                 .Descending(x => x.Salary)
                 .ThenBy(x => x.Name)
                 .Build();
 
-            // Áô¦¡Âà´«
+            // éš±å¼è½‰æ›
             SortRule[] sortArray = SortRuleBuilder.SortBuilder<User>()
                 .Ascending(x => x.Name)
                 .Descending(x => x.Age);
@@ -46,7 +46,7 @@ namespace DynamicPredicate.Tests.Examples
 
         public void CombinedWithFilteringExample()
         {
-            // µ²¦X±Æ§Ç©M¹LÂo½d¨Ò
+            // çµåˆæ’åºå’Œéæ¿¾ç¯„ä¾‹
             var query = FilterDictionaryBuilder.QueryBuilder<User>()
                 .WithLogicalOperator(LogicalOperator.Or)
                 .Like(x => x.Name, "john")
@@ -58,7 +58,7 @@ namespace DynamicPredicate.Tests.Examples
                 .ThenBy(x => x.Name)
                 .Build();
 
-            // «Øºc¬d¸ß½Ğ¨D
+            // å»ºæ§‹æŸ¥è©¢è«‹æ±‚
             var request = new QueryRequest
             {
                 Filter = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(
@@ -68,27 +68,27 @@ namespace DynamicPredicate.Tests.Examples
                 PageSize = 20
             };
 
-            // ¦b¹ê»ÚÀ³¥Î¤¤¡A³o·|¶Ç»¼µ¹ªA°È¼h
+            // åœ¨å¯¦éš›æ‡‰ç”¨ä¸­ï¼Œé€™æœƒå‚³éçµ¦æœå‹™å±¤
             // var results = _userService.Query(request);
         }
 
         public void NullableDecimalSortingExample()
         {
-            // °w¹ï nullable decimal Äæ¦ìªº±Æ§Ç½d¨Ò
+            // é‡å° nullable decimal æ¬„ä½çš„æ’åºç¯„ä¾‹
             var sortRules = SortRuleBuilder.SortBuilder<User>()
-                .Descending(x => x.Salary)  // nullable decimal ­°§Ç±Æ¦C
-                .ThenBy(x => x.Name)        // ¬Û¦PÁ~¸ê®É«ö©m¦W¤É§Ç
-                .ThenByDescending(x => x.Age) // ³Ì«á«ö¦~ÄÖ­°§Ç
+                .Descending(x => x.Salary)  // nullable decimal é™åºæ’åˆ—
+                .ThenBy(x => x.Name)        // ç›¸åŒè–ªè³‡æ™‚æŒ‰å§“åå‡åº
+                .ThenByDescending(x => x.Age) // æœ€å¾ŒæŒ‰å¹´é½¡é™åº
                 .Build();
 
-            // Á~¸ê±Æ§Ç²Õ¦X½d¨Ò
+            // è–ªè³‡æ’åºçµ„åˆç¯„ä¾‹
             var salaryFirstSort = SortRuleBuilder.SortBuilder<User>()
-                .Ascending(x => x.Salary)   // Á~¸ê¤É§Ç (null ­È·|±Æ¦b«e­±©Î«á­±¡A¨Ì¹ê§@¦Ó©w)
-                .ThenBy(x => x.Status)      // ¬Û¦PÁ~¸ê®É«öª¬ºA±Æ§Ç
+                .Ascending(x => x.Salary)   // è–ªè³‡å‡åº (null å€¼æœƒæ’åœ¨å‰é¢æˆ–å¾Œé¢ï¼Œä¾å¯¦ä½œè€Œå®š)
+                .ThenBy(x => x.Status)      // ç›¸åŒè–ªè³‡æ™‚æŒ‰ç‹€æ…‹æ’åº
                 .Build();
         }
 
-        // ¨Ï¥Î¦Û­qÃş§Oªº½d¨Ò
+        // ä½¿ç”¨è‡ªè¨‚é¡åˆ¥çš„ç¯„ä¾‹
         private class UserWithProfile
         {
             public string Name { get; set; }
@@ -106,7 +106,7 @@ namespace DynamicPredicate.Tests.Examples
 
         public void NestedPropertySortingExample()
         {
-            // ¨Ï¥Î±_ª¬Äİ©Ê±Æ§Ç
+            // ä½¿ç”¨å·¢ç‹€å±¬æ€§æ’åº
             var sortRules = SortRuleBuilder.SortBuilder<UserWithProfile>()
                 .Ascending(x => x.Profile.FirstName)
                 .ThenBy(x => x.Profile.LastName)
@@ -116,7 +116,7 @@ namespace DynamicPredicate.Tests.Examples
 
         public void UseWithLinqExample()
         {
-            // °²³]¦³¤@­Ó¨Ï¥ÎªÌ¶°¦X
+            // å‡è¨­æœ‰ä¸€å€‹ä½¿ç”¨è€…é›†åˆ
             var users = new[]
             {
                 new User { Name = "alice", Age = 25, Salary = 50000.50m },
@@ -124,27 +124,27 @@ namespace DynamicPredicate.Tests.Examples
                 new User { Name = "charlie", Age = 25, Salary = 75000.00m }
             }.AsQueryable();
 
-            // «Ø¥ß±Æ§Ç³W«h
+            // å»ºç«‹æ’åºè¦å‰‡
             var sortRules = SortRuleBuilder.SortBuilder<User>()
                 .Ascending(x => x.Age)
                 .ThenBy(x => x.Name)
                 .Build();
 
-            // ¥]§tÁ~¸ê±Æ§Çªº½d¨Ò
+            // åŒ…å«è–ªè³‡æ’åºçš„ç¯„ä¾‹
             var sortWithSalary = SortRuleBuilder.SortBuilder<User>()
                 .Descending(x => x.Salary)
                 .ThenBy(x => x.Age)
                 .ThenBy(x => x.Name)
                 .Build();
 
-            // °²³]¦³¤@­ÓÂX¥R¤èªk¥i¥H®M¥Î±Æ§Ç³W«h¨ì IQueryable
+            // å‡è¨­æœ‰ä¸€å€‹æ“´å……æ–¹æ³•å¯ä»¥å¥—ç”¨æ’åºè¦å‰‡åˆ° IQueryable
             // var sortedUsers = users.ApplySorting(sortRules);
             
-            // ©Î¤â°Ê¹ê²{±Æ§ÇÅŞ¿è
+            // æˆ–æ‰‹å‹•å¯¦ç¾æ’åºé‚è¼¯
             IQueryable<User> query = users;
             foreach (var rule in sortRules)
             {
-                // ³o¸Ì»İ­n¹ê»Úªº±Æ§ÇÅŞ¿è¡A¥Ü¨Ò¶È°µ¥Ü·N
+                // é€™è£¡éœ€è¦å¯¦éš›çš„æ’åºé‚è¼¯ï¼Œç¤ºä¾‹åƒ…åšç¤ºæ„
                 // query = rule.Descending 
                 //     ? query.AppendOrderByDescending(rule.Property) 
                 //     : query.AppendOrderBy(rule.Property);

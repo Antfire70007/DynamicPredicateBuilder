@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using DynamicPredicateBuilder.Models;
@@ -6,9 +6,9 @@ using DynamicPredicateBuilder.Models;
 namespace DynamicPredicateBuilder
 {
     /// <summary>
-    /// ¤ä´© Fluent API ªº¹LÂo±ø¥ó¦r¨å«Øºc¾¹
+    /// æ”¯æ´ Fluent API çš„éæ¿¾æ¢ä»¶å­—å…¸å»ºæ§‹å™¨
     /// </summary>
-    /// <typeparam name="T">¥Ø¼Ğ¹êÅéÃş«¬</typeparam>
+    /// <typeparam name="T">ç›®æ¨™å¯¦é«”é¡å‹</typeparam>
     public class FilterDictionaryBuilder<T>
     {
         private readonly List<object> _rules = new();
@@ -17,29 +17,29 @@ namespace DynamicPredicateBuilder
         private bool _isNegated = false;
 
         /// <summary>
-        /// «Ø¥ß·sªº QueryBuilder ¹ê¨Ò
+        /// å»ºç«‹æ–°çš„ QueryBuilder å¯¦ä¾‹
         /// </summary>
-        /// <typeparam name="TEntity">¥Ø¼Ğ¹êÅéÃş«¬</typeparam>
-        /// <returns>FilterDictionaryBuilder ¹ê¨Ò</returns>
+        /// <typeparam name="TEntity">ç›®æ¨™å¯¦é«”é¡å‹</typeparam>
+        /// <returns>FilterDictionaryBuilder å¯¦ä¾‹</returns>
         public static FilterDictionaryBuilder<TEntity> QueryBuilder<TEntity>()
         {
             return new FilterDictionaryBuilder<TEntity>();
         }
 
         /// <summary>
-        /// «Ø¥ß·sªº QueryBuilder ¹ê¨Ò (ªx«¬±ÀÂ_ª©¥»)
+        /// å»ºç«‹æ–°çš„ QueryBuilder å¯¦ä¾‹ (æ³›å‹æ¨æ–·ç‰ˆæœ¬)
         /// </summary>
-        /// <returns>FilterDictionaryBuilder ¹ê¨Ò</returns>
+        /// <returns>FilterDictionaryBuilder å¯¦ä¾‹</returns>
         public static FilterDictionaryBuilder<T> Create()
         {
             return new FilterDictionaryBuilder<T>();
         }
 
         /// <summary>
-        /// ³]©w·í«e¸s²ÕªºÅŞ¿è¹Bºâ¤l
+        /// è¨­å®šç•¶å‰ç¾¤çµ„çš„é‚è¼¯é‹ç®—å­
         /// </summary>
-        /// <param name="logicalOperator">ÅŞ¿è¹Bºâ¤l (And/Or)</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="logicalOperator">é‚è¼¯é‹ç®—å­ (And/Or)</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> WithLogicalOperator(LogicalOperator logicalOperator)
         {
             _logicalOperator = logicalOperator;
@@ -47,10 +47,10 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// ³]©w»P¤U¤@­Ó¸s²Õªº³s±µ¹Bºâ¤l
+        /// è¨­å®šèˆ‡ä¸‹ä¸€å€‹ç¾¤çµ„çš„é€£æ¥é‹ç®—å­
         /// </summary>
-        /// <param name="interOperator">¸s²Õ¶¡¹Bºâ¤l</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="interOperator">ç¾¤çµ„é–“é‹ç®—å­</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> WithInterOperator(LogicalOperator interOperator)
         {
             _interOperator = interOperator;
@@ -58,10 +58,10 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// ³]©w¬O§_§_©w·í«e¸s²Õ
+        /// è¨­å®šæ˜¯å¦å¦å®šç•¶å‰ç¾¤çµ„
         /// </summary>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Negate(bool isNegated = true)
         {
             _isNegated = isNegated;
@@ -69,10 +69,10 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// ±q Expression ¤¤´£¨úÄİ©Ê¦WºÙ
+        /// å¾ Expression ä¸­æå–å±¬æ€§åç¨±
         /// </summary>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <returns>Äİ©Ê¦WºÙ</returns>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <returns>å±¬æ€§åç¨±</returns>
         private static string GetPropertyName<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
         {
             if (propertyExpression.Body is MemberExpression memberExpr)
@@ -90,10 +90,10 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// ¨ú±o¦¨­û¸ô®|¡]¤ä´©±_ª¬Äİ©Ê¦p x.User.Name¡^
+        /// å–å¾—æˆå“¡è·¯å¾‘ï¼ˆæ”¯æ´å·¢ç‹€å±¬æ€§å¦‚ x.User.Nameï¼‰
         /// </summary>
-        /// <param name="memberExpression">¦¨­ûªí¹F¦¡</param>
-        /// <returns>Äİ©Ê¸ô®|</returns>
+        /// <param name="memberExpression">æˆå“¡è¡¨é”å¼</param>
+        /// <returns>å±¬æ€§è·¯å¾‘</returns>
         private static string GetMemberPath(MemberExpression memberExpression)
         {
             var path = new List<string>();
@@ -110,13 +110,13 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// ²K¥[Â²³æªº¹LÂo±ø¥ó
+        /// æ·»åŠ ç°¡å–®çš„éæ¿¾æ¢ä»¶
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="operator">¹LÂo¹Bºâ¤l</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w¦¹±ø¥ó</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="operator">éæ¿¾é‹ç®—å­</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®šæ­¤æ¢ä»¶</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Add(string property, FilterOperator @operator, object value, bool isNegated = false)
         {
             var rule = new Dictionary<string, object>
@@ -134,14 +134,14 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// ²K¥[Â²³æªº¹LÂo±ø¥ó (Expression ª©¥»)
+        /// æ·»åŠ ç°¡å–®çš„éæ¿¾æ¢ä»¶ (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="operator">¹LÂo¹Bºâ¤l</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w¦¹±ø¥ó</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="operator">éæ¿¾é‹ç®—å­</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®šæ­¤æ¢ä»¶</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Add<TProperty>(Expression<Func<T, TProperty>> propertyExpression, FilterOperator @operator, object value, bool isNegated = false)
         {
             var propertyName = GetPropertyName(propertyExpression);
@@ -149,13 +149,13 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// ²K¥[Äİ©Ê¹ïÄİ©Êªº¤ñ¸û±ø¥ó
+        /// æ·»åŠ å±¬æ€§å°å±¬æ€§çš„æ¯”è¼ƒæ¢ä»¶
         /// </summary>
-        /// <param name="property">¥DÄİ©Ê¦WºÙ</param>
-        /// <param name="operator">¤ñ¸û¹Bºâ¤l</param>
-        /// <param name="compareToProperty">¤ñ¸û¥Ø¼ĞÄİ©Ê¦WºÙ</param>
-        /// <param name="isNegated">¬O§_§_©w¦¹±ø¥ó</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">ä¸»å±¬æ€§åç¨±</param>
+        /// <param name="operator">æ¯”è¼ƒé‹ç®—å­</param>
+        /// <param name="compareToProperty">æ¯”è¼ƒç›®æ¨™å±¬æ€§åç¨±</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®šæ­¤æ¢ä»¶</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> AddPropertyComparison(string property, FilterOperator @operator, string compareToProperty, bool isNegated = false)
         {
             var rule = new Dictionary<string, object>
@@ -173,15 +173,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// ²K¥[Äİ©Ê¹ïÄİ©Êªº¤ñ¸û±ø¥ó (Expression ª©¥»)
+        /// æ·»åŠ å±¬æ€§å°å±¬æ€§çš„æ¯”è¼ƒæ¢ä»¶ (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty1">²Ä¤@­ÓÄİ©ÊÃş«¬</typeparam>
-        /// <typeparam name="TProperty2">²Ä¤G­ÓÄİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">¥DÄİ©Êªí¹F¦¡</param>
-        /// <param name="operator">¤ñ¸û¹Bºâ¤l</param>
-        /// <param name="compareToPropertyExpression">¤ñ¸û¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="isNegated">¬O§_§_©w¦¹±ø¥ó</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty1">ç¬¬ä¸€å€‹å±¬æ€§é¡å‹</typeparam>
+        /// <typeparam name="TProperty2">ç¬¬äºŒå€‹å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">ä¸»å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="operator">æ¯”è¼ƒé‹ç®—å­</param>
+        /// <param name="compareToPropertyExpression">æ¯”è¼ƒç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®šæ­¤æ¢ä»¶</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> AddPropertyComparison<TProperty1, TProperty2>(
             Expression<Func<T, TProperty1>> propertyExpression, 
             FilterOperator @operator, 
@@ -194,12 +194,12 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß±_ª¬¸s²Õ¬d¸ß
+        /// å»ºç«‹å·¢ç‹€ç¾¤çµ„æŸ¥è©¢
         /// </summary>
-        /// <param name="logicalOperator">¸s²Õ¤ºªºÅŞ¿è¹Bºâ¤l</param>
-        /// <param name="builderAction">«Øºc¤l¸s²Õªº°Ê§@</param>
-        /// <param name="isNegated">¬O§_§_©w¾ã­Ó¸s²Õ</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="logicalOperator">ç¾¤çµ„å…§çš„é‚è¼¯é‹ç®—å­</param>
+        /// <param name="builderAction">å»ºæ§‹å­ç¾¤çµ„çš„å‹•ä½œ</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®šæ•´å€‹ç¾¤çµ„</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Compare(LogicalOperator logicalOperator, Action<FilterDictionaryBuilder<T>> builderAction, bool isNegated = false)
         {
             if (builderAction == null)
@@ -219,420 +219,420 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß Equal ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ Equal æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Equal(string property, object value, bool isNegated = false)
         {
             return Add(property, FilterOperator.Equal, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß Equal ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ Equal æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Equal<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.Equal, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß Like ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ Like æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Like(string property, object value, bool isNegated = false)
         {
             return Add(property, FilterOperator.Like, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß Like ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ Like æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Like<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.Like, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß Contains ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ Contains æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Contains(string property, object value, bool isNegated = false)
         {
             return Add(property, FilterOperator.Contains, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß Contains ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ Contains æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Contains<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.Contains, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß In ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ In æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="values">­È¶°¦X</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="values">å€¼é›†åˆ</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> In(string property, IEnumerable<object> values, bool isNegated = false)
         {
             return Add(property, FilterOperator.In, values, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß In ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ In æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="values">­È¶°¦X</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="values">å€¼é›†åˆ</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> In<TProperty>(Expression<Func<T, TProperty>> propertyExpression, IEnumerable<object> values, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.In, values, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß Between ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ Between æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="min">³Ì¤p­È</param>
-        /// <param name="max">³Ì¤j­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="min">æœ€å°å€¼</param>
+        /// <param name="max">æœ€å¤§å€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Between(string property, object min, object max, bool isNegated = false)
         {
             return Add(property, FilterOperator.Between, new[] { min, max }, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß Between ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ Between æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="min">³Ì¤p­È</param>
-        /// <param name="max">³Ì¤j­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="min">æœ€å°å€¼</param>
+        /// <param name="max">æœ€å¤§å€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Between<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object min, object max, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.Between, new[] { min, max }, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß GreaterThan ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ GreaterThan æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> GreaterThan(string property, object value, bool isNegated = false)
         {
             return Add(property, FilterOperator.GreaterThan, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß GreaterThan ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ GreaterThan æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> GreaterThan<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.GreaterThan, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß LessThan ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ LessThan æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> LessThan(string property, object value, bool isNegated = false)
         {
             return Add(property, FilterOperator.LessThan, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß LessThan ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ LessThan æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> LessThan<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.LessThan, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß GreaterThanOrEqual ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ GreaterThanOrEqual æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> GreaterThanOrEqual(string property, object value, bool isNegated = false)
         {
             return Add(property, FilterOperator.GreaterThanOrEqual, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß GreaterThanOrEqual ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ GreaterThanOrEqual æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> GreaterThanOrEqual<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.GreaterThanOrEqual, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß LessThanOrEqual ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ LessThanOrEqual æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> LessThanOrEqual(string property, object value, bool isNegated = false)
         {
             return Add(property, FilterOperator.LessThanOrEqual, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß LessThanOrEqual ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ LessThanOrEqual æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> LessThanOrEqual<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.LessThanOrEqual, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß StartsWith ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ StartsWith æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> StartsWith(string property, object value, bool isNegated = false)
         {
             return Add(property, FilterOperator.StartsWith, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß StartsWith ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ StartsWith æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> StartsWith<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.StartsWith, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß EndsWith ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ EndsWith æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> EndsWith(string property, object value, bool isNegated = false)
         {
             return Add(property, FilterOperator.EndsWith, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß EndsWith ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ EndsWith æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> EndsWith<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.EndsWith, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß NotEqual ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ NotEqual æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> NotEqual(string property, object value, bool isNegated = false)
         {
             return Add(property, FilterOperator.NotEqual, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß NotEqual ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ NotEqual æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> NotEqual<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.NotEqual, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß NotContains ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ NotContains æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> NotContains(string property, object value, bool isNegated = false)
         {
             return Add(property, FilterOperator.NotContains, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß NotContains ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ NotContains æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> NotContains<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.NotContains, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß NotIn ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ NotIn æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="values">­È¶°¦X</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="values">å€¼é›†åˆ</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> NotIn(string property, IEnumerable<object> values, bool isNegated = false)
         {
             return Add(property, FilterOperator.NotIn, values, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß NotIn ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ NotIn æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="values">­È¶°¦X</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="values">å€¼é›†åˆ</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> NotIn<TProperty>(Expression<Func<T, TProperty>> propertyExpression, IEnumerable<object> values, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.NotIn, values, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß NotLike ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ NotLike æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> NotLike(string property, object value, bool isNegated = false)
         {
             return Add(property, FilterOperator.NotLike, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß NotLike ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ NotLike æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> NotLike<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.NotLike, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß NotBetween ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ NotBetween æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="min">³Ì¤p­È</param>
-        /// <param name="max">³Ì¤j­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="min">æœ€å°å€¼</param>
+        /// <param name="max">æœ€å¤§å€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> NotBetween(string property, object min, object max, bool isNegated = false)
         {
             return Add(property, FilterOperator.NotBetween, new[] { min, max }, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß NotBetween ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ NotBetween æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="min">³Ì¤p­È</param>
-        /// <param name="max">³Ì¤j­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="min">æœ€å°å€¼</param>
+        /// <param name="max">æœ€å¤§å€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> NotBetween<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object min, object max, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.NotBetween, new[] { min, max }, isNegated);
         }
 
         /// <summary>
-        /// ²K¥[°}¦C¾ÉÄıÄİ©Êªº¬d¸ß±ø¥ó (Expression ª©¥»)
+        /// æ·»åŠ é™£åˆ—å°è¦½å±¬æ€§çš„æŸ¥è©¢æ¢ä»¶ (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="operator">¹LÂo¹Bºâ¤l</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="operator">éæ¿¾é‹ç®—å­</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> AddCustomArrayNavigation<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -640,10 +640,10 @@ namespace DynamicPredicateBuilder
             object value,
             bool isNegated = false)
         {
-            // ´£¨ú¶°¦XÄİ©Ê¦WºÙ
+            // æå–é›†åˆå±¬æ€§åç¨±
             var collectionName = GetPropertyName(collectionExpression);
             
-            // ´£¨ú¥Ø¼ĞÄİ©Ê¦WºÙ
+            // æå–ç›®æ¨™å±¬æ€§åç¨±
             string targetPropertyName;
             if (propertyExpression.Body is MemberExpression memberExpr)
             {
@@ -659,22 +659,22 @@ namespace DynamicPredicateBuilder
                 throw new ArgumentException("Invalid property expression", nameof(propertyExpression));
             }
             
-            // ºc³y°}¦C¾ÉÄı»yªk
+            // æ§‹é€ é™£åˆ—å°è¦½èªæ³•
             var navigationProperty = $"{collectionName}[].{targetPropertyName}";
             
             return Add(navigationProperty, @operator, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı Equal ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ Equal æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayEqual<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -685,15 +685,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı In ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ In æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="values">­È¶°¦X</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="values">å€¼é›†åˆ</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayIn<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -704,15 +704,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı GreaterThan ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ GreaterThan æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayGreaterThan<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -723,16 +723,16 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı Between ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ Between æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="min">³Ì¤p­È</param>
-        /// <param name="max">³Ì¤j­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="min">æœ€å°å€¼</param>
+        /// <param name="max">æœ€å¤§å€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayBetween<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -744,15 +744,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı Like ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ Like æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayLike<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -763,15 +763,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı NotLike ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ NotLike æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayNotLike<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -782,15 +782,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı Contains ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ Contains æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayContains<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -801,15 +801,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı NotContains ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ NotContains æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayNotContains<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -820,15 +820,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı StartsWith ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ StartsWith æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayStartsWith<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -839,15 +839,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı EndsWith ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ EndsWith æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayEndsWith<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -858,15 +858,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı NotEqual ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ NotEqual æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayNotEqual<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -877,15 +877,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı NotIn ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ NotIn æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="values">­È¶°¦X</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="values">å€¼é›†åˆ</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayNotIn<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -896,15 +896,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı GreaterThanOrEqual ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ GreaterThanOrEqual æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayGreaterThanOrEqual<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -915,15 +915,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı LessThan ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ LessThan æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayLessThan<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -934,15 +934,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı LessThanOrEqual ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ LessThanOrEqual æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayLessThanOrEqual<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -953,16 +953,16 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı NotBetween ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ NotBetween æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="min">³Ì¤p­È</param>
-        /// <param name="max">³Ì¤j­È</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="min">æœ€å°å€¼</param>
+        /// <param name="max">æœ€å¤§å€¼</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayNotBetween<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -974,15 +974,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı Any ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ Any æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È¡]¥i¬° null¡Aªí¥ÜÀË¬d¶°¦X¬O§_¦³¥ô¦ó¤¸¯À¡^</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼ï¼ˆå¯ç‚º nullï¼Œè¡¨ç¤ºæª¢æŸ¥é›†åˆæ˜¯å¦æœ‰ä»»ä½•å…ƒç´ ï¼‰</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayAny<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -993,15 +993,15 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß°}¦C¾ÉÄı NotAny ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹é™£åˆ—å°è¦½ NotAny æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <typeparam name="TCollection">¶°¦XÃş«¬</typeparam>
-        /// <typeparam name="TProperty">¥Ø¼ĞÄİ©ÊÃş«¬</typeparam>
-        /// <param name="collectionExpression">¶°¦XÄİ©Êªí¹F¦¡</param>
-        /// <param name="propertyExpression">¥Ø¼ĞÄİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È¡]¥i¬° null¡Aªí¥ÜÀË¬d¶°¦X¬O§_¨S¦³¥ô¦ó¤¸¯À¡^</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TCollection">é›†åˆé¡å‹</typeparam>
+        /// <typeparam name="TProperty">ç›®æ¨™å±¬æ€§é¡å‹</typeparam>
+        /// <param name="collectionExpression">é›†åˆå±¬æ€§è¡¨é”å¼</param>
+        /// <param name="propertyExpression">ç›®æ¨™å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼ï¼ˆå¯ç‚º nullï¼Œè¡¨ç¤ºæª¢æŸ¥é›†åˆæ˜¯å¦æ²’æœ‰ä»»ä½•å…ƒç´ ï¼‰</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> ArrayNotAny<TCollection, TProperty>(
             Expression<Func<T, IEnumerable<TCollection>>> collectionExpression,
             Expression<Func<TCollection, TProperty>> propertyExpression,
@@ -1012,58 +1012,58 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Ø¥ß Any ±ø¥óªº§Ö±¶¤èªk</summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È¡]¥i¬° null¡Aªí¥ÜÀË¬d¶°¦X¬O§_¦³¥ô¦ó¤¸¯À¡^</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// å»ºç«‹ Any æ¢ä»¶çš„å¿«æ·æ–¹æ³•</summary>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼ï¼ˆå¯ç‚º nullï¼Œè¡¨ç¤ºæª¢æŸ¥é›†åˆæ˜¯å¦æœ‰ä»»ä½•å…ƒç´ ï¼‰</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Any(string property, object? value = null, bool isNegated = false)
         {
             return Add(property, FilterOperator.Any, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß Any ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ Any æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È¡]¥i¬° null¡Aªí¥ÜÀË¬d¶°¦X¬O§_¦³¥ô¦ó¤¸¯À¡^</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼ï¼ˆå¯ç‚º nullï¼Œè¡¨ç¤ºæª¢æŸ¥é›†åˆæ˜¯å¦æœ‰ä»»ä½•å…ƒç´ ï¼‰</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> Any<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object? value = null, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.Any, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß NotAny ±ø¥óªº§Ö±¶¤èªk
+        /// å»ºç«‹ NotAny æ¢ä»¶çš„å¿«æ·æ–¹æ³•
         /// </summary>
-        /// <param name="property">Äİ©Ê¦WºÙ</param>
-        /// <param name="value">¤ñ¸û­È¡]¥i¬° null¡Aªí¥ÜÀË¬d¶°¦X¬O§_¨S¦³¥ô¦ó¤¸¯À¡^</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <param name="property">å±¬æ€§åç¨±</param>
+        /// <param name="value">æ¯”è¼ƒå€¼ï¼ˆå¯ç‚º nullï¼Œè¡¨ç¤ºæª¢æŸ¥é›†åˆæ˜¯å¦æ²’æœ‰ä»»ä½•å…ƒç´ ï¼‰</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> NotAny(string property, object? value = null, bool isNegated = false)
         {
             return Add(property, FilterOperator.NotAny, value, isNegated);
         }
 
         /// <summary>
-        /// «Ø¥ß NotAny ±ø¥óªº§Ö±¶¤èªk (Expression ª©¥»)
+        /// å»ºç«‹ NotAny æ¢ä»¶çš„å¿«æ·æ–¹æ³• (Expression ç‰ˆæœ¬)
         /// </summary>
-        /// <typeparam name="TProperty">Äİ©ÊÃş«¬</typeparam>
-        /// <param name="propertyExpression">Äİ©Êªí¹F¦¡</param>
-        /// <param name="value">¤ñ¸û­È¡]¥i¬° null¡Aªí¥ÜÀË¬d¶°¦X¬O§_¨S¦³¥ô¦ó¤¸¯À¡^</param>
-        /// <param name="isNegated">¬O§_§_©w</param>
-        /// <returns>Builder ¹ê¨Ò</returns>
+        /// <typeparam name="TProperty">å±¬æ€§é¡å‹</typeparam>
+        /// <param name="propertyExpression">å±¬æ€§è¡¨é”å¼</param>
+        /// <param name="value">æ¯”è¼ƒå€¼ï¼ˆå¯ç‚º nullï¼Œè¡¨ç¤ºæª¢æŸ¥é›†åˆæ˜¯å¦æ²’æœ‰ä»»ä½•å…ƒç´ ï¼‰</param>
+        /// <param name="isNegated">æ˜¯å¦å¦å®š</param>
+        /// <returns>Builder å¯¦ä¾‹</returns>
         public FilterDictionaryBuilder<T> NotAny<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object? value = null, bool isNegated = false)
         {
             return Add(propertyExpression, FilterOperator.NotAny, value, isNegated);
         }
 
         /// <summary>
-        /// «Øºc³Ì²×ªº¦r¨åµ²ªG
+        /// å»ºæ§‹æœ€çµ‚çš„å­—å…¸çµæœ
         /// </summary>
-        /// <returns>¹LÂo±ø¥ó¦r¨å</returns>
+        /// <returns>éæ¿¾æ¢ä»¶å­—å…¸</returns>
         public Dictionary<string, object> Build()
         {
             var result = new Dictionary<string, object>
@@ -1082,9 +1082,9 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// «Øºc³Ì²×ªº¦r¨åµ²ªG¨ÃÂà´«¬° FilterGroup
+        /// å»ºæ§‹æœ€çµ‚çš„å­—å…¸çµæœä¸¦è½‰æ›ç‚º FilterGroup
         /// </summary>
-        /// <returns>FilterGroup ¹ê¨Ò</returns>
+        /// <returns>FilterGroup å¯¦ä¾‹</returns>
         public FilterGroup ToFilterGroup()
         {
             var dict = Build();
@@ -1092,18 +1092,18 @@ namespace DynamicPredicateBuilder
         }
 
         /// <summary>
-        /// Áô¦¡Âà´«¬°¦r¨å
+        /// éš±å¼è½‰æ›ç‚ºå­—å…¸
         /// </summary>
-        /// <param name="builder">Builder ¹ê¨Ò</param>
+        /// <param name="builder">Builder å¯¦ä¾‹</param>
         public static implicit operator Dictionary<string, object>(FilterDictionaryBuilder<T> builder)
         {
             return builder.Build();
         }
 
         /// <summary>
-        /// Áô¦¡Âà´«¬° FilterGroup
+        /// éš±å¼è½‰æ›ç‚º FilterGroup
         /// </summary>
-        /// <param name="builder">Builder ¹ê¨Ò</param>
+        /// <param name="builder">Builder å¯¦ä¾‹</param>
         public static implicit operator FilterGroup(FilterDictionaryBuilder<T> builder)
         {
             return builder.ToFilterGroup();
@@ -1111,25 +1111,25 @@ namespace DynamicPredicateBuilder
     }
 
     /// <summary>
-    /// ÀRºA¤u¼tÃş§O¡A´£¨ÑÂ²¤Æªº«Ø¥ß¤èªk
+    /// éœæ…‹å·¥å» é¡åˆ¥ï¼Œæä¾›ç°¡åŒ–çš„å»ºç«‹æ–¹æ³•
     /// </summary>
     public static class FilterDictionaryBuilder
     {
         /// <summary>
-        /// «Ø¥ß·sªº QueryBuilder ¹ê¨Ò
+        /// å»ºç«‹æ–°çš„ QueryBuilder å¯¦ä¾‹
         /// </summary>
-        /// <typeparam name="T">¥Ø¼Ğ¹êÅéÃş«¬</typeparam>
-        /// <returns>FilterDictionaryBuilder ¹ê¨Ò</returns>
+        /// <typeparam name="T">ç›®æ¨™å¯¦é«”é¡å‹</typeparam>
+        /// <returns>FilterDictionaryBuilder å¯¦ä¾‹</returns>
         public static FilterDictionaryBuilder<T> QueryBuilder<T>()
         {
             return new FilterDictionaryBuilder<T>();
         }
 
         /// <summary>
-        /// «Ø¥ß·sªº QueryBuilder ¹ê¨Ò
+        /// å»ºç«‹æ–°çš„ QueryBuilder å¯¦ä¾‹
         /// </summary>
-        /// <typeparam name="T">¥Ø¼Ğ¹êÅéÃş«¬</typeparam>
-        /// <returns>FilterDictionaryBuilder ¹ê¨Ò</returns>
+        /// <typeparam name="T">ç›®æ¨™å¯¦é«”é¡å‹</typeparam>
+        /// <returns>FilterDictionaryBuilder å¯¦ä¾‹</returns>
         public static FilterDictionaryBuilder<T> Create<T>()
         {
             return new FilterDictionaryBuilder<T>();

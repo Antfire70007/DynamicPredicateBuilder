@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq;
 using DynamicPredicateBuilder;
@@ -10,7 +10,7 @@ using FluentAssertions;
 namespace DynamicPredicate.Tests.Examples
 {
     /// <summary>
-    /// Any ©M NotAny ¾Ş§@²Åªº¨Ï¥Î½d¨Ò
+    /// Any å’Œ NotAny æ“ä½œç¬¦çš„ä½¿ç”¨ç¯„ä¾‹
     /// </summary>
     public class AnyNotAnyExamples
     {
@@ -21,7 +21,7 @@ namespace DynamicPredicate.Tests.Examples
             _output = output;
         }
 
-        // ´ú¸Õ¥Îªº¹êÅéÃş§O
+        // æ¸¬è©¦ç”¨çš„å¯¦é«”é¡åˆ¥
         public class Product
         {
             public int Id { get; set; }
@@ -35,29 +35,29 @@ namespace DynamicPredicate.Tests.Examples
         [Fact]
         public void Example_AnyOperator_CheckCollectionHasElements()
         {
-            _output.WriteLine("=== Any ¾Ş§@²Å¡GÀË¬d¶°¦X¬O§_¦³¥ô¦ó¤¸¯À ===");
+            _output.WriteLine("=== Any æ“ä½œç¬¦ï¼šæª¢æŸ¥é›†åˆæ˜¯å¦æœ‰ä»»ä½•å…ƒç´  ===");
 
-            // «Ø¥ß´ú¸Õ¸ê®Æ
+            // å»ºç«‹æ¸¬è©¦è³‡æ–™
             var products = new List<Product>
             {
                 new() { Id = 1, Name = "Laptop", Tags = new() { "Electronics", "Computer" } },
-                new() { Id = 2, Name = "Book", Tags = new() },  // ªÅ¶°¦X
-                new() { Id = 3, Name = "Phone", Tags = null }    // null ¶°¦X
+                new() { Id = 2, Name = "Book", Tags = new() },  // ç©ºé›†åˆ
+                new() { Id = 3, Name = "Phone", Tags = null }    // null é›†åˆ
             };
 
-            // ¨Ï¥Î FilterDictionaryBuilder¡G¬d¸ß¦³¥ô¦ó¼ĞÅÒªº²£«~
+            // ä½¿ç”¨ FilterDictionaryBuilderï¼šæŸ¥è©¢æœ‰ä»»ä½•æ¨™ç±¤çš„ç”¢å“
             var filterGroup = FilterDictionaryBuilder.QueryBuilder<Product>()
-                .Any(x => x.Tags)  // value ¬° null¡AÀË¬d¶°¦X¬O§_¦³¥ô¦ó¤¸¯À
+                .Any(x => x.Tags)  // value ç‚º nullï¼Œæª¢æŸ¥é›†åˆæ˜¯å¦æœ‰ä»»ä½•å…ƒç´ 
                 .ToFilterGroup();
 
             var predicate = FilterBuilder.Build<Product>(filterGroup).Compile();
             var results = products.Where(predicate).ToList();
 
-            // ¥u¦³ Laptop ¦³¼ĞÅÒ
+            // åªæœ‰ Laptop æœ‰æ¨™ç±¤
             results.Should().HaveCount(1);
             results[0].Name.Should().Be("Laptop");
 
-            _output.WriteLine($"§ä¨ì {results.Count} ­Ó¦³¼ĞÅÒªº²£«~¡G");
+            _output.WriteLine($"æ‰¾åˆ° {results.Count} å€‹æœ‰æ¨™ç±¤çš„ç”¢å“ï¼š");
             foreach (var product in results)
             {
                 _output.WriteLine($"- {product.Name}: [{string.Join(", ", product.Tags ?? new())}]");
@@ -67,9 +67,9 @@ namespace DynamicPredicate.Tests.Examples
         [Fact]
         public void Example_AnyOperator_CheckCollectionContainsSpecificValue()
         {
-            _output.WriteLine("=== Any ¾Ş§@²Å¡GÀË¬d¶°¦X¬O§_¥]§t¯S©w­È ===");
+            _output.WriteLine("=== Any æ“ä½œç¬¦ï¼šæª¢æŸ¥é›†åˆæ˜¯å¦åŒ…å«ç‰¹å®šå€¼ ===");
 
-            // «Ø¥ß´ú¸Õ¸ê®Æ
+            // å»ºç«‹æ¸¬è©¦è³‡æ–™
             var products = new List<Product>
             {
                 new() { Id = 1, Name = "Gaming Laptop", Tags = new() { "Electronics", "Gaming", "Computer" } },
@@ -78,20 +78,20 @@ namespace DynamicPredicate.Tests.Examples
                 new() { Id = 4, Name = "Office Chair", Tags = new() { "Furniture", "Business" } }
             };
 
-            // ¨Ï¥Î FilterDictionaryBuilder¡G¬d¸ß¥]§t "Gaming" ¼ĞÅÒªº²£«~
+            // ä½¿ç”¨ FilterDictionaryBuilderï¼šæŸ¥è©¢åŒ…å« "Gaming" æ¨™ç±¤çš„ç”¢å“
             var filterGroup = FilterDictionaryBuilder.QueryBuilder<Product>()
-                .Any(x => x.Tags, "Gaming")  // ÀË¬d Tags ¶°¦X¬O§_¥]§t "Gaming"
+                .Any(x => x.Tags, "Gaming")  // æª¢æŸ¥ Tags é›†åˆæ˜¯å¦åŒ…å« "Gaming"
                 .ToFilterGroup();
 
             var predicate = FilterBuilder.Build<Product>(filterGroup).Compile();
             var results = products.Where(predicate).ToList();
 
-            // À³¸Ó§ä¨ì 2 ­Ó¹CÀ¸¬ÛÃö²£«~
+            // æ‡‰è©²æ‰¾åˆ° 2 å€‹éŠæˆ²ç›¸é—œç”¢å“
             results.Should().HaveCount(2);
             results.Should().Contain(p => p.Name == "Gaming Laptop");
             results.Should().Contain(p => p.Name == "Gaming Mouse");
 
-            _output.WriteLine($"§ä¨ì {results.Count} ­Ó¥]§t 'Gaming' ¼ĞÅÒªº²£«~¡G");
+            _output.WriteLine($"æ‰¾åˆ° {results.Count} å€‹åŒ…å« 'Gaming' æ¨™ç±¤çš„ç”¢å“ï¼š");
             foreach (var product in results)
             {
                 _output.WriteLine($"- {product.Name}: [{string.Join(", ", product.Tags)}]");
@@ -101,33 +101,33 @@ namespace DynamicPredicate.Tests.Examples
         [Fact]
         public void Example_NotAnyOperator_CheckCollectionIsEmpty()
         {
-            _output.WriteLine("=== NotAny ¾Ş§@²Å¡GÀË¬d¶°¦X¬O§_¬°ªÅ ===");
+            _output.WriteLine("=== NotAny æ“ä½œç¬¦ï¼šæª¢æŸ¥é›†åˆæ˜¯å¦ç‚ºç©º ===");
 
-            // «Ø¥ß´ú¸Õ¸ê®Æ
+            // å»ºç«‹æ¸¬è©¦è³‡æ–™
             var products = new List<Product>
             {
-                new() { Id = 1, Name = "New Product", Categories = new() },     // ªÅ¶°¦X
-                new() { Id = 2, Name = "Draft Product", Categories = null },    // null ¶°¦X
+                new() { Id = 1, Name = "New Product", Categories = new() },     // ç©ºé›†åˆ
+                new() { Id = 2, Name = "Draft Product", Categories = null },    // null é›†åˆ
                 new() { Id = 3, Name = "Published Product", Categories = new() { "Electronics" } }
             };
 
-            // ¨Ï¥Î FilterDictionaryBuilder¡G¬d¸ß¨S¦³¤ÀÃşªº²£«~
+            // ä½¿ç”¨ FilterDictionaryBuilderï¼šæŸ¥è©¢æ²’æœ‰åˆ†é¡çš„ç”¢å“
             var filterGroup = FilterDictionaryBuilder.QueryBuilder<Product>()
-                .NotAny(x => x.Categories)  // value ¬° null¡AÀË¬d¶°¦X¬O§_¨S¦³¥ô¦ó¤¸¯À
+                .NotAny(x => x.Categories)  // value ç‚º nullï¼Œæª¢æŸ¥é›†åˆæ˜¯å¦æ²’æœ‰ä»»ä½•å…ƒç´ 
                 .ToFilterGroup();
 
             var predicate = FilterBuilder.Build<Product>(filterGroup).Compile();
             var results = products.Where(predicate).ToList();
 
-            // À³¸Ó§ä¨ì 2 ­Ó¨S¦³¤ÀÃşªº²£«~
+            // æ‡‰è©²æ‰¾åˆ° 2 å€‹æ²’æœ‰åˆ†é¡çš„ç”¢å“
             results.Should().HaveCount(2);
             results.Should().Contain(p => p.Name == "New Product");
             results.Should().Contain(p => p.Name == "Draft Product");
 
-            _output.WriteLine($"§ä¨ì {results.Count} ­Ó¨S¦³¤ÀÃşªº²£«~¡G");
+            _output.WriteLine($"æ‰¾åˆ° {results.Count} å€‹æ²’æœ‰åˆ†é¡çš„ç”¢å“ï¼š");
             foreach (var product in results)
             {
-                var categories = product.Categories?.Count > 0 ? string.Join(", ", product.Categories) : "µL";
+                var categories = product.Categories?.Count > 0 ? string.Join(", ", product.Categories) : "ç„¡";
                 _output.WriteLine($"- {product.Name}: [{categories}]");
             }
         }
@@ -135,9 +135,9 @@ namespace DynamicPredicate.Tests.Examples
         [Fact]
         public void Example_NotAnyOperator_CheckCollectionDoesNotContainValue()
         {
-            _output.WriteLine("=== NotAny ¾Ş§@²Å¡GÀË¬d¶°¦X¬O§_¤£¥]§t¯S©w­È ===");
+            _output.WriteLine("=== NotAny æ“ä½œç¬¦ï¼šæª¢æŸ¥é›†åˆæ˜¯å¦ä¸åŒ…å«ç‰¹å®šå€¼ ===");
 
-            // «Ø¥ß´ú¸Õ¸ê®Æ
+            // å»ºç«‹æ¸¬è©¦è³‡æ–™
             var products = new List<Product>
             {
                 new() { Id = 1, Name = "Safe Product", Tags = new() { "Electronics", "Safe" } },
@@ -146,22 +146,22 @@ namespace DynamicPredicate.Tests.Examples
                 new() { Id = 4, Name = "No Tags Product", Tags = new() }
             };
 
-            // ¨Ï¥Î FilterDictionaryBuilder¡G¬d¸ß¤£¥]§t "Dangerous" ¼ĞÅÒªº²£«~
+            // ä½¿ç”¨ FilterDictionaryBuilderï¼šæŸ¥è©¢ä¸åŒ…å« "Dangerous" æ¨™ç±¤çš„ç”¢å“
             var filterGroup = FilterDictionaryBuilder.QueryBuilder<Product>()
-                .NotAny(x => x.Tags, "Dangerous")  // ÀË¬d Tags ¶°¦X¬O§_¤£¥]§t "Dangerous"
+                .NotAny(x => x.Tags, "Dangerous")  // æª¢æŸ¥ Tags é›†åˆæ˜¯å¦ä¸åŒ…å« "Dangerous"
                 .ToFilterGroup();
 
             var predicate = FilterBuilder.Build<Product>(filterGroup).Compile();
             var results = products.Where(predicate).ToList();
 
-            // À³¸Ó§ä¨ì 3 ­Ó¦w¥ş²£«~
+            // æ‡‰è©²æ‰¾åˆ° 3 å€‹å®‰å…¨ç”¢å“
             results.Should().HaveCount(3);
             results.Should().NotContain(p => p.Name == "Dangerous Product");
 
-            _output.WriteLine($"§ä¨ì {results.Count} ­Ó¤£¥]§t 'Dangerous' ¼ĞÅÒªº²£«~¡G");
+            _output.WriteLine($"æ‰¾åˆ° {results.Count} å€‹ä¸åŒ…å« 'Dangerous' æ¨™ç±¤çš„ç”¢å“ï¼š");
             foreach (var product in results)
             {
-                var tags = product.Tags?.Count > 0 ? string.Join(", ", product.Tags) : "µL";
+                var tags = product.Tags?.Count > 0 ? string.Join(", ", product.Tags) : "ç„¡";
                 _output.WriteLine($"- {product.Name}: [{tags}]");
             }
         }
@@ -169,9 +169,9 @@ namespace DynamicPredicate.Tests.Examples
         [Fact]
         public void Example_ComplexAnyNotAnyConditions()
         {
-            _output.WriteLine("=== ½ÆÂøªº Any/NotAny ±ø¥ó²Õ¦X ===");
+            _output.WriteLine("=== è¤‡é›œçš„ Any/NotAny æ¢ä»¶çµ„åˆ ===");
 
-            // «Ø¥ß´ú¸Õ¸ê®Æ
+            // å»ºç«‹æ¸¬è©¦è³‡æ–™
             var products = new List<Product>
             {
                 new() { Id = 1, Name = "Premium Gaming Laptop", 
@@ -188,42 +188,42 @@ namespace DynamicPredicate.Tests.Examples
                         Ratings = new() { 1, 2 } }
             };
 
-            // ½ÆÂø¬d¸ß¡G
-            // 1. ¥²¶·¦³µû¯Å¡]Ratings ¤£¬°ªÅ¡^
-            // 2. ¥²¶·¥]§t "Premium" ¼ĞÅÒ
-            // 3. ¤£¯à¥]§t "Dangerous" ¼ĞÅÒ
-            // 4. µû¯Å¤¤¥²¶·¦³ 5 ¤À
+            // è¤‡é›œæŸ¥è©¢ï¼š
+            // 1. å¿…é ˆæœ‰è©•ç´šï¼ˆRatings ä¸ç‚ºç©ºï¼‰
+            // 2. å¿…é ˆåŒ…å« "Premium" æ¨™ç±¤
+            // 3. ä¸èƒ½åŒ…å« "Dangerous" æ¨™ç±¤
+            // 4. è©•ç´šä¸­å¿…é ˆæœ‰ 5 åˆ†
             var filterGroup = FilterDictionaryBuilder.QueryBuilder<Product>()
                 .WithLogicalOperator(LogicalOperator.And)
-                .Any(x => x.Ratings)                    // ¦³µû¯Å
-                .Any(x => x.Tags, "Premium")            // ¥]§t Premium ¼ĞÅÒ
-                .NotAny(x => x.Tags, "Dangerous")       // ¤£¥]§t Dangerous ¼ĞÅÒ
-                .Any(x => x.Ratings, 5)                 // µû¯Å¤¤¦³ 5 ¤À
+                .Any(x => x.Ratings)                    // æœ‰è©•ç´š
+                .Any(x => x.Tags, "Premium")            // åŒ…å« Premium æ¨™ç±¤
+                .NotAny(x => x.Tags, "Dangerous")       // ä¸åŒ…å« Dangerous æ¨™ç±¤
+                .Any(x => x.Ratings, 5)                 // è©•ç´šä¸­æœ‰ 5 åˆ†
                 .ToFilterGroup();
 
             var predicate = FilterBuilder.Build<Product>(filterGroup).Compile();
             var results = products.Where(predicate).ToList();
 
-            // ¥u¦³ Premium Gaming Laptop ²Å¦X©Ò¦³±ø¥ó
+            // åªæœ‰ Premium Gaming Laptop ç¬¦åˆæ‰€æœ‰æ¢ä»¶
             results.Should().HaveCount(1);
             results[0].Name.Should().Be("Premium Gaming Laptop");
 
-            _output.WriteLine($"§ä¨ì {results.Count} ­Ó²Å¦X½ÆÂø±ø¥óªº²£«~¡G");
+            _output.WriteLine($"æ‰¾åˆ° {results.Count} å€‹ç¬¦åˆè¤‡é›œæ¢ä»¶çš„ç”¢å“ï¼š");
             foreach (var product in results)
             {
                 _output.WriteLine($"- {product.Name}:");
-                _output.WriteLine($"  ¼ĞÅÒ: [{string.Join(", ", product.Tags)}]");
-                _output.WriteLine($"  ¤ÀÃş: [{string.Join(", ", product.Categories)}]");
-                _output.WriteLine($"  µû¯Å: [{string.Join(", ", product.Ratings)}]");
+                _output.WriteLine($"  æ¨™ç±¤: [{string.Join(", ", product.Tags)}]");
+                _output.WriteLine($"  åˆ†é¡: [{string.Join(", ", product.Categories)}]");
+                _output.WriteLine($"  è©•ç´š: [{string.Join(", ", product.Ratings)}]");
             }
         }
 
         [Fact]
         public void Example_UsingFilterRules_DirectlyWithAnyNotAny()
         {
-            _output.WriteLine("=== ª½±µ¨Ï¥Î FilterRule ªº Any/NotAny ¾Ş§@²Å ===");
+            _output.WriteLine("=== ç›´æ¥ä½¿ç”¨ FilterRule çš„ Any/NotAny æ“ä½œç¬¦ ===");
 
-            // «Ø¥ß´ú¸Õ¸ê®Æ
+            // å»ºç«‹æ¸¬è©¦è³‡æ–™
             var products = new List<Product>
             {
                 new() { Id = 1, Name = "Electronics", Tags = new() { "Tech", "Popular" } },
@@ -231,20 +231,20 @@ namespace DynamicPredicate.Tests.Examples
                 new() { Id = 3, Name = "Empty Product", Tags = new() }
             };
 
-            // ¨Ï¥Î FilterRule ª½±µ«Ø¥ß±ø¥ó
+            // ä½¿ç”¨ FilterRule ç›´æ¥å»ºç«‹æ¢ä»¶
             var filterGroup = new FilterGroup
             {
                 LogicalOperator = LogicalOperator.Or,
                 Rules = new List<object>
                 {
-                    // ÀË¬d Tags ¬O§_¦³¥ô¦ó¤¸¯À
+                    // æª¢æŸ¥ Tags æ˜¯å¦æœ‰ä»»ä½•å…ƒç´ 
                     new FilterRule 
                     { 
                         Property = "Tags", 
                         Operator = FilterOperator.Any, 
                         Value = null 
                     },
-                    // ÀË¬d Tags ¬O§_¥]§t "Popular"
+                    // æª¢æŸ¥ Tags æ˜¯å¦åŒ…å« "Popular"
                     new FilterRule 
                     { 
                         Property = "Tags", 
@@ -257,15 +257,15 @@ namespace DynamicPredicate.Tests.Examples
             var predicate = FilterBuilder.Build<Product>(filterGroup).Compile();
             var results = products.Where(predicate).ToList();
 
-            // ©Ò¦³¦³¼ĞÅÒªº²£«~³£·|³Q§ä¨ì
+            // æ‰€æœ‰æœ‰æ¨™ç±¤çš„ç”¢å“éƒ½æœƒè¢«æ‰¾åˆ°
             results.Should().HaveCount(2);
             results.Should().Contain(p => p.Name == "Electronics");
             results.Should().Contain(p => p.Name == "Book");
 
-            _output.WriteLine($"§ä¨ì {results.Count} ­Ó²Å¦X±ø¥óªº²£«~¡G");
+            _output.WriteLine($"æ‰¾åˆ° {results.Count} å€‹ç¬¦åˆæ¢ä»¶çš„ç”¢å“ï¼š");
             foreach (var product in results)
             {
-                var tags = product.Tags?.Count > 0 ? string.Join(", ", product.Tags) : "µL";
+                var tags = product.Tags?.Count > 0 ? string.Join(", ", product.Tags) : "ç„¡";
                 _output.WriteLine($"- {product.Name}: [{tags}]");
             }
         }

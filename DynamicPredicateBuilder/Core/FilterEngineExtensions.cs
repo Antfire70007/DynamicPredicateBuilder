@@ -25,7 +25,15 @@ public static class FilterEngineExtensions
         return query;
     }
 
-    public static IQueryable<T> ApplySort<T>(this IQueryable<T> query, List<SortRule> sortRules)
+    /// <summary>
+    /// 應用排序規則到查詢
+    /// </summary>
+    /// <typeparam name="T">實體類型</typeparam>
+    /// <param name="query">查詢</param>
+    /// <param name="sortRules">排序規則</param>
+    /// <param name="skipArrayNavigation">是否跳過陣列導覽屬性（預設為 false，會拋出異常）</param>
+    /// <returns>已排序的查詢</returns>
+    public static IQueryable<T> ApplySort<T>(this IQueryable<T> query, List<SortRule> sortRules, bool skipArrayNavigation = false)
     {
         if (sortRules == null || !sortRules.Any())
             return query;
@@ -34,6 +42,25 @@ public static class FilterEngineExtensions
 
         foreach (var rule in sortRules)
         {
+            // 檢查是否為陣列導覽屬性（包含 "[]" 語法）
+            if (rule.Property.Contains("[]"))
+            {
+                if (skipArrayNavigation)
+                {
+                    // 跳過陣列導覽屬性
+                    continue;
+                }
+                else
+                {
+                    // 陣列導覽屬性無法在 EF Core 查詢中執行，拋出有意義的錯誤訊息
+                    throw new InvalidOperationException(
+                        $"陣列導覽屬性 '{rule.Property}' 無法在資料庫查詢中排序。" +
+                        "請先使用 ToList() 或 AsEnumerable() 將資料載入記憶體，然後再進行陣列導覽屬性的排序。" +
+                        "\n或者使用 ApplySort(sortRules, skipArrayNavigation: true) 跳過陣列導覽屬性。" +
+                        "\n範例：var data = query.ApplySort(sortRules, skipArrayNavigation: true).ToList();");
+                }
+            }
+
             var parameter = Expression.Parameter(typeof(T), "x");
             var property = PropertyPathHelper.BuildPropertyExpression(parameter, rule.Property);
             var lambda = Expression.Lambda(property, parameter);
@@ -52,6 +79,26 @@ public static class FilterEngineExtensions
         }
 
         return query;
+    }
+
+    /// <summary>
+    /// 從排序規則中分離出非陣列導覽屬性的規則
+    /// </summary>
+    /// <param name="sortRules">排序規則</param>
+    /// <returns>非陣列導覽屬性的排序規則</returns>
+    public static List<SortRule> GetNonArrayNavigationRules(this List<SortRule> sortRules)
+    {
+        return sortRules?.Where(r => !r.Property.Contains("[]")).ToList() ?? new List<SortRule>();
+    }
+
+    /// <summary>
+    /// 從排序規則中分離出陣列導覽屬性的規則
+    /// </summary>
+    /// <param name="sortRules">排序規則</param>
+    /// <returns>陣列導覽屬性的排序規則</returns>
+    public static List<SortRule> GetArrayNavigationRules(this List<SortRule> sortRules)
+    {
+        return sortRules?.Where(r => r.Property.Contains("[]")).ToList() ?? new List<SortRule>();
     }
 
     public static QueryResult<T> ApplyQuery<T>(this IQueryable<T> query, QueryRequest request)
