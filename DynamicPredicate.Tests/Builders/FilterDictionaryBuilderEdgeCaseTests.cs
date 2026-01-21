@@ -13,21 +13,16 @@ namespace DynamicPredicate.Tests.Builders
     /// <summary>
     /// FilterDictionaryBuilder 錯誤處理和邊界條件測試
     /// </summary>
-    public class FilterDictionaryBuilderEdgeCaseTests
+    public class FilterDictionaryBuilderEdgeCaseTests(ITestOutputHelper output)
     {
-        private readonly ITestOutputHelper _output;
-
-        public FilterDictionaryBuilderEdgeCaseTests(ITestOutputHelper output)
-        {
-            _output = output;
-        }
+        private readonly ITestOutputHelper _output = output;
 
         // 測試用實體
         public class TestEntity
         {
             public string Name { get; set; }
             public int Value { get; set; }
-            public List<string> Tags { get; set; } = new();
+            public List<string> Tags { get; set; } = [];
             public NestedEntity Nested { get; set; }
         }
 

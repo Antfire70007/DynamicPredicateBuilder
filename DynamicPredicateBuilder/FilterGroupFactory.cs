@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using DynamicPredicateBuilder.Models;
-using Newtonsoft.Json.Linq;
 
 namespace DynamicPredicateBuilder;
 
@@ -24,9 +23,10 @@ public static class FilterGroupFactory
                 if (ruleOrGroup.TryGetProperty("Property", out var propElement))
                 {
                     // 單一條件
-                    var rule = new FilterRule();
-
-                    rule.Property = propElement.GetString();
+                    FilterRule rule = new()
+                    {
+                        Property = propElement.GetString()
+                    };
 
                     if (ruleOrGroup.TryGetProperty("Operator", out var opElement))
                     {
@@ -82,6 +82,7 @@ public static class FilterGroupFactory
                 return null;
         }
     }
+
     public static FilterGroup FromDictionary(Dictionary<string, object> dict)
     {
         var group = new FilterGroup();
@@ -129,17 +130,11 @@ public static class FilterGroupFactory
 
     private static Dictionary<string, object> ConvertToDictionary(object obj)
     {
-        if (obj is JObject jObject)
-            return jObject.ToObject<Dictionary<string, object>>();
-
         return obj as Dictionary<string, object> ?? new Dictionary<string, object>();
     }
 
     private static List<object> ConvertToList(object obj)
     {
-        if (obj is JArray jArray)
-            return jArray.ToObject<List<object>>();
-
         return obj as List<object> ?? new List<object>();
     }
 
@@ -157,9 +152,14 @@ public static class FilterGroupFactory
 
         if (dict.TryGetValue("Value", out var value))
         {
-            if (value is JArray jArray)
+            if (value is JsonElement jsonElement && jsonElement.ValueKind == JsonValueKind.Array)
             {
-                rule.Value = jArray.ToObject<List<object>>();
+                var list = new List<object>();
+                foreach (var item in jsonElement.EnumerateArray())
+                {
+                    list.Add(GetJsonValue(item));
+                }
+                rule.Value = list;
             }
             else
             {

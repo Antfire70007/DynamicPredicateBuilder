@@ -46,8 +46,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
     {
-        new FilterGroup
-        {
+        new() {
             LogicalOperator = LogicalOperator.And,
             InterOperator = LogicalOperator.Or,
             Rules =
@@ -55,7 +54,7 @@ namespace DynamicPredicate.Tests.Builders
                 new FilterRule { Property = "Name", Operator = FilterOperator.Equal, Value = "Snake" }
             ]
         },
-        new FilterGroup
+        new()
         {
             LogicalOperator = LogicalOperator.And,
             Rules =
@@ -77,8 +76,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
     {
-        new FilterGroup
-        {
+        new() {
             LogicalOperator = LogicalOperator.And,
             Rules =
             [
@@ -95,8 +93,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -114,8 +111,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -135,8 +131,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -156,8 +151,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -176,8 +170,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -197,8 +190,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -218,8 +210,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -239,8 +230,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -260,8 +250,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -282,8 +271,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -304,12 +292,11 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
-                        new FilterRule { Property = "Salary", Operator = FilterOperator.Between, Value = new[] { 40000m, 60000m } }
+                        new FilterRule { Property = "Salary", Operator = FilterOperator.Between, Value = itemArray }
                     ]
                 }
             };
@@ -328,12 +315,11 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
-                        new FilterRule { Property = "Salary", Operator = FilterOperator.In, Value = new[] { 40000m, 50000m, 60000m } }
+                        new FilterRule { Property = "Salary", Operator = FilterOperator.In, Value = itemArray0 }
                     ]
                 }
             };
@@ -351,8 +337,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -373,8 +358,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.Or,
                     Rules =
                     [
@@ -390,17 +374,20 @@ namespace DynamicPredicate.Tests.Builders
             predicate(new User { Salary = 50000.00m }).Should().BeFalse(); // 中等薪資
         }
 
+        private static readonly decimal[] item = [40000m, 60000m];
+        private static readonly decimal[] itemArray = [40000m, 60000m];
+        private static readonly decimal[] itemArray0 = [40000m, 50000m, 60000m];
+
         [Fact]
         public void BuildPredicate_NullableDecimal_WithNegation_ShouldWork()
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
-                        new FilterRule { Property = "Salary", Operator = FilterOperator.Between, Value = new[] { 40000m, 60000m }, IsNegated = true }
+                        new FilterRule { Property = "Salary", Operator = FilterOperator.Between, Value = item, IsNegated = true }
                     ]
                 }
             };
@@ -417,8 +404,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     InterOperator = LogicalOperator.Or,
                     Rules =
@@ -426,8 +412,7 @@ namespace DynamicPredicate.Tests.Builders
                         new FilterRule { Property = "Salary", Operator = FilterOperator.GreaterThan, Value = 50000m }
                     ]
                 },
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -453,8 +438,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -464,8 +448,8 @@ namespace DynamicPredicate.Tests.Builders
             };
             var predicate = FilterBuilder.Build<User>(groups).Compile();
             
-            predicate(new User { Tags = new List<string> { "VIP", "Premium" } }).Should().BeTrue(); // 有元素
-            predicate(new User { Tags = new List<string>() }).Should().BeFalse(); // 空集合
+            predicate(new User { Tags = ["VIP", "Premium"] }).Should().BeTrue(); // 有元素
+            predicate(new User { Tags = [] }).Should().BeFalse(); // 空集合
             predicate(new User { Tags = null }).Should().BeFalse(); // null 集合
         }
 
@@ -474,8 +458,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -485,9 +468,9 @@ namespace DynamicPredicate.Tests.Builders
             };
             var predicate = FilterBuilder.Build<User>(groups).Compile();
             
-            predicate(new User { Tags = new List<string> { "VIP", "Premium" } }).Should().BeTrue(); // 包含 VIP
-            predicate(new User { Tags = new List<string> { "Premium", "Standard" } }).Should().BeFalse(); // 不包含 VIP
-            predicate(new User { Tags = new List<string>() }).Should().BeFalse(); // 空集合
+            predicate(new User { Tags = ["VIP", "Premium"] }).Should().BeTrue(); // 包含 VIP
+            predicate(new User { Tags = ["Premium", "Standard"] }).Should().BeFalse(); // 不包含 VIP
+            predicate(new User { Tags = [] }).Should().BeFalse(); // 空集合
             predicate(new User { Tags = null }).Should().BeFalse(); // null 集合
         }
 
@@ -496,8 +479,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -507,9 +489,9 @@ namespace DynamicPredicate.Tests.Builders
             };
             var predicate = FilterBuilder.Build<User>(groups).Compile();
             
-            predicate(new User { Tags = new List<string>() }).Should().BeTrue(); // 空集合
+            predicate(new User { Tags = [] }).Should().BeTrue(); // 空集合
             predicate(new User { Tags = null }).Should().BeTrue(); // null 集合
-            predicate(new User { Tags = new List<string> { "VIP" } }).Should().BeFalse(); // 有元素
+            predicate(new User { Tags = ["VIP"] }).Should().BeFalse(); // 有元素
         }
 
         [Fact]
@@ -517,8 +499,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -528,10 +509,10 @@ namespace DynamicPredicate.Tests.Builders
             };
             var predicate = FilterBuilder.Build<User>(groups).Compile();
             
-            predicate(new User { Tags = new List<string> { "VIP", "Premium" } }).Should().BeTrue(); // 不包含 Banned
-            predicate(new User { Tags = new List<string>() }).Should().BeTrue(); // 空集合
+            predicate(new User { Tags = ["VIP", "Premium"] }).Should().BeTrue(); // 不包含 Banned
+            predicate(new User { Tags = [] }).Should().BeTrue(); // 空集合
             predicate(new User { Tags = null }).Should().BeTrue(); // null 集合
-            predicate(new User { Tags = new List<string> { "Banned", "VIP" } }).Should().BeFalse(); // 包含 Banned
+            predicate(new User { Tags = ["Banned", "VIP"] }).Should().BeFalse(); // 包含 Banned
         }
 
         [Fact]
@@ -539,8 +520,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -550,10 +530,10 @@ namespace DynamicPredicate.Tests.Builders
             };
             var predicate = FilterBuilder.Build<User>(groups).Compile();
             
-            predicate(new User { Tags = new List<string> { "Premium", "Standard" } }).Should().BeTrue(); // 不包含 VIP
-            predicate(new User { Tags = new List<string>() }).Should().BeTrue(); // 空集合
+            predicate(new User { Tags = ["Premium", "Standard"] }).Should().BeTrue(); // 不包含 VIP
+            predicate(new User { Tags = [] }).Should().BeTrue(); // 空集合
             predicate(new User { Tags = null }).Should().BeTrue(); // null 集合
-            predicate(new User { Tags = new List<string> { "VIP", "Premium" } }).Should().BeFalse(); // 包含 VIP
+            predicate(new User { Tags = ["VIP", "Premium"] }).Should().BeFalse(); // 包含 VIP
         }
 
         [Fact]
@@ -561,8 +541,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -572,9 +551,9 @@ namespace DynamicPredicate.Tests.Builders
             };
             var predicate = FilterBuilder.Build<User>(groups).Compile();
             
-            predicate(new User { Numbers = new List<int> { 1, 42, 100 } }).Should().BeTrue(); // 包含 42
-            predicate(new User { Numbers = new List<int> { 1, 2, 3 } }).Should().BeFalse(); // 不包含 42
-            predicate(new User { Numbers = new List<int>() }).Should().BeFalse(); // 空集合
+            predicate(new User { Numbers = [1, 42, 100] }).Should().BeTrue(); // 包含 42
+            predicate(new User { Numbers = [1, 2, 3] }).Should().BeFalse(); // 不包含 42
+            predicate(new User { Numbers = [] }).Should().BeFalse(); // 空集合
         }
 
         [Fact]
@@ -582,8 +561,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -594,9 +572,9 @@ namespace DynamicPredicate.Tests.Builders
             };
             var predicate = FilterBuilder.Build<User>(groups).Compile();
             
-            predicate(new User { Tags = new List<string> { "Premium", "VIP" } }).Should().BeTrue(); // 有Premium且沒有Banned
-            predicate(new User { Tags = new List<string> { "Premium", "Banned" } }).Should().BeFalse(); // 有Premium但也有Banned
-            predicate(new User { Tags = new List<string> { "VIP", "Standard" } }).Should().BeFalse(); // 沒有Premium
+            predicate(new User { Tags = ["Premium", "VIP"] }).Should().BeTrue(); // 有Premium且沒有Banned
+            predicate(new User { Tags = ["Premium", "Banned"] }).Should().BeFalse(); // 有Premium但也有Banned
+            predicate(new User { Tags = ["VIP", "Standard"] }).Should().BeFalse(); // 沒有Premium
         }
 
         [Fact]
@@ -605,8 +583,7 @@ namespace DynamicPredicate.Tests.Builders
             // 測試非集合屬性使用 Any/NotAny 時的預設行為
             var groups1 = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -620,8 +597,7 @@ namespace DynamicPredicate.Tests.Builders
 
             var groups2 = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [

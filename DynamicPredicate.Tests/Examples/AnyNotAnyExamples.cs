@@ -12,36 +12,30 @@ namespace DynamicPredicate.Tests.Examples
     /// <summary>
     /// Any 和 NotAny 操作符的使用範例
     /// </summary>
-    public class AnyNotAnyExamples
+    public class AnyNotAnyExamples(ITestOutputHelper output)
     {
-        private readonly ITestOutputHelper _output;
-
-        public AnyNotAnyExamples(ITestOutputHelper output)
-        {
-            _output = output;
-        }
 
         // 測試用的實體類別
         public class Product
         {
             public int Id { get; set; }
             public string Name { get; set; } = string.Empty;
-            public List<string> Tags { get; set; } = new();
-            public List<string> Categories { get; set; } = new();
-            public List<int> Ratings { get; set; } = new();
+            public List<string> Tags { get; set; } = [];
+            public List<string> Categories { get; set; } = [];
+            public List<int> Ratings { get; set; } = [];
             public decimal Price { get; set; }
         }
 
         [Fact]
         public void Example_AnyOperator_CheckCollectionHasElements()
         {
-            _output.WriteLine("=== Any 操作符：檢查集合是否有任何元素 ===");
+            output.WriteLine("=== Any 操作符：檢查集合是否有任何元素 ===");
 
             // 建立測試資料
             var products = new List<Product>
             {
-                new() { Id = 1, Name = "Laptop", Tags = new() { "Electronics", "Computer" } },
-                new() { Id = 2, Name = "Book", Tags = new() },  // 空集合
+                new() { Id = 1, Name = "Laptop", Tags = ["Electronics", "Computer"] },
+                new() { Id = 2, Name = "Book", Tags = [] },  // 空集合
                 new() { Id = 3, Name = "Phone", Tags = null }    // null 集合
             };
 
@@ -57,25 +51,25 @@ namespace DynamicPredicate.Tests.Examples
             results.Should().HaveCount(1);
             results[0].Name.Should().Be("Laptop");
 
-            _output.WriteLine($"找到 {results.Count} 個有標籤的產品：");
+            output.WriteLine($"找到 {results.Count} 個有標籤的產品：");
             foreach (var product in results)
             {
-                _output.WriteLine($"- {product.Name}: [{string.Join(", ", product.Tags ?? new())}]");
+                output.WriteLine($"- {product.Name}: [{string.Join(", ", product.Tags ?? [])}]");
             }
         }
 
         [Fact]
         public void Example_AnyOperator_CheckCollectionContainsSpecificValue()
         {
-            _output.WriteLine("=== Any 操作符：檢查集合是否包含特定值 ===");
+            output.WriteLine("=== Any 操作符：檢查集合是否包含特定值 ===");
 
             // 建立測試資料
             var products = new List<Product>
             {
-                new() { Id = 1, Name = "Gaming Laptop", Tags = new() { "Electronics", "Gaming", "Computer" } },
-                new() { Id = 2, Name = "Office Laptop", Tags = new() { "Electronics", "Business", "Computer" } },
-                new() { Id = 3, Name = "Gaming Mouse", Tags = new() { "Gaming", "Accessories" } },
-                new() { Id = 4, Name = "Office Chair", Tags = new() { "Furniture", "Business" } }
+                new() { Id = 1, Name = "Gaming Laptop", Tags = ["Electronics", "Gaming", "Computer"] },
+                new() { Id = 2, Name = "Office Laptop", Tags = ["Electronics", "Business", "Computer"] },
+                new() { Id = 3, Name = "Gaming Mouse", Tags = ["Gaming", "Accessories"] },
+                new() { Id = 4, Name = "Office Chair", Tags = ["Furniture", "Business"] }
             };
 
             // 使用 FilterDictionaryBuilder：查詢包含 "Gaming" 標籤的產品
@@ -91,24 +85,24 @@ namespace DynamicPredicate.Tests.Examples
             results.Should().Contain(p => p.Name == "Gaming Laptop");
             results.Should().Contain(p => p.Name == "Gaming Mouse");
 
-            _output.WriteLine($"找到 {results.Count} 個包含 'Gaming' 標籤的產品：");
+            output.WriteLine($"找到 {results.Count} 個包含 'Gaming' 標籤的產品：");
             foreach (var product in results)
             {
-                _output.WriteLine($"- {product.Name}: [{string.Join(", ", product.Tags)}]");
+                output.WriteLine($"- {product.Name}: [{string.Join(", ", product.Tags)}]");
             }
         }
 
         [Fact]
         public void Example_NotAnyOperator_CheckCollectionIsEmpty()
         {
-            _output.WriteLine("=== NotAny 操作符：檢查集合是否為空 ===");
+            output.WriteLine("=== NotAny 操作符：檢查集合是否為空 ===");
 
             // 建立測試資料
             var products = new List<Product>
             {
-                new() { Id = 1, Name = "New Product", Categories = new() },     // 空集合
+                new() { Id = 1, Name = "New Product", Categories = [] },     // 空集合
                 new() { Id = 2, Name = "Draft Product", Categories = null },    // null 集合
-                new() { Id = 3, Name = "Published Product", Categories = new() { "Electronics" } }
+                new() { Id = 3, Name = "Published Product", Categories = ["Electronics"] }
             };
 
             // 使用 FilterDictionaryBuilder：查詢沒有分類的產品
@@ -124,26 +118,26 @@ namespace DynamicPredicate.Tests.Examples
             results.Should().Contain(p => p.Name == "New Product");
             results.Should().Contain(p => p.Name == "Draft Product");
 
-            _output.WriteLine($"找到 {results.Count} 個沒有分類的產品：");
+            output.WriteLine($"找到 {results.Count} 個沒有分類的產品：");
             foreach (var product in results)
             {
                 var categories = product.Categories?.Count > 0 ? string.Join(", ", product.Categories) : "無";
-                _output.WriteLine($"- {product.Name}: [{categories}]");
+                output.WriteLine($"- {product.Name}: [{categories}]");
             }
         }
 
         [Fact]
         public void Example_NotAnyOperator_CheckCollectionDoesNotContainValue()
         {
-            _output.WriteLine("=== NotAny 操作符：檢查集合是否不包含特定值 ===");
+            output.WriteLine("=== NotAny 操作符：檢查集合是否不包含特定值 ===");
 
             // 建立測試資料
             var products = new List<Product>
             {
-                new() { Id = 1, Name = "Safe Product", Tags = new() { "Electronics", "Safe" } },
-                new() { Id = 2, Name = "Another Safe Product", Tags = new() { "Furniture" } },
-                new() { Id = 3, Name = "Dangerous Product", Tags = new() { "Electronics", "Dangerous" } },
-                new() { Id = 4, Name = "No Tags Product", Tags = new() }
+                new() { Id = 1, Name = "Safe Product", Tags = ["Electronics", "Safe"] },
+                new() { Id = 2, Name = "Another Safe Product", Tags = ["Furniture"] },
+                new() { Id = 3, Name = "Dangerous Product", Tags = ["Electronics", "Dangerous"] },
+                new() { Id = 4, Name = "No Tags Product", Tags = [] }
             };
 
             // 使用 FilterDictionaryBuilder：查詢不包含 "Dangerous" 標籤的產品
@@ -158,34 +152,34 @@ namespace DynamicPredicate.Tests.Examples
             results.Should().HaveCount(3);
             results.Should().NotContain(p => p.Name == "Dangerous Product");
 
-            _output.WriteLine($"找到 {results.Count} 個不包含 'Dangerous' 標籤的產品：");
+            output.WriteLine($"找到 {results.Count} 個不包含 'Dangerous' 標籤的產品：");
             foreach (var product in results)
             {
                 var tags = product.Tags?.Count > 0 ? string.Join(", ", product.Tags) : "無";
-                _output.WriteLine($"- {product.Name}: [{tags}]");
+                output.WriteLine($"- {product.Name}: [{tags}]");
             }
         }
 
         [Fact]
         public void Example_ComplexAnyNotAnyConditions()
         {
-            _output.WriteLine("=== 複雜的 Any/NotAny 條件組合 ===");
+            output.WriteLine("=== 複雜的 Any/NotAny 條件組合 ===");
 
             // 建立測試資料
             var products = new List<Product>
             {
                 new() { Id = 1, Name = "Premium Gaming Laptop", 
-                        Tags = new() { "Electronics", "Gaming", "Premium" },
-                        Categories = new() { "Computer", "Gaming" },
-                        Ratings = new() { 5, 4, 5 } },
+                        Tags = ["Electronics", "Gaming", "Premium"],
+                        Categories = ["Computer", "Gaming"],
+                        Ratings = [5, 4, 5] },
                 new() { Id = 2, Name = "Budget Office Laptop", 
-                        Tags = new() { "Electronics", "Budget" },
-                        Categories = new() { "Computer", "Office" },
-                        Ratings = new() { 3, 3, 4 } },
+                        Tags = ["Electronics", "Budget"],
+                        Categories = ["Computer", "Office"],
+                        Ratings = [3, 3, 4] },
                 new() { Id = 3, Name = "Dangerous Gadget", 
-                        Tags = new() { "Electronics", "Dangerous" },
-                        Categories = new() { "Gadget" },
-                        Ratings = new() { 1, 2 } }
+                        Tags = ["Electronics", "Dangerous"],
+                        Categories = ["Gadget"],
+                        Ratings = [1, 2] }
             };
 
             // 複雜查詢：
@@ -208,35 +202,35 @@ namespace DynamicPredicate.Tests.Examples
             results.Should().HaveCount(1);
             results[0].Name.Should().Be("Premium Gaming Laptop");
 
-            _output.WriteLine($"找到 {results.Count} 個符合複雜條件的產品：");
+            output.WriteLine($"找到 {results.Count} 個符合複雜條件的產品：");
             foreach (var product in results)
             {
-                _output.WriteLine($"- {product.Name}:");
-                _output.WriteLine($"  標籤: [{string.Join(", ", product.Tags)}]");
-                _output.WriteLine($"  分類: [{string.Join(", ", product.Categories)}]");
-                _output.WriteLine($"  評級: [{string.Join(", ", product.Ratings)}]");
+                output.WriteLine($"- {product.Name}:");
+                output.WriteLine($"  標籤: [{string.Join(", ", product.Tags)}]");
+                output.WriteLine($"  分類: [{string.Join(", ", product.Categories)}]");
+                output.WriteLine($"  評級: [{string.Join(", ", product.Ratings)}]");
             }
         }
 
         [Fact]
         public void Example_UsingFilterRules_DirectlyWithAnyNotAny()
         {
-            _output.WriteLine("=== 直接使用 FilterRule 的 Any/NotAny 操作符 ===");
+            output.WriteLine("=== 直接使用 FilterRule 的 Any/NotAny 操作符 ===");
 
             // 建立測試資料
             var products = new List<Product>
             {
-                new() { Id = 1, Name = "Electronics", Tags = new() { "Tech", "Popular" } },
-                new() { Id = 2, Name = "Book", Tags = new() { "Education" } },
-                new() { Id = 3, Name = "Empty Product", Tags = new() }
+                new() { Id = 1, Name = "Electronics", Tags = ["Tech", "Popular"] },
+                new() { Id = 2, Name = "Book", Tags = ["Education"] },
+                new() { Id = 3, Name = "Empty Product", Tags = [] }
             };
 
             // 使用 FilterRule 直接建立條件
             var filterGroup = new FilterGroup
             {
                 LogicalOperator = LogicalOperator.Or,
-                Rules = new List<object>
-                {
+                Rules =
+                [
                     // 檢查 Tags 是否有任何元素
                     new FilterRule 
                     { 
@@ -251,7 +245,7 @@ namespace DynamicPredicate.Tests.Examples
                         Operator = FilterOperator.Any, 
                         Value = "Popular" 
                     }
-                }
+                ]
             };
 
             var predicate = FilterBuilder.Build<Product>(filterGroup).Compile();
@@ -262,11 +256,11 @@ namespace DynamicPredicate.Tests.Examples
             results.Should().Contain(p => p.Name == "Electronics");
             results.Should().Contain(p => p.Name == "Book");
 
-            _output.WriteLine($"找到 {results.Count} 個符合條件的產品：");
+            output.WriteLine($"找到 {results.Count} 個符合條件的產品：");
             foreach (var product in results)
             {
                 var tags = product.Tags?.Count > 0 ? string.Join(", ", product.Tags) : "無";
-                _output.WriteLine($"- {product.Name}: [{tags}]");
+                output.WriteLine($"- {product.Name}: [{tags}]");
             }
         }
     }

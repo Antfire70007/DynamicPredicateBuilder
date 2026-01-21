@@ -9,14 +9,8 @@ using Newtonsoft.Json;
 
 namespace DynamicPredicate.Tests.Builders
 {
-    public class FilterDictionaryBuilderTests
+    public class FilterDictionaryBuilderTests(ITestOutputHelper output)
     {
-        private readonly ITestOutputHelper _output;
-
-        public FilterDictionaryBuilderTests(ITestOutputHelper output)
-        {
-            _output = output;
-        }
 
         // 測試用的 DTO 類別
         public class LandDTO
@@ -32,7 +26,7 @@ namespace DynamicPredicate.Tests.Builders
         public class Contract
         {
             public string ContractNo { get; set; }
-            public List<BuildContract> BuildContracts { get; set; } = new();
+            public List<BuildContract> BuildContracts { get; set; } = [];
             public ContractDetail Detail { get; set; }
         }
 
@@ -40,7 +34,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             public string BuildContractId { get; set; }
             public Build Build { get; set; }
-            public List<SubContract> SubContracts { get; set; } = new();
+            public List<SubContract> SubContracts { get; set; } = [];
         }
 
         public class Build
@@ -48,13 +42,13 @@ namespace DynamicPredicate.Tests.Builders
             public string BuildId { get; set; }
             public string HosAddress { get; set; }
             public string BuildName { get; set; }
-            public List<Floor> Floors { get; set; } = new();
+            public List<Floor> Floors { get; set; } = [];
         }
 
         public class Floor
         {
             public string FloorName { get; set; }
-            public List<Unit> Units { get; set; } = new();
+            public List<Unit> Units { get; set; } = [];
         }
 
         public class Unit
@@ -79,11 +73,11 @@ namespace DynamicPredicate.Tests.Builders
         public class TestEntityWithCollections
         {
             public string Name { get; set; }
-            public List<string> Tags { get; set; } = new();
-            public List<string> Categories { get; set; } = new();
-            public List<string> Flags { get; set; } = new();
-            public List<string> Labels { get; set; } = new();
-            public List<int> Numbers { get; set; } = new();
+            public List<string> Tags { get; set; } = [];
+            public List<string> Categories { get; set; } = [];
+            public List<string> Flags { get; set; } = [];
+            public List<string> Labels { get; set; } = [];
+            public List<int> Numbers { get; set; } = [];
         }
 
         [Fact]
@@ -111,7 +105,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(FilterOperator.Like, rule2["Operator"]);
             Assert.Equal("test-city", rule2["Value"]);
 
-            _output.WriteLine($"Simple Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Simple Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -139,7 +133,7 @@ namespace DynamicPredicate.Tests.Builders
             var nestedRules = (List<object>)nestedGroup["Rules"];
             Assert.Equal(2, nestedRules.Count);
 
-            _output.WriteLine($"Nested Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Nested Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -162,7 +156,7 @@ namespace DynamicPredicate.Tests.Builders
             var nestedGroup = (Dictionary<string, object>)rules[1];
             Assert.True((bool)nestedGroup["IsNegated"]);
 
-            _output.WriteLine($"Negated Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Negated Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -173,7 +167,7 @@ namespace DynamicPredicate.Tests.Builders
                 .Equal(nameof(LandDTO.CaseOwner), "John")
                 .Like(nameof(LandDTO.LandNo), "test")
                 .Contains(nameof(LandDTO.CityCode), "taipei")
-                .In(nameof(LandDTO.CityCode), new[] { "taipei", "kaohsiung", "taichung" })
+                .In(nameof(LandDTO.CityCode), ["taipei", "kaohsiung", "taichung"])
                 .Between(nameof(LandDTO.Price), 500000, 2000000)
                 .GreaterThan(nameof(LandDTO.CreateDate), DateTime.Now.AddDays(-30))
                 .LessThan(nameof(LandDTO.Price), 5000000)
@@ -183,7 +177,7 @@ namespace DynamicPredicate.Tests.Builders
             var rules = (List<object>)result["Rules"];
             Assert.Equal(7, rules.Count);
 
-            _output.WriteLine($"All Operators Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"All Operators Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -202,7 +196,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(FilterOperator.Equal, rule["Operator"]);
             Assert.Equal(nameof(LandDTO.CityCode), rule["CompareToProperty"]);
 
-            _output.WriteLine($"Property Comparison Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Property Comparison Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -225,7 +219,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(FilterOperator.Like, rule1.Operator);
             Assert.Equal("test-land", rule1.Value);
 
-            _output.WriteLine($"FilterGroup Result: {JsonConvert.SerializeObject(filterGroup, Formatting.Indented)}");
+            output.WriteLine($"FilterGroup Result: {JsonConvert.SerializeObject(filterGroup, Formatting.Indented)}");
         }
 
         [Fact]
@@ -244,8 +238,8 @@ namespace DynamicPredicate.Tests.Builders
             Assert.IsType<Dictionary<string, object>>(dict);
             Assert.IsType<FilterGroup>(group);
 
-            _output.WriteLine($"Implicit Dictionary: {JsonConvert.SerializeObject(dict, Formatting.Indented)}");
-            _output.WriteLine($"Implicit FilterGroup: {JsonConvert.SerializeObject(group, Formatting.Indented)}");
+            output.WriteLine($"Implicit Dictionary: {JsonConvert.SerializeObject(dict, Formatting.Indented)}");
+            output.WriteLine($"Implicit FilterGroup: {JsonConvert.SerializeObject(group, Formatting.Indented)}");
         }
 
         [Fact]
@@ -269,9 +263,9 @@ namespace DynamicPredicate.Tests.Builders
             Assert.NotNull(result2);
             Assert.NotNull(result3);
 
-            _output.WriteLine($"Factory Method 1: {JsonConvert.SerializeObject(result1, Formatting.Indented)}");
-            _output.WriteLine($"Factory Method 2: {JsonConvert.SerializeObject(result2, Formatting.Indented)}");
-            _output.WriteLine($"Factory Method 3: {JsonConvert.SerializeObject(result3, Formatting.Indented)}");
+            output.WriteLine($"Factory Method 1: {JsonConvert.SerializeObject(result1, Formatting.Indented)}");
+            output.WriteLine($"Factory Method 2: {JsonConvert.SerializeObject(result2, Formatting.Indented)}");
+            output.WriteLine($"Factory Method 3: {JsonConvert.SerializeObject(result3, Formatting.Indented)}");
         }
 
         [Fact]
@@ -289,7 +283,7 @@ namespace DynamicPredicate.Tests.Builders
                     )
                 )
                 .Compare(LogicalOperator.And, rules => rules
-                    .In(nameof(LandDTO.CityCode), new[] { "TPE", "KHH" })
+                    .In(nameof(LandDTO.CityCode), ["TPE", "KHH"])
                     .Between(nameof(LandDTO.CreateDate), DateTime.Now.AddYears(-1), DateTime.Now)
                 )
                 .Build();
@@ -305,7 +299,7 @@ namespace DynamicPredicate.Tests.Builders
             var firstGroupRules = (List<object>)firstGroup["Rules"];
             Assert.Equal(3, firstGroupRules.Count); // 2個Like + 1個內巢狀群組
 
-            _output.WriteLine($"Complex Nested Query: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Complex Nested Query: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -333,7 +327,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(FilterOperator.Like, rule2["Operator"]);
             Assert.Equal("test-city", rule2["Value"]);
 
-            _output.WriteLine($"Expression Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Expression Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -366,7 +360,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(FilterOperator.Equal, nestedRule1["Operator"]);
             Assert.Equal("John Doe", nestedRule1["Value"]);
 
-            _output.WriteLine($"Expression Nested Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Expression Nested Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -377,7 +371,7 @@ namespace DynamicPredicate.Tests.Builders
                 .Equal(x => x.CaseOwner, "John")
                 .Like(x => x.LandNo, "test")
                 .Contains(x => x.CityCode, "taipei")
-                .In(x => x.CityCode, new[] { "taipei", "kaohsiung", "taichung" })
+                .In(x => x.CityCode, ["taipei", "kaohsiung", "taichung"])
                 .Between(x => x.Price, 500000, 2000000)
                 .GreaterThan(x => x.CreateDate, DateTime.Now.AddDays(-30))
                 .LessThan(x => x.Price, 5000000)
@@ -391,7 +385,7 @@ namespace DynamicPredicate.Tests.Builders
             var rules = (List<object>)result["Rules"];
             Assert.Equal(11, rules.Count);
 
-            _output.WriteLine($"Expression All Operators Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Expression All Operators Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -410,7 +404,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(FilterOperator.Equal, rule["Operator"]);
             Assert.Equal(nameof(LandDTO.CityCode), rule["CompareToProperty"]);
 
-            _output.WriteLine($"Expression Property Comparison Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Expression Property Comparison Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -435,7 +429,7 @@ namespace DynamicPredicate.Tests.Builders
             var rule2 = (Dictionary<string, object>)rules[1];
             Assert.Equal(nameof(LandDTO.CaseOwner), rule2["Property"]);
 
-            _output.WriteLine($"Expression Mixed Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Expression Mixed Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -479,7 +473,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(FilterOperator.NotAny, rule4["Operator"]);
             Assert.Equal("Banned", rule4["Value"]);
 
-            _output.WriteLine($"Any/NotAny Operators Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Any/NotAny Operators Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -508,7 +502,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(FilterOperator.Any, rule2["Operator"]);
             Assert.Equal("Premium", rule2["Value"]);
 
-            _output.WriteLine($"Expression Any/NotAny Operators Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Expression Any/NotAny Operators Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -519,7 +513,7 @@ namespace DynamicPredicate.Tests.Builders
                 .WithLogicalOperator(LogicalOperator.And)
                 .NotEqual(x => x.CaseOwner, "TestUser")
                 .NotContains(x => x.LandNo, "TEMP")
-                .NotIn(x => x.CityCode, new[] { "INVALID", "TEST" })
+                .NotIn(x => x.CityCode, ["INVALID", "TEST"])
                 .NotLike(x => x.LandNo, "%DRAFT%")
                 .NotBetween(x => x.Price, 0, 100)
                 .Any(x => x.LandNo)                       // 假設 LandNo 可能是集合
@@ -558,7 +552,7 @@ namespace DynamicPredicate.Tests.Builders
             var rule7 = (Dictionary<string, object>)rules[6];
             Assert.Equal(FilterOperator.NotAny, rule7["Operator"]);
 
-            _output.WriteLine($"All New Operators Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"All New Operators Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         #region 新增的測試案例
@@ -590,7 +584,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(FilterOperator.GreaterThan, rule4["Operator"]);
             Assert.Equal("ABC公司", rule4["Value"]);
 
-            _output.WriteLine($"Array Navigation Property Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Array Navigation Property Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -618,7 +612,7 @@ namespace DynamicPredicate.Tests.Builders
             var rule1 = (Dictionary<string, object>)nestedRules[0];
             Assert.Equal("BuildContracts[].Build.Floors[].Units[].UnitNo", rule1["Property"]);
 
-            _output.WriteLine($"Multi-Level Array Navigation Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Multi-Level Array Navigation Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -636,7 +630,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(LogicalOperator.And, result["LogicalOperator"]);
             Assert.Equal(LogicalOperator.Or, result["InterOperator"]);
 
-            _output.WriteLine($"InterOperator Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"InterOperator Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -653,7 +647,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(LogicalOperator.Or, result["LogicalOperator"]);
             Assert.False(result.ContainsKey("InterOperator")); // 預設值不應該出現
 
-            _output.WriteLine($"Default InterOperator Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Default InterOperator Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -671,7 +665,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(LogicalOperator.And, result["LogicalOperator"]);
             Assert.True((bool)result["IsNegated"]);
 
-            _output.WriteLine($"Group Negation Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Group Negation Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -687,7 +681,7 @@ namespace DynamicPredicate.Tests.Builders
             // Assert
             Assert.False(result.ContainsKey("IsNegated")); // false 時不應該出現
 
-            _output.WriteLine($"No Group Negation Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"No Group Negation Query Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -704,7 +698,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.False(result.ContainsKey("InterOperator")); // 預設值不出現
             Assert.False(result.ContainsKey("IsNegated")); // 預設值不出現
 
-            _output.WriteLine($"Empty Builder Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Empty Builder Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -724,7 +718,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(nameof(LandDTO.Price), rule["CompareToProperty"]);
             Assert.True((bool)rule["IsNegated"]);
 
-            _output.WriteLine($"Property Comparison with Negation Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Property Comparison with Negation Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -744,7 +738,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(nameof(LandDTO.Price), rule["CompareToProperty"]);
             Assert.True((bool)rule["IsNegated"]);
 
-            _output.WriteLine($"Expression Property Comparison with Negation Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Expression Property Comparison with Negation Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -796,7 +790,7 @@ namespace DynamicPredicate.Tests.Builders
             var level3Group = (Dictionary<string, object>)level2Rules[1];
             Assert.Equal(LogicalOperator.Or, level3Group["LogicalOperator"]);
 
-            _output.WriteLine($"Deep Nested Compare Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Deep Nested Compare Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -815,7 +809,7 @@ namespace DynamicPredicate.Tests.Builders
             var nestedGroup = (Dictionary<string, object>)rules[0];
             Assert.True((bool)nestedGroup["IsNegated"]);
 
-            _output.WriteLine($"Nested Compare with IsNegated Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Nested Compare with IsNegated Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -840,7 +834,7 @@ namespace DynamicPredicate.Tests.Builders
             var rules = (List<object>)result["Rules"];
             Assert.Equal(2, rules.Count);
 
-            _output.WriteLine($"Chained Builder Methods Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Chained Builder Methods Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         [Fact]
@@ -865,7 +859,7 @@ namespace DynamicPredicate.Tests.Builders
             var rule2 = (Dictionary<string, object>)rules[1];
             Assert.Equal(nameof(Contract.ContractNo), rule2["Property"]);
 
-            _output.WriteLine($"Mixed Expression and String Navigation Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
+            output.WriteLine($"Mixed Expression and String Navigation Result: {JsonConvert.SerializeObject(result, Formatting.Indented)}");
         }
 
         #endregion

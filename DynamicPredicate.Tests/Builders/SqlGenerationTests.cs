@@ -13,7 +13,7 @@ namespace DynamicPredicate.Tests.Builders
 {
     public class SqlGenerationTests
     {
-        private TestDbContext CreateInMemoryContext()
+        private static TestDbContext CreateInMemoryContext()
         {
             var options = new DbContextOptionsBuilder<TestDbContext>()
                 .UseInMemoryDatabase(databaseName: System.Guid.NewGuid().ToString())
@@ -35,7 +35,7 @@ namespace DynamicPredicate.Tests.Builders
             return context;
         }
 
-        private TestDbContext CreateSqliteContext()
+        private static TestDbContext CreateSqliteContext()
         {
             var options = new DbContextOptionsBuilder<TestDbContext>()
                 .UseSqlite("Data Source=:memory:")
@@ -59,7 +59,7 @@ namespace DynamicPredicate.Tests.Builders
             return context;
         }
 
-        private ExtendedTestDbContext CreateExtendedInMemoryContext()
+        private static ExtendedTestDbContext CreateExtendedInMemoryContext()
         {
             var options = new DbContextOptionsBuilder<ExtendedTestDbContext>()
                 .UseInMemoryDatabase(databaseName: System.Guid.NewGuid().ToString())
@@ -68,14 +68,14 @@ namespace DynamicPredicate.Tests.Builders
                 .Options;
 
             var context = new ExtendedTestDbContext(options);
-            
+
             // Seed complex test data
             SeedComplexTestData(context);
             
             return context;
         }
 
-        private ExtendedTestDbContext CreateExtendedSqliteContext()
+        private static ExtendedTestDbContext CreateExtendedSqliteContext()
         {
             var options = new DbContextOptionsBuilder<ExtendedTestDbContext>()
                 .UseSqlite("Data Source=:memory:")
@@ -86,14 +86,14 @@ namespace DynamicPredicate.Tests.Builders
             var context = new ExtendedTestDbContext(options);
             context.Database.OpenConnection();
             context.Database.EnsureCreated();
-            
+
             // Seed complex test data
             SeedComplexTestData(context);
             
             return context;
         }
 
-        private void SeedComplexTestData(ExtendedTestDbContext context)
+        private static void SeedComplexTestData(ExtendedTestDbContext context)
         {
             // 創建公司
             var company1 = new Company { Id = 1, Name = "TechCorp", Address = "台北市信義區" };
@@ -157,7 +157,7 @@ namespace DynamicPredicate.Tests.Builders
         }
 
         // 合約測試資料種子方法
-        private ExtendedTestDbContext CreateContractTestContext()
+        private static ExtendedTestDbContext CreateContractTestContext()
         {
             var options = new DbContextOptionsBuilder<ExtendedTestDbContext>()
                 .UseInMemoryDatabase(databaseName: System.Guid.NewGuid().ToString())
@@ -166,14 +166,14 @@ namespace DynamicPredicate.Tests.Builders
                 .Options;
 
             var context = new ExtendedTestDbContext(options);
-            
+
             // Seed 合約測試資料
             SeedContractTestData(context);
             
             return context;
         }
 
-        private void SeedContractTestData(ExtendedTestDbContext context)
+        private static void SeedContractTestData(ExtendedTestDbContext context)
         {
             // 創建建案
             var build1 = new Build { Id = 1, Name = "信義豪宅", AptId = 1001L, Location = "台北市信義區", Price = 50000000m };
@@ -234,8 +234,7 @@ namespace DynamicPredicate.Tests.Builders
             
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -267,8 +266,7 @@ namespace DynamicPredicate.Tests.Builders
 
             var groups = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules =
                     [
@@ -345,7 +343,7 @@ namespace DynamicPredicate.Tests.Builders
             // 測試所有陣列導覽方法
             var filterGroup1 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
-                .ArrayIn(c => c.BuildContracts, bc => bc.Build.AptId, new object[] { 1001L, 1002L })
+                .ArrayIn(c => c.BuildContracts, bc => bc.Build.AptId, [1001L, 1002L])
                 .ToFilterGroup();
 
             var predicate1 = FilterBuilder.Build<Contract>(filterGroup1);
@@ -535,7 +533,7 @@ namespace DynamicPredicate.Tests.Builders
             // 測試 ArrayNotIn - 尋找不包含特定 AptId 的合約
             var filterGroup1 = FilterDictionaryBuilder.QueryBuilder<Contract>()
                 .WithLogicalOperator(LogicalOperator.And)
-                .ArrayNotIn(c => c.BuildContracts, bc => bc.Build.AptId, new object[] { 1001L, 1004L })
+                .ArrayNotIn(c => c.BuildContracts, bc => bc.Build.AptId, [1001L, 1004L])
                 .ToFilterGroup();
 
             var predicate1 = FilterBuilder.Build<Contract>(filterGroup1);

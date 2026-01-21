@@ -11,7 +11,7 @@ namespace DynamicPredicate.Tests.TestData
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public DateTime CreatedDate { get; set; }
-        public List<BuildContract> BuildContracts { get; set; } = new();
+        public List<BuildContract> BuildContracts { get; set; } = [];
     }
 
     /// <summary>
@@ -39,6 +39,6 @@ namespace DynamicPredicate.Tests.TestData
         public long? AptId { get; set; }  // nullable long 類型的 AptId
         public string Location { get; set; } = string.Empty;
         public decimal? Price { get; set; }
-        public List<BuildContract> BuildContracts { get; set; } = new();
+        public List<BuildContract> BuildContracts { get; set; } = [];
     }
 }

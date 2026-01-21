@@ -12,21 +12,15 @@ namespace DynamicPredicate.Tests.Builders
     /// <summary>
     /// FilterDictionaryBuilder 表達式解析專用測試
     /// </summary>
-    public class FilterDictionaryBuilderExpressionTests
+    public class FilterDictionaryBuilderExpressionTests(ITestOutputHelper output)
     {
-        private readonly ITestOutputHelper _output;
-
-        public FilterDictionaryBuilderExpressionTests(ITestOutputHelper output)
-        {
-            _output = output;
-        }
 
         // 測試用的複雜實體類別
         public class ComplexEntity
         {
             public string Name { get; set; }
             public NestedEntity Nested { get; set; }
-            public List<string> Tags { get; set; } = new();
+            public List<string> Tags { get; set; } = [];
             public int? NullableInt { get; set; }
             public bool? NullableBool { get; set; }
             public DateTime CreatedDate { get; set; }
@@ -36,7 +30,7 @@ namespace DynamicPredicate.Tests.Builders
         {
             public string SubName { get; set; }
             public DeepNestedEntity Deep { get; set; }
-            public List<NestedCollection> Collections { get; set; } = new();
+            public List<NestedCollection> Collections { get; set; } = [];
         }
 
         public class DeepNestedEntity
@@ -64,7 +58,7 @@ namespace DynamicPredicate.Tests.Builders
             var rule = (Dictionary<string, object>)rules[0];
             Assert.Equal(nameof(ComplexEntity.Name), rule["Property"]);
 
-            _output.WriteLine($"Simple Property Expression: {rule["Property"]}");
+            output.WriteLine($"Simple Property Expression: {rule["Property"]}");
         }
 
         [Fact]
@@ -80,7 +74,7 @@ namespace DynamicPredicate.Tests.Builders
             var rule = (Dictionary<string, object>)rules[0];
             Assert.Equal("Nested.SubName", rule["Property"]);
 
-            _output.WriteLine($"Nested Property Expression: {rule["Property"]}");
+            output.WriteLine($"Nested Property Expression: {rule["Property"]}");
         }
 
         [Fact]
@@ -101,8 +95,8 @@ namespace DynamicPredicate.Tests.Builders
             var rule2 = (Dictionary<string, object>)rules[1];
             Assert.Equal("Nested.Deep.DeepValue", rule2["Property"]);
 
-            _output.WriteLine($"Deep Nested Property Expression 1: {rule1["Property"]}");
-            _output.WriteLine($"Deep Nested Property Expression 2: {rule2["Property"]}");
+            output.WriteLine($"Deep Nested Property Expression 1: {rule1["Property"]}");
+            output.WriteLine($"Deep Nested Property Expression 2: {rule2["Property"]}");
         }
 
         [Fact]
@@ -123,8 +117,8 @@ namespace DynamicPredicate.Tests.Builders
             var rule2 = (Dictionary<string, object>)rules[1];
             Assert.Equal(nameof(ComplexEntity.NullableBool), rule2["Property"]);
 
-            _output.WriteLine($"Nullable Property Expression 1: {rule1["Property"]}");
-            _output.WriteLine($"Nullable Property Expression 2: {rule2["Property"]}");
+            output.WriteLine($"Nullable Property Expression 1: {rule1["Property"]}");
+            output.WriteLine($"Nullable Property Expression 2: {rule2["Property"]}");
         }
 
         [Fact]
@@ -142,7 +136,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(nameof(ComplexEntity.CreatedDate), rule["Property"]);
             Assert.Equal(testDate, rule["Value"]);
 
-            _output.WriteLine($"DateTime Property Expression: {rule["Property"]} = {rule["Value"]}");
+            output.WriteLine($"DateTime Property Expression: {rule["Property"]} = {rule["Value"]}");
         }
 
         [Fact]
@@ -165,8 +159,8 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(nameof(ComplexEntity.Tags), rule2["Property"]);
             Assert.Equal("Premium", rule2["Value"]);
 
-            _output.WriteLine($"Collection Property Expression 1: {rule1["Property"]}");
-            _output.WriteLine($"Collection Property Expression 2: {rule2["Property"]}");
+            output.WriteLine($"Collection Property Expression 1: {rule1["Property"]}");
+            output.WriteLine($"Collection Property Expression 2: {rule2["Property"]}");
         }
 
         [Fact]
@@ -182,7 +176,7 @@ namespace DynamicPredicate.Tests.Builders
             var rule = (Dictionary<string, object>)rules[0];
             Assert.Equal("Nested.Collections", rule["Property"]);
 
-            _output.WriteLine($"Nested Collection Property Expression: {rule["Property"]}");
+            output.WriteLine($"Nested Collection Property Expression: {rule["Property"]}");
         }
 
         [Fact]
@@ -205,8 +199,8 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal("Nested.Deep.DeepValue", rule2["Property"]);
             Assert.Equal(nameof(ComplexEntity.NullableInt), rule2["CompareToProperty"]);
 
-            _output.WriteLine($"Property Comparison 1: {rule1["Property"]} vs {rule1["CompareToProperty"]}");
-            _output.WriteLine($"Property Comparison 2: {rule2["Property"]} vs {rule2["CompareToProperty"]}");
+            output.WriteLine($"Property Comparison 1: {rule1["Property"]} vs {rule1["CompareToProperty"]}");
+            output.WriteLine($"Property Comparison 2: {rule2["Property"]} vs {rule2["CompareToProperty"]}");
         }
 
         [Fact]
@@ -227,8 +221,8 @@ namespace DynamicPredicate.Tests.Builders
             var rule2 = (Dictionary<string, object>)rules[1];
             Assert.Equal(nameof(ComplexEntity.NullableInt), rule2["Property"]);
 
-            _output.WriteLine($"Unary Expression 1: {rule1["Property"]}");
-            _output.WriteLine($"Unary Expression 2: {rule2["Property"]}");
+            output.WriteLine($"Unary Expression 1: {rule1["Property"]}");
+            output.WriteLine($"Unary Expression 2: {rule2["Property"]}");
         }
 
         [Fact]
@@ -255,7 +249,7 @@ namespace DynamicPredicate.Tests.Builders
                     .Add(x => x.Name + "suffix", FilterOperator.Equal, "test");
             });
 
-            _output.WriteLine("Invalid expression types correctly throw ArgumentException");
+            output.WriteLine("Invalid expression types correctly throw ArgumentException");
         }
 
         [Fact]
@@ -276,8 +270,8 @@ namespace DynamicPredicate.Tests.Builders
                 .GreaterThanOrEqual(x => x.NullableInt, 50)
                 .LessThan(x => x.CreatedDate, testDate)
                 .LessThanOrEqual(x => x.Nested.Deep.DeepValue, 200)
-                .In(x => x.Name, new[] { "option1", "option2" })
-                .NotIn(x => x.Nested.SubName, new[] { "exclude1", "exclude2" })
+                .In(x => x.Name, ["option1", "option2"])
+                .NotIn(x => x.Nested.SubName, ["exclude1", "exclude2"])
                 .Between(x => x.Nested.Deep.DeepValue, 10, 90)
                 .NotBetween(x => x.NullableInt, 100, 200)
                 .Any(x => x.Tags)
@@ -305,8 +299,8 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(nameof(ComplexEntity.Tags), collectionRule["Property"]);
             Assert.Equal(FilterOperator.Any, collectionRule["Operator"]);
 
-            _output.WriteLine($"All operators test - {rules.Count} rules created successfully");
-            _output.WriteLine($"Sample rules: {equalRule["Property"]}, {nestedRule["Property"]}, {deepRule["Property"]}, {collectionRule["Property"]}");
+            output.WriteLine($"All operators test - {rules.Count} rules created successfully");
+            output.WriteLine($"Sample rules: {equalRule["Property"]}, {nestedRule["Property"]}, {deepRule["Property"]}, {collectionRule["Property"]}");
         }
 
         [Fact]
@@ -345,7 +339,7 @@ namespace DynamicPredicate.Tests.Builders
             var innerRule2 = (Dictionary<string, object>)innerGroupRules[1];
             Assert.Equal(nameof(ComplexEntity.Tags), innerRule2["Property"]);
 
-            _output.WriteLine($"Nested expression in Compare - all property paths extracted correctly");
+            output.WriteLine($"Nested expression in Compare - all property paths extracted correctly");
         }
 
         [Fact]
@@ -378,8 +372,8 @@ namespace DynamicPredicate.Tests.Builders
             var stringRule3 = (Dictionary<string, object>)rules[5];
             Assert.Equal(exprRule3["Property"], stringRule3["Property"]);
 
-            _output.WriteLine("Mixed string and expression paths coexist successfully");
-            _output.WriteLine($"Expression vs String paths: {exprRule1["Property"]}, {exprRule2["Property"]}, {exprRule3["Property"]}");
+            output.WriteLine("Mixed string and expression paths coexist successfully");
+            output.WriteLine($"Expression vs String paths: {exprRule1["Property"]}, {exprRule2["Property"]}, {exprRule3["Property"]}");
         }
 
         [Fact]
@@ -419,7 +413,7 @@ namespace DynamicPredicate.Tests.Builders
             Assert.Equal(nameof(ComplexEntity.CreatedDate), rule3["Property"]);
             Assert.Equal(nameof(ComplexEntity.CreatedDate), rule3["CompareToProperty"]);
 
-            _output.WriteLine("Expression property comparison with complex paths works correctly");
+            output.WriteLine("Expression property comparison with complex paths works correctly");
         }
     }
 }

@@ -5,9 +5,8 @@ namespace DynamicPredicate.Tests.TestData
     /// <summary>
     /// 擴展的測試 DbContext，用於複雜的導覽屬性
     /// </summary>
-    public class ExtendedTestDbContext : DbContext
+    public class ExtendedTestDbContext(DbContextOptions<ExtendedTestDbContext> options) : DbContext(options)
     {
-        public ExtendedTestDbContext(DbContextOptions<ExtendedTestDbContext> options) : base(options) { }
 
         // 原有的 DbSet
         public DbSet<Company> Companies { get; set; } = null!;

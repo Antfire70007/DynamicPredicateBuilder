@@ -2,10 +2,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DynamicPredicate.Tests.TestData
 {
-    public class TestDbContext : DbContext
+    public class TestDbContext(DbContextOptions<TestDbContext> options) : DbContext(options)
     {
-        public TestDbContext(DbContextOptions<TestDbContext> options) : base(options) { }
-
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
