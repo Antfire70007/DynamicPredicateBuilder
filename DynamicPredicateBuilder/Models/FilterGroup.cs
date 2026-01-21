@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace DynamicPredicateBuilder.Models;
 
@@ -11,7 +11,6 @@ public class FilterGroup
     /// <summary>這整組要不要 NOT。</summary>
     public bool IsNegated { get; set; } = false;
 
-
-    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<object> Rules { get; set; } = new List<object>();
 }

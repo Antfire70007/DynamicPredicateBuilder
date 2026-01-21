@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Linq.Expressions;
+using System.Text.Json;
 using DynamicPredicateBuilder.Core;
 using DynamicPredicateBuilder.Models;
-using Newtonsoft.Json;
 
 namespace DynamicPredicateBuilder;
 
@@ -16,27 +16,22 @@ public static class FilterBuilder
         var body = BuildGroup(typeof(T), optimizedGroup, parameter, options);
         return Expression.Lambda<Func<T, bool>>(body, parameter);
     }
+
     public static Expression<Func<T, bool>> Build<T>(IEnumerable<FilterGroup> groups, FilterOptions options = null)
     {
-        // 沒有任何條件 → 永遠 true
         if (groups is null || !groups.Any())
             return _ => true;
 
-        // 共用一個 Parameter
         var parameter = Expression.Parameter(typeof(T), "x");
 
         Expression? finalBody = null;
-        LogicalOperator interOp = LogicalOperator.Or; // 第一組之前沒運算子，先預設 Or
+        LogicalOperator interOp = LogicalOperator.Or;
 
         foreach (var rawGroup in groups)
         {
-            // 先對每組做 Optimize（除重）
             var group = OptimizeFilterGroup(rawGroup);
-
-            // 重用既有 BuildGroup 產生 Expression
             var groupExpr = BuildGroup(typeof(T), group, parameter, options);
 
-            // 把每組 Expression 用 AND / OR 串起來
             if (finalBody is null)
             {
                 finalBody = groupExpr;
@@ -48,12 +43,12 @@ public static class FilterBuilder
                           : Expression.OrElse(finalBody, groupExpr);
             }
 
-            // 決定下一迴圈要用的組間運算子
             interOp = group.InterOperator;
         }
 
         return Expression.Lambda<Func<T, bool>>(finalBody ?? Expression.Constant(true), parameter);
     }
+
     // FilterGroup除重（將相同的 FilterRule 視為一樣）
     private static FilterGroup OptimizeFilterGroup(FilterGroup group)
     {
@@ -78,7 +73,7 @@ public static class FilterBuilder
 
         // 將 FilterRule 做除重（用 json 序列化後比對）
         result.Rules = result.Rules
-            .GroupBy(r => JsonConvert.SerializeObject(r))
+            .GroupBy(r => JsonSerializer.Serialize(r))
             .Select(g => g.First())
             .ToList();
 
@@ -193,7 +188,7 @@ public static class FilterBuilder
 
                     var param = Expression.Parameter(elementType, "x");
 
-                    if (convertedValue is IEnumerable valueList && !(convertedValue is string))
+                    if (convertedValue is IEnumerable valueList && convertedValue is not string)
                     {
                         // 多值比對：Any(x => valueList.Contains(x))
                         var containsMethod = typeof(Enumerable).GetMethods()
@@ -247,7 +242,7 @@ public static class FilterBuilder
 
                     var param = Expression.Parameter(elementType, "x");
 
-                    if (convertedValue is IEnumerable valueList && !(convertedValue is string))
+                    if (convertedValue is IEnumerable valueList && convertedValue is not string)
                     {
                         // 多值比對：!Any(x => valueList.Contains(x))
                         var containsMethod = typeof(Enumerable).GetMethods()
@@ -678,7 +673,7 @@ public static class FilterBuilder
             {
                 items = s.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
             }
-            else if (value is IEnumerable enumerable && !(value is string))
+            else if (value is IEnumerable enumerable && value is not string)
             {
                 items = enumerable.Cast<object>();
             }
@@ -794,102 +789,6 @@ public static class FilterBuilder
 
         return Convert.ChangeType(value, underlyingType);
     }
-    private static object _ChangeType(object value, Type targetType)
-    {
-        if (value == null)
-            return null;
-
-        var underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
-
-        // 集合型別處理
-        if (typeof(IEnumerable).IsAssignableFrom(underlyingType) && underlyingType != typeof(string))
-        {
-            Type elementType = underlyingType.IsArray
-                ? underlyingType.GetElementType()
-                : underlyingType.GetGenericArguments().FirstOrDefault() ?? typeof(object);
-
-            IEnumerable<object> items;
-            if (value is string s)
-            {
-                items = s.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x));
-            }
-            else if (value is IEnumerable enumerable && !(value is string))
-            {
-                items = enumerable.Cast<object>();
-            }
-            else
-            {
-                items = new[] { value };
-            }
-
-            var converted = items
-                .Select(x => ChangeType(x, elementType))
-                .ToArray();
-
-            if (underlyingType.IsArray)
-            {
-                var array = Array.CreateInstance(elementType, converted.Length);
-                for (int i = 0; i < converted.Length; i++)
-                    array.SetValue(converted[i], i);
-                return array;
-            }
-            else
-            {
-                var listType = typeof(List<>).MakeGenericType(elementType);
-                var list = (IList)Activator.CreateInstance(listType);
-                foreach (var item in converted)
-                    list.Add(item);
-                return list;
-            }
-        }
-
-        // Enum
-        if (underlyingType.IsEnum)
-            return Enum.Parse(underlyingType, value.ToString());
-
-        // Guid
-        if (underlyingType == typeof(Guid))
-            return Guid.Parse(value.ToString());
-
-        // Bool
-        if (underlyingType == typeof(bool))
-            return value.ToString().Equals("true", StringComparison.OrdinalIgnoreCase) || value.ToString() == "1";
-
-        // String
-        if (underlyingType == typeof(string))
-            return value?.ToString();
-
-        // 處理陣列型別（如 Between 操作）
-        if (value is Array array1 && targetType != typeof(string))
-        {
-            var elementType = targetType.IsArray ? targetType.GetElementType() : targetType;
-            var convertedArray = Array.CreateInstance(elementType, array1.Length);
-            for (int i = 0; i < array1.Length; i++)
-            {
-                convertedArray.SetValue(ChangeType(array1.GetValue(i), elementType), i);
-            }
-            return convertedArray;
-        }
-
-        // Nullable 型別處理（如 decimal?）
-        if (Nullable.GetUnderlyingType(targetType) != null)
-        {
-            // 若 value 已是 underlyingType，直接回傳
-            if (value.GetType() == underlyingType)
-                return value;
-            return Convert.ChangeType(value, underlyingType);
-        }
-
-        var result = Convert.ChangeType(value, underlyingType);
-
-        // 型別不符時強制轉型
-        if (result != null && !targetType.IsAssignableFrom(result.GetType()))
-        {
-            return Convert.ChangeType(result, targetType);
-        }
-        return Convert.ChangeType(value, underlyingType);
-    }
-
     private static Expression BuildLike(Expression property, string pattern)
     {
         if (string.IsNullOrEmpty(pattern))

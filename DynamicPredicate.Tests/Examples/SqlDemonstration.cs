@@ -10,6 +10,9 @@ namespace DynamicPredicate.Tests.Examples
 {
     public class SqlDemonstration
     {
+        private static readonly decimal[] item = [50000m, 70000m];
+        private static readonly decimal[] itemArray = [50000.50m, 75000.00m];
+
         public static void DemonstrateDecimalSqlGeneration()
         {
             var options = new DbContextOptionsBuilder<TestDbContext>()
@@ -37,8 +40,7 @@ namespace DynamicPredicate.Tests.Examples
             Console.WriteLine("1. Testing: Salary > 50000");
             var greaterThanFilter = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules = [new FilterRule { Property = "Salary", Operator = FilterOperator.GreaterThan, Value = 50000m }]
                 }
@@ -57,10 +59,9 @@ namespace DynamicPredicate.Tests.Examples
             Console.WriteLine("\n2. Testing: Salary BETWEEN 50000 AND 70000");
             var betweenFilter = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
-                    Rules = [new FilterRule { Property = "Salary", Operator = FilterOperator.Between, Value = new[] { 50000m, 70000m } }]
+                    Rules = [new FilterRule { Property = "Salary", Operator = FilterOperator.Between, Value = item }]
                 }
             };
             var betweenPredicate = FilterBuilder.Build<User>(betweenFilter);
@@ -77,10 +78,9 @@ namespace DynamicPredicate.Tests.Examples
             Console.WriteLine("\n3. Testing: Salary IN (50000.50, 75000.00)");
             var inFilter = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
-                    Rules = [new FilterRule { Property = "Salary", Operator = FilterOperator.In, Value = new[] { 50000.50m, 75000.00m } }]
+                    Rules = [new FilterRule { Property = "Salary", Operator = FilterOperator.In, Value = itemArray }]
                 }
             };
             var inPredicate = FilterBuilder.Build<User>(inFilter);
@@ -97,8 +97,7 @@ namespace DynamicPredicate.Tests.Examples
             Console.WriteLine("\n4. Testing: Salary = 60000.25");
             var equalFilter = new List<FilterGroup>
             {
-                new FilterGroup
-                {
+                new() {
                     LogicalOperator = LogicalOperator.And,
                     Rules = [new FilterRule { Property = "Salary", Operator = FilterOperator.Equal, Value = 60000.25m }]
                 }

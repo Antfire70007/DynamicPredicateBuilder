@@ -12,8 +12,8 @@ namespace DynamicPredicate.Tests.TestData
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
-        public List<Department> Departments { get; set; } = new();
-        public List<Project> Projects { get; set; } = new();
+        public List<Department> Departments { get; set; } = [];
+        public List<Project> Projects { get; set; } = [];
     }
 
     /// <summary>
@@ -25,7 +25,7 @@ namespace DynamicPredicate.Tests.TestData
         public string Name { get; set; } = string.Empty;
         public int CompanyId { get; set; }
         public Company Company { get; set; } = null!;
-        public List<Employee> Employees { get; set; } = new();
+        public List<Employee> Employees { get; set; } = [];
         public Manager Manager { get; set; } = null!;
     }
 
@@ -41,7 +41,7 @@ namespace DynamicPredicate.Tests.TestData
         public DateTime HireDate { get; set; }
         public int DepartmentId { get; set; }
         public Department Department { get; set; } = null!;
-        public List<ProjectAssignment> ProjectAssignments { get; set; } = new();
+        public List<ProjectAssignment> ProjectAssignments { get; set; } = [];
         public EmployeeProfile Profile { get; set; } = null!;
     }
 
@@ -71,7 +71,7 @@ namespace DynamicPredicate.Tests.TestData
         public decimal Budget { get; set; }
         public int CompanyId { get; set; }
         public Company Company { get; set; } = null!;
-        public List<ProjectAssignment> ProjectAssignments { get; set; } = new();
+        public List<ProjectAssignment> ProjectAssignments { get; set; } = [];
         public ProjectDetail Detail { get; set; } = null!;
     }
 

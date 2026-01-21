@@ -3,7 +3,7 @@
 		<TargetFrameworks>net9.0;net8.0;net7.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>annotations</Nullable>
-		<Version>1.1.11</Version>
+		<Version>1.1.12</Version>
 		<Configurations>Debug;Release;Stage</Configurations>
 		<Authors>Antfire</Authors>
 		<Company>Antfire</Company>
@@ -13,9 +13,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	</ItemGroup>
+
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="" />
 	</ItemGroup>

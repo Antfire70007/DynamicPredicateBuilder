@@ -58,7 +58,7 @@ namespace DynamicPredicate.Tests.Examples
                 .Contains(x => x.CityCode, "TPE")
                 .StartsWith(x => x.LandNo, "A")
                 .EndsWith(x => x.LandNo, "001")
-                .In(x => x.CityCode, new[] { "TPE", "KHH" })
+                .In(x => x.CityCode, ["TPE", "KHH"])
                 .Between(x => x.Price, 1000000, 5000000)
                 .GreaterThan(x => x.CreateDate, DateTime.Now.AddDays(-30))
                 .LessThan(x => x.Price, 10000000)

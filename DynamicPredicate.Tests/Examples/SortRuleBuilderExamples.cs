@@ -11,7 +11,7 @@ namespace DynamicPredicate.Tests.Examples
     /// </summary>
     public class SortRuleBuilderExamples
     {
-        public void BasicSortingExamples()
+        public static void BasicSortingExamples()
         {
             // 簡單排序 - 字串版本
             var sortRules1 = SortRuleBuilder.SortBuilder<User>()
@@ -44,7 +44,7 @@ namespace DynamicPredicate.Tests.Examples
                 .Descending(x => x.Age);
         }
 
-        public void CombinedWithFilteringExample()
+        public static void CombinedWithFilteringExample()
         {
             // 結合排序和過濾範例
             var query = FilterDictionaryBuilder.QueryBuilder<User>()
@@ -72,7 +72,7 @@ namespace DynamicPredicate.Tests.Examples
             // var results = _userService.Query(request);
         }
 
-        public void NullableDecimalSortingExample()
+        public static void NullableDecimalSortingExample()
         {
             // 針對 nullable decimal 欄位的排序範例
             var sortRules = SortRuleBuilder.SortBuilder<User>()
@@ -104,7 +104,7 @@ namespace DynamicPredicate.Tests.Examples
             public string LastName { get; set; }
         }
 
-        public void NestedPropertySortingExample()
+        public static void NestedPropertySortingExample()
         {
             // 使用巢狀屬性排序
             var sortRules = SortRuleBuilder.SortBuilder<UserWithProfile>()
@@ -114,7 +114,7 @@ namespace DynamicPredicate.Tests.Examples
                 .Build();
         }
 
-        public void UseWithLinqExample()
+        public static void UseWithLinqExample()
         {
             // 假設有一個使用者集合
             var users = new[]

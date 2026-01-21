@@ -1,5 +1,6 @@
 ﻿using DynamicPredicateBuilder.Models;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace DynamicPredicateBuilder;
 
@@ -7,34 +8,50 @@ public static class FilterGroupJsonHelper
 {
     public static FilterGroup FromJson(string json)
     {
-        var dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+        var dict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
         return FilterGroupFactory.FromDictionary(ConvertDict(dict));
     }
 
-    private static Dictionary<string, object> ConvertDict(Dictionary<string, object> dict)
+    private static Dictionary<string, object> ConvertDict(Dictionary<string, JsonElement> dict)
     {
         var result = new Dictionary<string, object>();
         foreach (var kv in dict)
         {
-            if (kv.Value is Newtonsoft.Json.Linq.JArray array)
+            var value = kv.Value;
+            if (value.ValueKind == JsonValueKind.Array)
             {
                 var list = new List<object>();
-                foreach (var item in array)
+                foreach (var item in value.EnumerateArray())
                 {
-                    if (item is Newtonsoft.Json.Linq.JObject obj)
-                        list.Add(ConvertDict(obj.ToObject<Dictionary<string, object>>()));
+                    if (item.ValueKind == JsonValueKind.Object)
+                        list.Add(ConvertDict(JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(item.GetRawText())));
                     else
-                        list.Add(item.ToObject<object>());
+                        list.Add(JsonSerializer.Deserialize<object>(item.GetRawText()));
                 }
                 result[kv.Key] = list;
             }
-            else if (kv.Value is Newtonsoft.Json.Linq.JObject obj)
+            else if (value.ValueKind == JsonValueKind.Object)
             {
-                result[kv.Key] = ConvertDict(obj.ToObject<Dictionary<string, object>>());
+                result[kv.Key] = ConvertDict(JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(value.GetRawText()));
             }
-            else
+            else if (value.ValueKind == JsonValueKind.String)
             {
-                result[kv.Key] = kv.Value;
+                result[kv.Key] = value.GetString();
+            }
+            else if (value.ValueKind == JsonValueKind.Number)
+            {
+                if (value.TryGetInt64(out var longValue))
+                    result[kv.Key] = longValue;
+                else
+                    result[kv.Key] = value.GetDouble();
+            }
+            else if (value.ValueKind == JsonValueKind.True || value.ValueKind == JsonValueKind.False)
+            {
+                result[kv.Key] = value.GetBoolean();
+            }
+            else if (value.ValueKind == JsonValueKind.Null)
+            {
+                result[kv.Key] = null;
             }
         }
 
